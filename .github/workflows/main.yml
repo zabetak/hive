@@ -38,6 +38,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
-      - name: 'Build and test'
+      - name: 'Build and test (fail never)'
         run: |
-           mvn clean install
+           mvn clean install -fn
