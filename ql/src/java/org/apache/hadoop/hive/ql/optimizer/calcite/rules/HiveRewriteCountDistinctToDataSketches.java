@@ -84,7 +84,8 @@ public final class HiveRewriteCountDistinctToDataSketches extends RelOptRule {
     RelNode newAgg = aggregate.copy(aggregate.getTraitSet(), aggregate.getInput(), aggregate.getGroupSet(),
         aggregate.getGroupSets(), newAggCalls);
 
-    RelNode newProject = projectFactory.createProject(newAgg, vb.newProjects, aggregate.getRowType().getFieldNames());
+    RelNode newProject = projectFactory
+        .createProject(newAgg, Collections.emptyList(), vb.newProjects, aggregate.getRowType().getFieldNames());
 
     call.transformTo(newProject);
     return;

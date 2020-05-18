@@ -22,6 +22,7 @@ import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.TableFunctionScan;
 import org.apache.calcite.rel.core.TableScan;
 import org.apache.calcite.rel.logical.LogicalAggregate;
+import org.apache.calcite.rel.logical.LogicalCalc;
 import org.apache.calcite.rel.logical.LogicalCorrelate;
 import org.apache.calcite.rel.logical.LogicalExchange;
 import org.apache.calcite.rel.logical.LogicalFilter;
@@ -31,6 +32,7 @@ import org.apache.calcite.rel.logical.LogicalMatch;
 import org.apache.calcite.rel.logical.LogicalMinus;
 import org.apache.calcite.rel.logical.LogicalProject;
 import org.apache.calcite.rel.logical.LogicalSort;
+import org.apache.calcite.rel.logical.LogicalTableModify;
 import org.apache.calcite.rel.logical.LogicalUnion;
 import org.apache.calcite.rel.logical.LogicalValues;
 import org.apache.calcite.util.Stacks;
@@ -53,8 +55,7 @@ public class HiveRelShuttleImpl implements HiveRelShuttle {
         try {
             RelNode child2 = child.accept(this);
             if (child2 != child) {
-                final List<RelNode> newInputs =
-                        new ArrayList<RelNode>(parent.getInputs());
+                final List<RelNode> newInputs = new ArrayList<RelNode>(parent.getInputs());
                 newInputs.set(i, child2);
                 return parent.copy(parent.getTraitSet(), newInputs);
             }
@@ -97,6 +98,10 @@ public class HiveRelShuttleImpl implements HiveRelShuttle {
     public RelNode visit(LogicalFilter filter) {
         return visitChild(filter, 0, filter.getInput());
     }
+
+  public RelNode visit(LogicalCalc calc) {
+    return visitChild(calc, 0, calc.getInput());
+  }
 
     public RelNode visit(HiveProject project) {
         return visitChild(project, 0, project.getInput());
@@ -145,6 +150,10 @@ public class HiveRelShuttleImpl implements HiveRelShuttle {
     public RelNode visit(LogicalMatch match) {
       return visitChildren(match);
     }
+
+  public RelNode visit(LogicalTableModify modify) {
+    return visitChildren(modify);
+  }
 }
 
 // End RelShuttleImpl.java

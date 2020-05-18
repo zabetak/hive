@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.ql.optimizer.calcite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -266,9 +267,9 @@ public class HiveCalciteUtil {
     // added project if need to produce new keys than the original input
     // fields
     if (newKeyCount > 0) {
-      leftRel = factory.createProject(leftRel, newLeftFields,
+      leftRel = factory.createProject(leftRel, Collections.emptyList(), newLeftFields,
           SqlValidatorUtil.uniquify(newLeftFieldNames));
-      rightRel = factory.createProject(rightRel, newRightFields,
+      rightRel = factory.createProject(rightRel, Collections.emptyList(), newRightFields,
           SqlValidatorUtil.uniquify(newRightFieldNames));
     }
 

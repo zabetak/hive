@@ -23,6 +23,7 @@ import com.google.common.collect.Sets;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -488,7 +489,7 @@ public class HiveRelOptUtil extends RelOptUtil {
               ImmutableList.of(i), -1, 0, rel, null, null));
     }
 
-    return aggregateFactory.createAggregate(rel, false, ImmutableBitSet.of(), null, aggCalls);
+    return aggregateFactory.createAggregate(rel, Collections.emptyList(), ImmutableBitSet.of(), null, aggCalls);
   }
 
   /**

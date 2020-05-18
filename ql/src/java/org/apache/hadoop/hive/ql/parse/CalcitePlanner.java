@@ -2894,7 +2894,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
             topFields.add(leftRel.getCluster().getRexBuilder().makeInputRef(field.getType(), i));
             topFieldNames.add(field.getName());
           }
-          topRel = HiveRelFactories.HIVE_PROJECT_FACTORY.createProject(topRel, topFields, topFieldNames);
+          topRel = HiveRelFactories.HIVE_PROJECT_FACTORY.createProject(topRel, Collections.emptyList(), topFields, topFieldNames);
         }
 
         topRR = new RowResolver();

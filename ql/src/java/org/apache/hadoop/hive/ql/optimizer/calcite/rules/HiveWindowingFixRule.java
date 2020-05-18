@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.ql.optimizer.calcite.rules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -153,9 +154,9 @@ public class HiveWindowingFixRule extends RelOptRule {
     // 3. We need to fix it, we create the two replacement project
     //    operators
     RelNode newProjectRel = projectFactory.createProject(
-        aggregate, belowProjectExprs, belowProjectColumnNames);
+        aggregate, Collections.emptyList(), belowProjectExprs, belowProjectColumnNames);
     RelNode newTopProjectRel = projectFactory.createProject(
-        newProjectRel, topProjectExprs, project.getRowType().getFieldNames());
+        newProjectRel, Collections.emptyList(), topProjectExprs, project.getRowType().getFieldNames());
 
     call.transformTo(newTopProjectRel);
   }
