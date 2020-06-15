@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TestTezPerfConstraintsCliDriver {
 
-  static CliAdapter adapter = new CliConfigs.TezPerfCliConfig(true).getCliAdapter();
+  static CliAdapter adapter = new CliConfigs.TezCustomTPCDSCliConfig(true).getCliAdapter();
 
   @Parameters(name = "{0}")
   public static List<Object[]> getParameters() throws Exception {

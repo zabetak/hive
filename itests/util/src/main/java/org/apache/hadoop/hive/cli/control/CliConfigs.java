@@ -288,9 +288,9 @@ public class CliConfigs {
     }
   }
 
-  public static class TezPerfCliConfig extends AbstractCliConfig {
-    public TezPerfCliConfig(boolean useConstraints) {
-      super(CorePerfCliDriver.class);
+  public static class TezCustomTPCDSCliConfig extends AbstractCliConfig {
+    public TezCustomTPCDSCliConfig(boolean useConstraints) {
+      super(TPCDSMetastoreCliDriver.class);
       try {
         setQueryDir("ql/src/test/queries/clientpositive/perf");
 
@@ -324,9 +324,29 @@ public class CliConfigs {
     }
   }
 
-  public static class SparkPerfCliConfig extends AbstractCliConfig {
-    public SparkPerfCliConfig() {
+  public static class TezTPCDS30TBCliConfig extends AbstractCliConfig {
+    public TezTPCDS30TBCliConfig() {
       super(CorePerfCliDriver.class);
+      try {
+        setQueryDir("ql/src/test/queries/clientpositive/perf");
+        setLogDir("itests/qtest/target/qfile-results/clientpositive/tpcds30tb/tez");
+        setResultsDir("ql/src/test/results/clientpositive/tpcds30tb/tez");
+        setHiveConfDir("data/conf/tpcds30tb/tez");
+        setClusterType(MiniClusterType.LLAP_LOCAL);
+        setMetastoreType("postgres.tpcds");
+        // The metastore in this configuration can be used only for reading statistics.
+        // We cannot exploit the information for running queries so it is impossible to
+        // create views or perform other similar operations.
+        excludesFrom(testConfigProps, "tez.perf.disabled.query.files");
+      } catch (Exception e) {
+        throw new RuntimeException("can't construct cliconfig", e);
+      }
+    }
+  }
+
+  public static class SparkCustomTPCDSCliConfig extends AbstractCliConfig {
+    public SparkCustomTPCDSCliConfig() {
+      super(TPCDSMetastoreCliDriver.class);
       try {
         setQueryDir("ql/src/test/queries/clientpositive/perf");
 

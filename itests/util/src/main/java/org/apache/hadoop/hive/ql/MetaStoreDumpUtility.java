@@ -56,6 +56,8 @@ public class MetaStoreDumpUtility {
 
   static final Logger LOG = LoggerFactory.getLogger(MetaStoreDumpUtility.class);
 
+  // TODO: Change the name of the method or document appropriately
+  // The stats are not from a pure 30TB TPCDS dataset
   public static void setupMetaStoreTableColumnStatsFor30TBTPCDSWorkload(HiveConf conf, String tmpBaseDir) {
     Connection conn = null;
 
