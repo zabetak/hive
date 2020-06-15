@@ -1743,7 +1743,9 @@ public class SessionState implements ISessionAuthState{
 
   public String getCurrentDatabase() {
     if (currentDatabase == null) {
-      currentDatabase = DEFAULT_DATABASE_NAME;
+      currentDatabase = sessionConf.getVar(ConfVars.HIVE_CURRENT_DATABASE);
+      if (StringUtils.isEmpty(currentDatabase))
+        currentDatabase = DEFAULT_DATABASE_NAME;
     }
     return currentDatabase;
   }
