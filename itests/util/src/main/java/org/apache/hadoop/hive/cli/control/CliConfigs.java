@@ -324,6 +324,25 @@ public class CliConfigs {
     }
   }
 
+  public static class TezPerfJDBCMetastoreCliConfig extends AbstractCliConfig {
+    public TezPerfJDBCMetastoreCliConfig() {
+      super(CoreCliDriver.class);
+      try {
+        setQueryDir("ql/src/test/queries/clientpositive/perf");
+        setLogDir("itests/qtest/target/qfile-results/clientpositive/perf/tez/jdbcstore");
+        setResultsDir("ql/src/test/results/clientpositive/perf/tez/jdbcstore");
+        setHiveConfDir("data/conf/perf-reg/tez/jdbcstore");
+        setClusterType(MiniClusterType.LLAP_LOCAL);
+        // The metastore in this configuration can be used only for reading statistics.
+        // We cannot exploit the information for running queries so it is impossible to
+        // create views or perform other similar operations.
+        excludesFrom(testConfigProps, "tez.perf.disabled.query.files");
+      } catch (Exception e) {
+        throw new RuntimeException("can't construct cliconfig", e);
+      }
+    }
+  }
+
   public static class SparkPerfCliConfig extends AbstractCliConfig {
     public SparkPerfCliConfig() {
       super(CorePerfCliDriver.class);
