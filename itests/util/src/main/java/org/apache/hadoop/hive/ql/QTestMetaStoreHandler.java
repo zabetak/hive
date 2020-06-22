@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.metastore.dbinstall.rules.Mssql;
 import org.apache.hadoop.hive.metastore.dbinstall.rules.Mysql;
 import org.apache.hadoop.hive.metastore.dbinstall.rules.Oracle;
 import org.apache.hadoop.hive.metastore.dbinstall.rules.Postgres;
+import org.apache.hadoop.hive.metastore.dbinstall.rules.PostgresTPCDS;
 import org.apache.hadoop.hive.metastore.txn.TxnDbUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,8 @@ public class QTestMetaStoreHandler {
     switch (metastoreType) {
     case "postgres":
       return new Postgres();
+    case "postgres.tpcds":
+      return new PostgresTPCDS();
     case "oracle":
       return new Oracle();
     case "mysql":
