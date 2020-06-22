@@ -1,0 +1,583 @@
+Warning: Map Join MAPJOIN[1073][bigTable=?] in task 'Reducer 2' is a cross product
+Warning: Map Join MAPJOIN[1338][bigTable=?] in task 'Reducer 36' is a cross product
+Warning: Map Join MAPJOIN[1432][bigTable=?] in task 'Reducer 43' is a cross product
+Plan optimized by CBO.
+
+Vertex dependency in root stage
+Map 1 <- Map 27 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE), Reducer 11 (BROADCAST_EDGE)
+Map 19 <- Map 18 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE)
+Map 23 <- Map 18 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE)
+Map 28 <- Map 18 (BROADCAST_EDGE), Union 29 (CONTAINS)
+Map 31 <- Map 32 (BROADCAST_EDGE), Union 29 (CONTAINS)
+Map 33 <- Map 34 (BROADCAST_EDGE), Union 29 (CONTAINS)
+Map 35 <- Map 27 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE), Reducer 14 (BROADCAST_EDGE)
+Map 37 <- Map 18 (BROADCAST_EDGE), Union 38 (CONTAINS)
+Map 40 <- Map 32 (BROADCAST_EDGE), Union 38 (CONTAINS)
+Map 41 <- Map 34 (BROADCAST_EDGE), Union 38 (CONTAINS)
+Map 42 <- Map 27 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE), Reducer 17 (BROADCAST_EDGE)
+Map 44 <- Map 18 (BROADCAST_EDGE), Union 45 (CONTAINS)
+Map 47 <- Map 32 (BROADCAST_EDGE), Union 45 (CONTAINS)
+Map 48 <- Map 34 (BROADCAST_EDGE), Union 45 (CONTAINS)
+Map 8 <- Map 18 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE)
+Reducer 11 <- Union 10 (SIMPLE_EDGE)
+Reducer 12 <- Map 8 (SIMPLE_EDGE), Union 13 (CONTAINS)
+Reducer 14 <- Union 13 (SIMPLE_EDGE)
+Reducer 15 <- Map 8 (SIMPLE_EDGE), Union 16 (CONTAINS)
+Reducer 17 <- Union 16 (SIMPLE_EDGE)
+Reducer 2 <- Map 1 (SIMPLE_EDGE), Reducer 30 (BROADCAST_EDGE), Union 3 (CONTAINS)
+Reducer 20 <- Map 19 (SIMPLE_EDGE), Union 10 (CONTAINS)
+Reducer 21 <- Map 19 (SIMPLE_EDGE), Union 13 (CONTAINS)
+Reducer 22 <- Map 19 (SIMPLE_EDGE), Union 16 (CONTAINS)
+Reducer 24 <- Map 23 (SIMPLE_EDGE), Union 10 (CONTAINS)
+Reducer 25 <- Map 23 (SIMPLE_EDGE), Union 13 (CONTAINS)
+Reducer 26 <- Map 23 (SIMPLE_EDGE), Union 16 (CONTAINS)
+Reducer 30 <- Union 29 (CUSTOM_SIMPLE_EDGE)
+Reducer 36 <- Map 35 (SIMPLE_EDGE), Reducer 39 (BROADCAST_EDGE), Union 3 (CONTAINS)
+Reducer 39 <- Union 38 (CUSTOM_SIMPLE_EDGE)
+Reducer 4 <- Union 3 (SIMPLE_EDGE)
+Reducer 43 <- Map 42 (SIMPLE_EDGE), Reducer 46 (BROADCAST_EDGE), Union 3 (CONTAINS)
+Reducer 46 <- Union 45 (CUSTOM_SIMPLE_EDGE)
+Reducer 5 <- Reducer 4 (SIMPLE_EDGE)
+Reducer 9 <- Map 8 (SIMPLE_EDGE), Union 10 (CONTAINS)
+
+Stage-0
+  Fetch Operator
+    limit:100
+    Stage-1
+      Reducer 5 vectorized, llap
+      File Output Operator [FS_1563]
+        Limit [LIM_1562] (rows=100 width=223)
+          Number of rows:100
+          Select Operator [SEL_1561] (rows=398760 width=222)
+            Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+          <-Reducer 4 [SIMPLE_EDGE] vectorized, llap
+            SHUFFLE [RS_1560]
+              Select Operator [SEL_1559] (rows=398760 width=222)
+                Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                Group By Operator [GBY_1558] (rows=398760 width=230)
+                  Output:["_col0","_col1","_col2","_col3","_col5","_col6"],aggregations:["sum(VALUE._col0)","sum(VALUE._col1)"],keys:KEY._col0, KEY._col1, KEY._col2, KEY._col3, KEY._col4
+                <-Union 3 [SIMPLE_EDGE]
+                  <-Reducer 2 [CONTAINS] vectorized, llap
+                    Reduce Output Operator [RS_1557]
+                      PartitionCols:_col0, _col1, _col2, _col3, _col4
+                      Group By Operator [GBY_1556] (rows=398760 width=230)
+                        Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6"],aggregations:["sum(_col4)","sum(_col5)"],keys:_col0, _col1, _col2, _col3, 0L
+                        Top N Key Operator [TNK_1555] (rows=159504 width=221)
+                          keys:_col0, _col1, _col2, _col3,top n:100
+                          Select Operator [SEL_1554] (rows=60027 width=220)
+                            Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                            Filter Operator [FIL_1553] (rows=60027 width=243)
+                              predicate:(_col3 > _col5)
+                              Map Join Operator [MAPJOIN_1552] (rows=180081 width=243)
+                                Conds:(Inner),Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                              <-Reducer 30 [BROADCAST_EDGE] vectorized, llap
+                                BROADCAST [RS_1549]
+                                  Select Operator [SEL_1548] (rows=1 width=112)
+                                    Output:["_col0"]
+                                    Filter Operator [FIL_1547] (rows=1 width=120)
+                                      predicate:CAST( (_col0 / _col1) AS decimal(22,6)) is not null
+                                      Group By Operator [GBY_1546] (rows=1 width=120)
+                                        Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"]
+                                      <-Union 29 [CUSTOM_SIMPLE_EDGE]
+                                        <-Map 28 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1642]
+                                            Group By Operator [GBY_1641] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1640] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1639] (rows=49749852010 width=111)
+                                                  Conds:SEL_1638._col2=RS_1572._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1572]
+                                                    PartitionCols:_col0
+                                                    Select Operator [SEL_1565] (rows=1101 width=8)
+                                                      Output:["_col0"]
+                                                      Filter Operator [FIL_1564] (rows=1101 width=12)
+                                                        predicate:d_year BETWEEN 1999 AND 2001
+                                                        TableScan [TS_12] (rows=73049 width=12)
+                                                          tpcds_bin_partitioned_orc_30000@date_dim,d1, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year"]
+                                                <-Select Operator [SEL_1638] (rows=82510879939 width=121)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1251] (rows=82510879939 width=121)
+                                                      Output:["ss_quantity","ss_list_price"]
+                                        <-Map 31 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1661]
+                                            Group By Operator [GBY_1660] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1659] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1658] (rows=25746588712 width=115)
+                                                  Conds:SEL_1657._col2=RS_1645._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 32 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1645]
+                                                    PartitionCols:_col0
+                                                    Select Operator [SEL_1644] (rows=1101 width=8)
+                                                      Output:["_col0"]
+                                                      Filter Operator [FIL_1643] (rows=1101 width=12)
+                                                        predicate:d_year BETWEEN 1998 AND 2000
+                                                        TableScan [TS_111] (rows=73049 width=12)
+                                                          tpcds_bin_partitioned_orc_30000@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year"]
+                                                <-Select Operator [SEL_1657] (rows=43005109025 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1274] (rows=43005109025 width=123)
+                                                      Output:["cs_quantity","cs_list_price"]
+                                        <-Map 33 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1680]
+                                            Group By Operator [GBY_1679] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1678] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1677] (rows=13020465516 width=115)
+                                                  Conds:SEL_1676._col2=RS_1664._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 34 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1664]
+                                                    PartitionCols:_col0
+                                                    Select Operator [SEL_1663] (rows=1101 width=8)
+                                                      Output:["_col0"]
+                                                      Filter Operator [FIL_1662] (rows=1101 width=12)
+                                                        predicate:d_year BETWEEN 1998 AND 2000
+                                                        TableScan [TS_122] (rows=73049 width=12)
+                                                          tpcds_bin_partitioned_orc_30000@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year"]
+                                                <-Select Operator [SEL_1676] (rows=21594638446 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1297] (rows=21594638446 width=123)
+                                                      Output:["ws_quantity","ws_list_price"]
+                              <-Filter Operator [FIL_1551] (rows=180081 width=131)
+                                  predicate:_col3 is not null
+                                  Group By Operator [GBY_1550] (rows=180081 width=131)
+                                    Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                  <-Map 1 [SIMPLE_EDGE] vectorized, llap
+                                    SHUFFLE [RS_1545]
+                                      PartitionCols:_col0, _col1, _col2
+                                      Group By Operator [GBY_1544] (rows=180081 width=131)
+                                        Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(_col3)","count()"],keys:_col0, _col1, _col2
+                                        Select Operator [SEL_1543] (rows=1445421 width=11)
+                                          Output:["_col0","_col1","_col2","_col3"]
+                                          Map Join Operator [MAPJOIN_1542] (rows=1445421 width=11)
+                                            Conds:MAPJOIN_1541._col0=RS_1535._col0(Inner),Output:["_col1","_col2","_col13","_col14","_col15"]
+                                          <-Map 27 [BROADCAST_EDGE] vectorized, llap
+                                            BROADCAST [RS_1535]
+                                              PartitionCols:_col0
+                                              Select Operator [SEL_1534] (rows=462000 width=19)
+                                                Output:["_col0","_col1","_col2","_col3"]
+                                                TableScan [TS_77] (rows=462000 width=19)
+                                                  tpcds_bin_partitioned_orc_30000@item,item, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["i_item_sk","i_brand_id","i_class_id","i_category_id"]
+                                          <-Map Join Operator [MAPJOIN_1541] (rows=1445421 width=8)
+                                              Conds:MAPJOIN_1540._col6, _col7, _col8=RS_1533._col0, _col1, _col2(Inner),Output:["_col0","_col1","_col2"]
+                                            <-Reducer 11 [BROADCAST_EDGE] vectorized, llap
+                                              BROADCAST [RS_1533]
+                                                PartitionCols:_col0, _col1, _col2
+                                                Select Operator [SEL_1532] (rows=1 width=12)
+                                                  Output:["_col0","_col1","_col2"]
+                                                  Filter Operator [FIL_1531] (rows=1 width=20)
+                                                    predicate:(_col3 = 3L)
+                                                    Group By Operator [GBY_1530] (rows=153920 width=20)
+                                                      Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                    <-Union 10 [SIMPLE_EDGE]
+                                                      <-Reducer 20 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1615]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1614] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1613] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 19 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1610]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                Group By Operator [GBY_1609] (rows=215917119 width=19)
+                                                                  Output:["_col0","_col1","_col2","_col3"],aggregations:["count()"],keys:_col4, _col5, _col6
+                                                                  Map Join Operator [MAPJOIN_1608] (rows=25557780268 width=11)
+                                                                    Conds:MAPJOIN_1607._col0=RS_1526._col0(Inner),Output:["_col4","_col5","_col6"]
+                                                                  <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                                    BROADCAST [RS_1526]
+                                                                      PartitionCols:_col0
+                                                                      Select Operator [SEL_1523] (rows=458612 width=19)
+                                                                        Output:["_col0","_col1","_col2","_col3"]
+                                                                        Filter Operator [FIL_1522] (rows=458612 width=19)
+                                                                          predicate:(i_category_id is not null and i_brand_id is not null and i_class_id is not null)
+                                                                          TableScan [TS_6] (rows=462000 width=19)
+                                                                            tpcds_bin_partitioned_orc_30000@item,item, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["i_item_sk","i_brand_id","i_class_id","i_category_id"]
+                                                                  <-Map Join Operator [MAPJOIN_1607] (rows=25746588712 width=8)
+                                                                      Conds:SEL_1606._col1=RS_1568._col0(Inner),Output:["_col0"]
+                                                                    <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                                      BROADCAST [RS_1568]
+                                                                        PartitionCols:_col0
+                                                                         Please refer to the previous Select Operator [SEL_1565]
+                                                                    <-Select Operator [SEL_1606] (rows=43005109025 width=16)
+                                                                        Output:["_col0","_col1"]
+                                                                        TableScan [TS_29] (rows=43005109025 width=16)
+                                                                          tpcds_bin_partitioned_orc_30000@catalog_sales,catalog_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["cs_item_sk"]
+                                                      <-Reducer 24 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1631]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1630] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1629] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 23 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1626]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                Group By Operator [GBY_1625] (rows=109129086 width=19)
+                                                                  Output:["_col0","_col1","_col2","_col3"],aggregations:["count()"],keys:_col4, _col5, _col6
+                                                                  Map Join Operator [MAPJOIN_1624] (rows=12924982039 width=11)
+                                                                    Conds:MAPJOIN_1623._col0=RS_1527._col0(Inner),Output:["_col4","_col5","_col6"]
+                                                                  <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                                    BROADCAST [RS_1527]
+                                                                      PartitionCols:_col0
+                                                                       Please refer to the previous Select Operator [SEL_1523]
+                                                                  <-Map Join Operator [MAPJOIN_1623] (rows=13020465516 width=8)
+                                                                      Conds:SEL_1622._col1=RS_1570._col0(Inner),Output:["_col0"]
+                                                                    <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                                      BROADCAST [RS_1570]
+                                                                        PartitionCols:_col0
+                                                                         Please refer to the previous Select Operator [SEL_1565]
+                                                                    <-Select Operator [SEL_1622] (rows=21594638446 width=16)
+                                                                        Output:["_col0","_col1"]
+                                                                        TableScan [TS_50] (rows=21594638446 width=16)
+                                                                          tpcds_bin_partitioned_orc_30000@web_sales,web_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ws_item_sk"]
+                                                      <-Reducer 9 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1599]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1598] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1597] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 8 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1594]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                Group By Operator [GBY_1593] (rows=416887515 width=19)
+                                                                  Output:["_col0","_col1","_col2","_col3"],aggregations:["count()"],keys:_col4, _col5, _col6
+                                                                  Map Join Operator [MAPJOIN_1592] (rows=49385019517 width=11)
+                                                                    Conds:MAPJOIN_1591._col0=RS_1525._col0(Inner),Output:["_col4","_col5","_col6"]
+                                                                  <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                                    BROADCAST [RS_1525]
+                                                                      PartitionCols:_col0
+                                                                       Please refer to the previous Select Operator [SEL_1523]
+                                                                  <-Map Join Operator [MAPJOIN_1591] (rows=49749852010 width=8)
+                                                                      Conds:SEL_1590._col1=RS_1566._col0(Inner),Output:["_col0"]
+                                                                    <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                                      BROADCAST [RS_1566]
+                                                                        PartitionCols:_col0
+                                                                         Please refer to the previous Select Operator [SEL_1565]
+                                                                    <-Select Operator [SEL_1590] (rows=82510879939 width=16)
+                                                                        Output:["_col0","_col1"]
+                                                                        TableScan [TS_9] (rows=82510879939 width=16)
+                                                                          tpcds_bin_partitioned_orc_30000@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_item_sk"]
+                                            <-Map Join Operator [MAPJOIN_1540] (rows=1390495544 width=19)
+                                                Conds:MAPJOIN_1539._col0=RS_1524._col0(Inner),Output:["_col0","_col1","_col2","_col6","_col7","_col8"]
+                                              <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                BROADCAST [RS_1524]
+                                                  PartitionCols:_col0
+                                                   Please refer to the previous Select Operator [SEL_1523]
+                                              <-Map Join Operator [MAPJOIN_1539] (rows=1400767848 width=8)
+                                                  Conds:SEL_1538._col3=RS_1510._col0(Inner),Output:["_col0","_col1","_col2"]
+                                                <-Map 6 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1510]
+                                                    PartitionCols:_col0
+                                                    Select Operator [SEL_1509] (rows=31 width=8)
+                                                      Output:["_col0"]
+                                                      Filter Operator [FIL_1508] (rows=31 width=16)
+                                                        predicate:((d_year = 2000) and (d_moy = 11))
+                                                        TableScan [TS_3] (rows=73049 width=16)
+                                                          tpcds_bin_partitioned_orc_30000@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_moy"]
+                                                <-Select Operator [SEL_1538] (rows=82510879939 width=129)
+                                                    Output:["_col0","_col1","_col2","_col3"]
+                                                    TableScan [TS_0] (rows=82510879939 width=129)
+                                                      tpcds_bin_partitioned_orc_30000@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_item_sk","ss_quantity","ss_list_price"]
+                  <-Reducer 36 [CONTAINS] vectorized, llap
+                    Reduce Output Operator [RS_1704]
+                      PartitionCols:_col0, _col1, _col2, _col3, _col4
+                      Group By Operator [GBY_1703] (rows=398760 width=230)
+                        Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6"],aggregations:["sum(_col4)","sum(_col5)"],keys:_col0, _col1, _col2, _col3, 0L
+                        Top N Key Operator [TNK_1702] (rows=159504 width=221)
+                          keys:_col0, _col1, _col2, _col3,top n:100
+                          Select Operator [SEL_1701] (rows=60027 width=222)
+                            Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                            Filter Operator [FIL_1700] (rows=60027 width=243)
+                              predicate:(_col3 > _col5)
+                              Map Join Operator [MAPJOIN_1699] (rows=180081 width=243)
+                                Conds:(Inner),Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                              <-Reducer 39 [BROADCAST_EDGE] vectorized, llap
+                                BROADCAST [RS_1696]
+                                  Select Operator [SEL_1695] (rows=1 width=112)
+                                    Output:["_col0"]
+                                    Filter Operator [FIL_1694] (rows=1 width=120)
+                                      predicate:CAST( (_col0 / _col1) AS decimal(22,6)) is not null
+                                      Group By Operator [GBY_1693] (rows=1 width=120)
+                                        Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"]
+                                      <-Union 38 [CUSTOM_SIMPLE_EDGE]
+                                        <-Map 37 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1709]
+                                            Group By Operator [GBY_1708] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1707] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1706] (rows=49749852010 width=111)
+                                                  Conds:SEL_1705._col2=RS_1574._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1574]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1565]
+                                                <-Select Operator [SEL_1705] (rows=82510879939 width=121)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1345] (rows=82510879939 width=121)
+                                                      Output:["ss_quantity","ss_list_price"]
+                                        <-Map 40 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1714]
+                                            Group By Operator [GBY_1713] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1712] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1711] (rows=25746588712 width=115)
+                                                  Conds:SEL_1710._col2=RS_1647._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 32 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1647]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1644]
+                                                <-Select Operator [SEL_1710] (rows=43005109025 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1368] (rows=43005109025 width=123)
+                                                      Output:["cs_quantity","cs_list_price"]
+                                        <-Map 41 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1719]
+                                            Group By Operator [GBY_1718] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1717] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1716] (rows=13020465516 width=115)
+                                                  Conds:SEL_1715._col2=RS_1666._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 34 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1666]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1663]
+                                                <-Select Operator [SEL_1715] (rows=21594638446 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1391] (rows=21594638446 width=123)
+                                                      Output:["ws_quantity","ws_list_price"]
+                              <-Filter Operator [FIL_1698] (rows=180081 width=131)
+                                  predicate:_col3 is not null
+                                  Group By Operator [GBY_1697] (rows=180081 width=131)
+                                    Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                  <-Map 35 [SIMPLE_EDGE] vectorized, llap
+                                    SHUFFLE [RS_1692]
+                                      PartitionCols:_col0, _col1, _col2
+                                      Group By Operator [GBY_1691] (rows=180081 width=131)
+                                        Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(_col3)","count()"],keys:_col0, _col1, _col2
+                                        Select Operator [SEL_1690] (rows=748035 width=11)
+                                          Output:["_col0","_col1","_col2","_col3"]
+                                          Map Join Operator [MAPJOIN_1689] (rows=748035 width=11)
+                                            Conds:MAPJOIN_1688._col0=RS_1536._col0(Inner),Output:["_col1","_col2","_col13","_col14","_col15"]
+                                          <-Map 27 [BROADCAST_EDGE] vectorized, llap
+                                            BROADCAST [RS_1536]
+                                              PartitionCols:_col0
+                                               Please refer to the previous Select Operator [SEL_1534]
+                                          <-Map Join Operator [MAPJOIN_1688] (rows=748035 width=8)
+                                              Conds:MAPJOIN_1687._col6, _col7, _col8=RS_1684._col0, _col1, _col2(Inner),Output:["_col0","_col1","_col2"]
+                                            <-Reducer 14 [BROADCAST_EDGE] vectorized, llap
+                                              BROADCAST [RS_1684]
+                                                PartitionCols:_col0, _col1, _col2
+                                                Select Operator [SEL_1683] (rows=1 width=12)
+                                                  Output:["_col0","_col1","_col2"]
+                                                  Filter Operator [FIL_1682] (rows=1 width=20)
+                                                    predicate:(_col3 = 3L)
+                                                    Group By Operator [GBY_1681] (rows=153920 width=20)
+                                                      Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                    <-Union 13 [SIMPLE_EDGE]
+                                                      <-Reducer 12 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1602]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1601] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1600] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 8 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1595]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1593]
+                                                      <-Reducer 21 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1618]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1617] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1616] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 19 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1611]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1609]
+                                                      <-Reducer 25 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1634]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1633] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1632] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 23 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1627]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1625]
+                                            <-Map Join Operator [MAPJOIN_1687] (rows=719610520 width=118)
+                                                Conds:MAPJOIN_1686._col0=RS_1528._col0(Inner),Output:["_col0","_col1","_col2","_col6","_col7","_col8"]
+                                              <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                BROADCAST [RS_1528]
+                                                  PartitionCols:_col0
+                                                   Please refer to the previous Select Operator [SEL_1523]
+                                              <-Map Join Operator [MAPJOIN_1686] (rows=724926652 width=106)
+                                                  Conds:SEL_1685._col3=RS_1512._col0(Inner),Output:["_col0","_col1","_col2"]
+                                                <-Map 6 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1512]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1509]
+                                                <-Select Operator [SEL_1685] (rows=43005109025 width=131)
+                                                    Output:["_col0","_col1","_col2","_col3"]
+                                                    TableScan [TS_142] (rows=43005109025 width=131)
+                                                      tpcds_bin_partitioned_orc_30000@catalog_sales,catalog_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["cs_item_sk","cs_quantity","cs_list_price"]
+                  <-Reducer 43 [CONTAINS] vectorized, llap
+                    Reduce Output Operator [RS_1743]
+                      PartitionCols:_col0, _col1, _col2, _col3, _col4
+                      Group By Operator [GBY_1742] (rows=398760 width=230)
+                        Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6"],aggregations:["sum(_col4)","sum(_col5)"],keys:_col0, _col1, _col2, _col3, 0L
+                        Top N Key Operator [TNK_1741] (rows=159504 width=221)
+                          keys:_col0, _col1, _col2, _col3,top n:100
+                          Select Operator [SEL_1740] (rows=39450 width=218)
+                            Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                            Filter Operator [FIL_1739] (rows=39450 width=243)
+                              predicate:(_col3 > _col5)
+                              Map Join Operator [MAPJOIN_1738] (rows=118350 width=243)
+                                Conds:(Inner),Output:["_col0","_col1","_col2","_col3","_col4","_col5"]
+                              <-Reducer 46 [BROADCAST_EDGE] vectorized, llap
+                                BROADCAST [RS_1735]
+                                  Select Operator [SEL_1734] (rows=1 width=112)
+                                    Output:["_col0"]
+                                    Filter Operator [FIL_1733] (rows=1 width=120)
+                                      predicate:CAST( (_col0 / _col1) AS decimal(22,6)) is not null
+                                      Group By Operator [GBY_1732] (rows=1 width=120)
+                                        Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"]
+                                      <-Union 45 [CUSTOM_SIMPLE_EDGE]
+                                        <-Map 44 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1748]
+                                            Group By Operator [GBY_1747] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1746] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1745] (rows=49749852010 width=111)
+                                                  Conds:SEL_1744._col2=RS_1576._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 18 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1576]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1565]
+                                                <-Select Operator [SEL_1744] (rows=82510879939 width=121)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1439] (rows=82510879939 width=121)
+                                                      Output:["ss_quantity","ss_list_price"]
+                                        <-Map 47 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1753]
+                                            Group By Operator [GBY_1752] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1751] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1750] (rows=25746588712 width=115)
+                                                  Conds:SEL_1749._col2=RS_1649._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 32 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1649]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1644]
+                                                <-Select Operator [SEL_1749] (rows=43005109025 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1462] (rows=43005109025 width=123)
+                                                      Output:["cs_quantity","cs_list_price"]
+                                        <-Map 48 [CONTAINS] vectorized, llap
+                                          Reduce Output Operator [RS_1758]
+                                            Group By Operator [GBY_1757] (rows=1 width=120)
+                                              Output:["_col0","_col1"],aggregations:["sum(_col0)","count(_col0)"]
+                                              Select Operator [SEL_1756] (rows=88516906238 width=113)
+                                                Output:["_col0"]
+                                                Map Join Operator [MAPJOIN_1755] (rows=13020465516 width=115)
+                                                  Conds:SEL_1754._col2=RS_1668._col0(Inner),Output:["_col0","_col1"]
+                                                <-Map 34 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1668]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1663]
+                                                <-Select Operator [SEL_1754] (rows=21594638446 width=123)
+                                                    Output:["_col0","_col1","_col2"]
+                                                    TableScan [TS_1485] (rows=21594638446 width=123)
+                                                      Output:["ws_quantity","ws_list_price"]
+                              <-Filter Operator [FIL_1737] (rows=118350 width=131)
+                                  predicate:_col3 is not null
+                                  Group By Operator [GBY_1736] (rows=118350 width=131)
+                                    Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                  <-Map 42 [SIMPLE_EDGE] vectorized, llap
+                                    SHUFFLE [RS_1731]
+                                      PartitionCols:_col0, _col1, _col2
+                                      Group By Operator [GBY_1730] (rows=118350 width=131)
+                                        Output:["_col0","_col1","_col2","_col3","_col4"],aggregations:["sum(_col3)","count()"],keys:_col0, _col1, _col2
+                                        Select Operator [SEL_1729] (rows=378293 width=11)
+                                          Output:["_col0","_col1","_col2","_col3"]
+                                          Map Join Operator [MAPJOIN_1728] (rows=378293 width=11)
+                                            Conds:MAPJOIN_1727._col0=RS_1537._col0(Inner),Output:["_col1","_col2","_col13","_col14","_col15"]
+                                          <-Map 27 [BROADCAST_EDGE] vectorized, llap
+                                            BROADCAST [RS_1537]
+                                              PartitionCols:_col0
+                                               Please refer to the previous Select Operator [SEL_1534]
+                                          <-Map Join Operator [MAPJOIN_1727] (rows=378293 width=8)
+                                              Conds:MAPJOIN_1726._col6, _col7, _col8=RS_1723._col0, _col1, _col2(Inner),Output:["_col0","_col1","_col2"]
+                                            <-Reducer 17 [BROADCAST_EDGE] vectorized, llap
+                                              BROADCAST [RS_1723]
+                                                PartitionCols:_col0, _col1, _col2
+                                                Select Operator [SEL_1722] (rows=1 width=12)
+                                                  Output:["_col0","_col1","_col2"]
+                                                  Filter Operator [FIL_1721] (rows=1 width=20)
+                                                    predicate:(_col3 = 3L)
+                                                    Group By Operator [GBY_1720] (rows=153920 width=20)
+                                                      Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                    <-Union 16 [SIMPLE_EDGE]
+                                                      <-Reducer 15 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1605]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1604] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1603] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 8 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1596]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1593]
+                                                      <-Reducer 22 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1621]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1620] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1619] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 19 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1612]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1609]
+                                                      <-Reducer 26 [CONTAINS] vectorized, llap
+                                                        Reduce Output Operator [RS_1637]
+                                                          PartitionCols:_col0, _col1, _col2
+                                                          Group By Operator [GBY_1636] (rows=153920 width=20)
+                                                            Output:["_col0","_col1","_col2","_col3"],aggregations:["count(_col3)"],keys:_col0, _col1, _col2
+                                                            Group By Operator [GBY_1635] (rows=180081 width=20)
+                                                              Output:["_col0","_col1","_col2","_col3"],aggregations:["count(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
+                                                            <-Map 23 [SIMPLE_EDGE] vectorized, llap
+                                                              SHUFFLE [RS_1628]
+                                                                PartitionCols:_col0, _col1, _col2
+                                                                 Please refer to the previous Group By Operator [GBY_1625]
+                                            <-Map Join Operator [MAPJOIN_1726] (rows=363918657 width=135)
+                                                Conds:MAPJOIN_1725._col0=RS_1529._col0(Inner),Output:["_col0","_col1","_col2","_col6","_col7","_col8"]
+                                              <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                                BROADCAST [RS_1529]
+                                                  PartitionCols:_col0
+                                                   Please refer to the previous Select Operator [SEL_1523]
+                                              <-Map Join Operator [MAPJOIN_1725] (rows=366607110 width=123)
+                                                  Conds:SEL_1724._col3=RS_1514._col0(Inner),Output:["_col0","_col1","_col2"]
+                                                <-Map 6 [BROADCAST_EDGE] vectorized, llap
+                                                  BROADCAST [RS_1514]
+                                                    PartitionCols:_col0
+                                                     Please refer to the previous Select Operator [SEL_1509]
+                                                <-Select Operator [SEL_1724] (rows=21594638446 width=131)
+                                                    Output:["_col0","_col1","_col2","_col3"]
+                                                    TableScan [TS_285] (rows=21594638446 width=131)
+                                                      tpcds_bin_partitioned_orc_30000@web_sales,web_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ws_item_sk","ws_quantity","ws_list_price"]
+
