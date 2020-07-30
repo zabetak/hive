@@ -17,8 +17,6 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
-import org.apache.hadoop.hive.metastore.tools.schematool.MetastoreSchemaTool;
-
 /**
  * JUnit TestRule for Postgres metastore with TPCDS schema and stat information.
  */
