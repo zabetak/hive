@@ -25,7 +25,7 @@ import org.apache.hadoop.hive.metastore.tools.schematool.MetastoreSchemaTool;
 public class PostgresTPCDS extends Postgres {
   @Override
   public String getDockerImageName() {
-    return "postgres-tpcds-metastore:1.0";
+    return "zabetak/postgres-tpcds-metastore:1.0";
   }
 
   @Override public String getJdbcUrl() {
