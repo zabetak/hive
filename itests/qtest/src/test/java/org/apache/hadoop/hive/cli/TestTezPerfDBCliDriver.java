@@ -55,9 +55,6 @@ public class TestTezPerfDBCliDriver {
   @ClassRule
   public static TestRule cliClassRule = adapter.buildClassRule();
 
-  @Rule
-  public TestRule cliTestRule = adapter.buildTestRule();
-
   private String name;
   private File qfile;
 
