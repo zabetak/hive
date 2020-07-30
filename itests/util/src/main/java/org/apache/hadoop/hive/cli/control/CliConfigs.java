@@ -333,6 +333,7 @@ public class CliConfigs {
         setResultsDir("ql/src/test/results/clientpositive/perf/tez/jdbcstore");
         setHiveConfDir("data/conf/perf-reg/tez/jdbcstore");
         setClusterType(MiniClusterType.LLAP_LOCAL);
+        setMetastoreType("postgres.tpcds");
         // The metastore in this configuration can be used only for reading statistics.
         // We cannot exploit the information for running queries so it is impossible to
         // create views or perform other similar operations.
