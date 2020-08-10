@@ -1,4 +1,3 @@
---! qt:disabled:HIVE-23963
 set hive.mapred.mode=nonstrict;
 -- start query 1 in stream 0 using template query74.tpl and seed 1556717815
 explain cbo
