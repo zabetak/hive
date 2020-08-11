@@ -26,7 +26,7 @@ HiveProject(call_center=[$0], call_center_name=[$1], manager=[$2], returns_loss=
                       HiveFilter(condition=[AND(IN($2, _UTF-16LE'M', _UTF-16LE'W'), IN($3, _UTF-16LE'Unknown             ', _UTF-16LE'Advanced Degree     '), IN(ROW($2, $3), ROW(_UTF-16LE'M', _UTF-16LE'Unknown             '), ROW(_UTF-16LE'W', _UTF-16LE'Advanced Degree     ')))])
                         HiveTableScan(table=[[tpcds_bin_partitioned_orc_30000, customer_demographics]], table:alias=[customer_demographics])
                 HiveProject(hd_demo_sk=[$0])
-                  HiveFilter(condition=[LIKE($2, _UTF-16LE'0-500%')])
+                  HiveFilter(condition=[LIKE($2, _UTF-16LE'0-500%':VARCHAR(2147483647) CHARACTER SET "UTF-16LE")])
                     HiveTableScan(table=[[tpcds_bin_partitioned_orc_30000, household_demographics]], table:alias=[household_demographics])
           HiveProject(cc_call_center_sk=[$0], cc_call_center_id=[$1], cc_name=[$6], cc_manager=[$11])
             HiveTableScan(table=[[tpcds_bin_partitioned_orc_30000, call_center]], table:alias=[call_center])
