@@ -961,7 +961,7 @@ public class QTestUtil {
     String outFileName = outPath(outDir, tname + outFileExtension);
 
     File f = new File(logDir, tname + outFileExtension);
-    qOutProcessor.maskPatterns(f.getPath(), tname);
+//    qOutProcessor.maskPatterns(f.getPath(), tname);
 
     if (QTestSystemProperties.shouldOverwriteResults()) {
       qTestResultProcessor.overwriteResults(f.getPath(), outFileName);
