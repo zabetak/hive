@@ -46,7 +46,7 @@ Stage-0
                                 Filter Operator [FIL_137] (rows=1704 width=185)
                                   predicate:substr(s_zip, 1, 2) is not null
                                   TableScan [TS_42] (rows=1704 width=185)
-                                    tpcds_bin_partitioned_orc_30000@store,store, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["s_store_sk","s_store_name","s_zip"]
+                                    default@store,store, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["s_store_sk","s_store_name","s_zip"]
                           <-Select Operator [SEL_142] (rows=1 width=86)
                               Output:["_col0"]
                               Filter Operator [FIL_141] (rows=1 width=96)
@@ -87,7 +87,7 @@ Stage-0
                                                               Filter Operator [FIL_158] (rows=40000000 width=97)
                                                                 predicate:substr(substr(ca_zip, 1, 5), 1, 2) is not null
                                                                 TableScan [TS_6] (rows=40000000 width=89)
-                                                                  tpcds_bin_partitioned_orc_30000@customer_address,customer_address, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ca_zip","ca_address_sk"]
+                                                                  default@customer_address,customer_address, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ca_zip","ca_address_sk"]
                                                         <-Map 9 [CUSTOM_SIMPLE_EDGE] vectorized, llap
                                                           PARTITION_ONLY_SHUFFLE [RS_169]
                                                             PartitionCols:_col0
@@ -96,7 +96,7 @@ Stage-0
                                                               Filter Operator [FIL_167] (rows=26666667 width=93)
                                                                 predicate:((c_preferred_cust_flag = 'Y') and c_current_addr_sk is not null)
                                                                 TableScan [TS_17] (rows=80000000 width=93)
-                                                                  tpcds_bin_partitioned_orc_30000@customer,customer, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["c_current_addr_sk","c_preferred_cust_flag"]
+                                                                  default@customer,customer, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["c_current_addr_sk","c_preferred_cust_flag"]
                                   <-Reducer 6 [CONTAINS] vectorized, llap
                                     Reduce Output Operator [RS_166]
                                       PartitionCols:_col0
@@ -114,7 +114,7 @@ Stage-0
                               Filter Operator [FIL_131] (rows=92 width=16)
                                 predicate:((d_year = 2002) and (d_qoy = 1))
                                 TableScan [TS_3] (rows=73049 width=16)
-                                  tpcds_bin_partitioned_orc_30000@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_qoy"]
+                                  default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_qoy"]
                           Dynamic Partitioning Event Operator [EVENT_136] (rows=46 width=8)
                             Group By Operator [GBY_135] (rows=46 width=8)
                               Output:["_col0"],keys:_col0
@@ -126,5 +126,5 @@ Stage-0
                             Filter Operator [FIL_145] (rows=80569240632 width=125)
                               predicate:ss_store_sk is not null
                               TableScan [TS_0] (rows=82510879939 width=125)
-                                tpcds_bin_partitioned_orc_30000@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_store_sk","ss_net_profit"]
+                                default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_store_sk","ss_net_profit"]
 

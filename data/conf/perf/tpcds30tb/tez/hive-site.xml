@@ -70,10 +70,6 @@
         <value>10000</value>
     </property>
     <property>
-        <name>hive.current.database</name>
-        <value>tpcds_bin_partitioned_orc_30000</value>
-    </property>
-    <property>
         <name>hive.optimize.metadataonly</name>
         <value>true</value>
     </property>

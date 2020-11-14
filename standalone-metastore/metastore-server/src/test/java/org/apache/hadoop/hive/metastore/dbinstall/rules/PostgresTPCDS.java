@@ -23,7 +23,7 @@ package org.apache.hadoop.hive.metastore.dbinstall.rules;
 public class PostgresTPCDS extends Postgres {
   @Override
   public String getDockerImageName() {
-    return "zabetak/postgres-tpcds-metastore:1.0";
+    return "zabetak/postgres-tpcds-metastore:1.1";
   }
 
   @Override

@@ -46,7 +46,7 @@ Stage-0
                                   Select Operator [SEL_166] (rows=27 width=8)
                                     Output:["_col0"]
                                     TableScan [TS_5] (rows=27 width=8)
-                                      tpcds_bin_partitioned_orc_30000@warehouse,warehouse, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["w_warehouse_sk"]
+                                      default@warehouse,warehouse, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["w_warehouse_sk"]
                               <-Map Join Operator [MAPJOIN_182] (rows=27726856 width=16)
                                   Conds:SEL_181._col0=RS_165._col0(Inner),Output:["_col1","_col2","_col3"]
                                 <-Map 5 [BROADCAST_EDGE] vectorized, llap
@@ -57,13 +57,13 @@ Stage-0
                                       Filter Operator [FIL_161] (rows=31 width=16)
                                         predicate:((d_year = 1999) and (d_moy = 4))
                                         TableScan [TS_2] (rows=73049 width=16)
-                                          tpcds_bin_partitioned_orc_30000@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_moy"]
+                                          default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_moy"]
                                 <-Select Operator [SEL_181] (rows=1627857000 width=27)
                                     Output:["_col0","_col1","_col2","_col3"]
                                     Filter Operator [FIL_180] (rows=1627857000 width=27)
                                       predicate:(inv_warehouse_sk BETWEEN DynamicValue(RS_10_inventory_inv_warehouse_sk_min) AND DynamicValue(RS_10_inventory_inv_warehouse_sk_max) and in_bloom_filter(inv_warehouse_sk, DynamicValue(RS_10_inventory_inv_warehouse_sk_bloom_filter)))
                                       TableScan [TS_20] (rows=1627857000 width=27)
-                                        tpcds_bin_partitioned_orc_30000@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
+                                        default@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
                                       <-Reducer 2 [BROADCAST_EDGE] vectorized, llap
                                         BROADCAST [RS_179]
                                           Group By Operator [GBY_178] (rows=1 width=24)
@@ -87,7 +87,7 @@ Stage-0
                                                   <-Select Operator [SEL_169] (rows=1627857000 width=27)
                                                       Output:["_col0","_col1","_col2","_col3"]
                                                       TableScan [TS_0] (rows=1627857000 width=27)
-                                                        tpcds_bin_partitioned_orc_30000@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
+                                                        default@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
               <-Select Operator [SEL_193] (rows=3959 width=32)
                   Output:["_col0","_col1","_col2","_col3"]
                   Filter Operator [FIL_192] (rows=3959 width=48)

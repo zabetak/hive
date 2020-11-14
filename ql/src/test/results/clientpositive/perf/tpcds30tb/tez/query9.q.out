@@ -58,7 +58,7 @@ Stage-0
                         Filter Operator [FIL_212] (rows=16616325265 width=110)
                           predicate:ss_quantity BETWEEN 81 AND 100
                           TableScan [TS_66] (rows=86404891377 width=3)
-                            tpcds_bin_partitioned_orc_30000@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_quantity","ss_ext_list_price","ss_net_paid_inc_tax"]
+                            default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_quantity","ss_ext_list_price","ss_net_paid_inc_tax"]
           <-Map Join Operator [MAPJOIN_321] (rows=1 width=1028)
               Conds:(Left Outer),Output:["_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8","_col9","_col10","_col11","_col12","_col13","_col14"]
             <-Reducer 9 [BROADCAST_EDGE] vectorized, llap
@@ -296,5 +296,5 @@ Stage-0
                                           Filter Operator [FIL_306] (rows=1 width=8)
                                             predicate:(r_reason_sk = 1L)
                                             TableScan [TS_0] (rows=72 width=8)
-                                              tpcds_bin_partitioned_orc_30000@reason,reason, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["r_reason_sk"]
+                                              default@reason,reason, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["r_reason_sk"]
 
