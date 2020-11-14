@@ -1,111 +1,99 @@
 Plan optimized by CBO.
 
 Vertex dependency in root stage
-Map 1 <- Map 5 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE)
-Map 7 <- Map 5 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE), Reducer 2 (BROADCAST_EDGE)
-Reducer 2 <- Map 1 (CUSTOM_SIMPLE_EDGE)
-Reducer 3 <- Map 1 (SIMPLE_EDGE), Reducer 8 (BROADCAST_EDGE)
-Reducer 4 <- Reducer 3 (SIMPLE_EDGE)
-Reducer 8 <- Map 7 (SIMPLE_EDGE)
+Map 1 <- Map 5 (BROADCAST_EDGE), Map 6 (BROADCAST_EDGE), Map 7 (BROADCAST_EDGE), Map 8 (BROADCAST_EDGE)
+Reducer 2 <- Map 1 (SIMPLE_EDGE), Reducer 4 (BROADCAST_EDGE)
+Reducer 3 <- Reducer 2 (SIMPLE_EDGE)
+Reducer 4 <- Map 1 (SIMPLE_EDGE)
 
 Stage-0
   Fetch Operator
     limit:-1
     Stage-1
-      Reducer 4 vectorized, llap
-      File Output Operator [FS_198]
-        Select Operator [SEL_197] (rows=3959 width=72)
+      Reducer 3 vectorized, llap
+      File Output Operator [FS_192]
+        Select Operator [SEL_191] (rows=3959 width=72)
           Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8","_col9"]
-        <-Reducer 3 [SIMPLE_EDGE] vectorized, llap
-          SHUFFLE [RS_196]
-            Select Operator [SEL_195] (rows=3959 width=64)
+        <-Reducer 2 [SIMPLE_EDGE] vectorized, llap
+          SHUFFLE [RS_190]
+            Select Operator [SEL_189] (rows=3959 width=64)
               Output:["_col0","_col1","_col2","_col3","_col6","_col7"]
-              Map Join Operator [MAPJOIN_194] (rows=3959 width=48)
-                Conds:SEL_193._col0, _col1=RS_190._col0, _col1(Inner),Output:["_col0","_col1","_col2","_col3","_col6","_col7"]
-              <-Reducer 8 [BROADCAST_EDGE] vectorized, llap
-                BROADCAST [RS_190]
+              Map Join Operator [MAPJOIN_188] (rows=3959 width=48)
+                Conds:SEL_187._col0, _col1=RS_184._col0, _col1(Inner),Output:["_col0","_col1","_col2","_col3","_col6","_col7"]
+              <-Reducer 4 [BROADCAST_EDGE] vectorized, llap
+                BROADCAST [RS_184]
                   PartitionCols:_col0, _col1
-                  Select Operator [SEL_189] (rows=3959 width=32)
+                  Select Operator [SEL_183] (rows=3959 width=32)
                     Output:["_col0","_col1","_col2","_col3"]
-                    Filter Operator [FIL_188] (rows=3959 width=48)
+                    Filter Operator [FIL_182] (rows=3959 width=48)
                       predicate:CASE WHEN (((UDFToDouble(_col2) / _col3) = 0)) THEN (false) ELSE (((power(((_col4 - ((_col5 * _col5) / _col3)) / CASE WHEN ((_col3 = 1L)) THEN (null) ELSE ((_col3 - 1)) END), 0.5) / (UDFToDouble(_col2) / _col3)) > 1.0D)) END
-                      Group By Operator [GBY_187] (rows=7918 width=48)
+                      Group By Operator [GBY_181] (rows=7918 width=48)
                         Output:["_col0","_col1","_col2","_col3","_col4","_col5"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)","sum(VALUE._col2)","sum(VALUE._col3)"],keys:KEY._col0, KEY._col1
-                      <-Map 7 [SIMPLE_EDGE] vectorized, llap
-                        SHUFFLE [RS_186]
+                      <-Map 1 [SIMPLE_EDGE] vectorized, llap
+                        SHUFFLE [RS_180]
                           PartitionCols:_col0, _col1
-                          Group By Operator [GBY_185] (rows=15836 width=48)
+                          Group By Operator [GBY_178] (rows=15836 width=48)
                             Output:["_col0","_col1","_col2","_col3","_col4","_col5"],aggregations:["sum(_col3)","count(_col3)","sum(_col5)","sum(_col4)"],keys:_col1, _col2
-                            Select Operator [SEL_184] (rows=27726856 width=16)
+                            Select Operator [SEL_176] (rows=27726856 width=16)
                               Output:["_col1","_col2","_col3","_col4","_col5"]
-                              Map Join Operator [MAPJOIN_183] (rows=27726856 width=16)
-                                Conds:MAPJOIN_182._col1=RS_168._col0(Inner),Output:["_col2","_col3","_col5"]
-                              <-Map 6 [BROADCAST_EDGE] vectorized, llap
-                                BROADCAST [RS_168]
+                              Map Join Operator [MAPJOIN_174] (rows=27726856 width=16)
+                                Conds:MAPJOIN_172._col1=RS_169._col0(Inner),Output:["_col2","_col3","_col5"]
+                              <-Map 8 [BROADCAST_EDGE] vectorized, llap
+                                BROADCAST [RS_169]
                                   PartitionCols:_col0
-                                  Select Operator [SEL_166] (rows=27 width=8)
+                                  Select Operator [SEL_168] (rows=27 width=8)
                                     Output:["_col0"]
-                                    TableScan [TS_5] (rows=27 width=8)
+                                    TableScan [TS_25] (rows=27 width=8)
                                       default@warehouse,warehouse, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["w_warehouse_sk"]
-                              <-Map Join Operator [MAPJOIN_182] (rows=27726856 width=16)
-                                  Conds:SEL_181._col0=RS_165._col0(Inner),Output:["_col1","_col2","_col3"]
-                                <-Map 5 [BROADCAST_EDGE] vectorized, llap
-                                  BROADCAST [RS_165]
+                              <-Map Join Operator [MAPJOIN_172] (rows=27726856 width=16)
+                                  Conds:SEL_170._col0=RS_167._col0(Inner),Output:["_col1","_col2","_col3"]
+                                <-Map 7 [BROADCAST_EDGE] vectorized, llap
+                                  BROADCAST [RS_167]
                                     PartitionCols:_col0
-                                    Select Operator [SEL_163] (rows=31 width=8)
+                                    Select Operator [SEL_166] (rows=31 width=8)
                                       Output:["_col0"]
-                                      Filter Operator [FIL_161] (rows=31 width=16)
+                                      Filter Operator [FIL_165] (rows=31 width=16)
                                         predicate:((d_year = 1999) and (d_moy = 4))
-                                        TableScan [TS_2] (rows=73049 width=16)
+                                        TableScan [TS_22] (rows=73049 width=16)
                                           default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_moy"]
-                                <-Select Operator [SEL_181] (rows=1627857000 width=27)
+                                <-Select Operator [SEL_170] (rows=1627857000 width=27)
                                     Output:["_col0","_col1","_col2","_col3"]
-                                    Filter Operator [FIL_180] (rows=1627857000 width=27)
-                                      predicate:(inv_warehouse_sk BETWEEN DynamicValue(RS_10_inventory_inv_warehouse_sk_min) AND DynamicValue(RS_10_inventory_inv_warehouse_sk_max) and in_bloom_filter(inv_warehouse_sk, DynamicValue(RS_10_inventory_inv_warehouse_sk_bloom_filter)))
-                                      TableScan [TS_20] (rows=1627857000 width=27)
-                                        default@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
-                                      <-Reducer 2 [BROADCAST_EDGE] vectorized, llap
-                                        BROADCAST [RS_179]
-                                          Group By Operator [GBY_178] (rows=1 width=24)
-                                            Output:["_col0","_col1","_col2"],aggregations:["min(VALUE._col0)","max(VALUE._col1)","bloom_filter(VALUE._col2, expectedEntries=1000000)"]
-                                          <-Map 1 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                            SHUFFLE [RS_175]
-                                              Group By Operator [GBY_173] (rows=1 width=24)
-                                                Output:["_col0","_col1","_col2"],aggregations:["min(_col0)","max(_col0)","bloom_filter(_col0, expectedEntries=1000000)"]
-                                                Select Operator [SEL_171] (rows=27726856 width=16)
-                                                  Output:["_col0"]
-                                                  Map Join Operator [MAPJOIN_170] (rows=27726856 width=16)
-                                                    Conds:SEL_169._col0=RS_164._col0(Inner),Output:["_col1","_col2","_col3"]
-                                                  <-Map 5 [BROADCAST_EDGE] vectorized, llap
-                                                    BROADCAST [RS_164]
-                                                      PartitionCols:_col0
-                                                      Select Operator [SEL_162] (rows=31 width=8)
-                                                        Output:["_col0"]
-                                                        Filter Operator [FIL_160] (rows=31 width=16)
-                                                          predicate:((d_year = 1999) and (d_moy = 5))
-                                                           Please refer to the previous TableScan [TS_2]
-                                                  <-Select Operator [SEL_169] (rows=1627857000 width=27)
-                                                      Output:["_col0","_col1","_col2","_col3"]
-                                                      TableScan [TS_0] (rows=1627857000 width=27)
-                                                        default@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
-              <-Select Operator [SEL_193] (rows=3959 width=32)
+                                    TableScan [TS_0] (rows=1627857000 width=27)
+                                      default@inventory,inventory, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["inv_date_sk","inv_item_sk","inv_warehouse_sk","inv_quantity_on_hand"]
+                                    <-Map 5 [BROADCAST_EDGE] vectorized, llap
+                                      BROADCAST [RS_162]
+                                        PartitionCols:_col0
+                                        Select Operator [SEL_161] (rows=31 width=8)
+                                          Output:["_col0"]
+                                          Filter Operator [FIL_160] (rows=31 width=16)
+                                            predicate:((d_year = 1999) and (d_moy = 5))
+                                            TableScan [TS_2] (rows=73049 width=16)
+                                              default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year","d_moy"]
+                                    <-Map 6 [BROADCAST_EDGE] vectorized, llap
+                                      BROADCAST [RS_164]
+                                        PartitionCols:_col0
+                                        Select Operator [SEL_163] (rows=27 width=8)
+                                          Output:["_col0"]
+                                          TableScan [TS_5] (rows=27 width=8)
+                                            default@warehouse,warehouse, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["w_warehouse_sk"]
+              <-Select Operator [SEL_187] (rows=3959 width=32)
                   Output:["_col0","_col1","_col2","_col3"]
-                  Filter Operator [FIL_192] (rows=3959 width=48)
+                  Filter Operator [FIL_186] (rows=3959 width=48)
                     predicate:CASE WHEN (((UDFToDouble(_col2) / _col3) = 0)) THEN (false) ELSE (((power(((_col4 - ((_col5 * _col5) / _col3)) / CASE WHEN ((_col3 = 1L)) THEN (null) ELSE ((_col3 - 1)) END), 0.5) / (UDFToDouble(_col2) / _col3)) > 1.0D)) END
-                    Group By Operator [GBY_191] (rows=7918 width=48)
+                    Group By Operator [GBY_185] (rows=7918 width=48)
                       Output:["_col0","_col1","_col2","_col3","_col4","_col5"],aggregations:["sum(VALUE._col0)","count(VALUE._col1)","sum(VALUE._col2)","sum(VALUE._col3)"],keys:KEY._col0, KEY._col1
                     <-Map 1 [SIMPLE_EDGE] vectorized, llap
-                      SHUFFLE [RS_177]
+                      SHUFFLE [RS_179]
                         PartitionCols:_col0, _col1
-                        Group By Operator [GBY_176] (rows=15836 width=48)
+                        Group By Operator [GBY_177] (rows=15836 width=48)
                           Output:["_col0","_col1","_col2","_col3","_col4","_col5"],aggregations:["sum(_col3)","count(_col3)","sum(_col5)","sum(_col4)"],keys:_col1, _col2
-                          Select Operator [SEL_174] (rows=27726856 width=16)
+                          Select Operator [SEL_175] (rows=27726856 width=16)
                             Output:["_col1","_col2","_col3","_col4","_col5"]
-                            Map Join Operator [MAPJOIN_172] (rows=27726856 width=16)
-                              Conds:MAPJOIN_170._col1=RS_167._col0(Inner),Output:["_col2","_col3","_col5"]
-                            <-Map 6 [BROADCAST_EDGE] vectorized, llap
-                              BROADCAST [RS_167]
-                                PartitionCols:_col0
-                                 Please refer to the previous Select Operator [SEL_166]
-                               Please refer to the previous Map Join Operator [MAPJOIN_170]
+                            Map Join Operator [MAPJOIN_173] (rows=27726856 width=16)
+                              Conds:MAPJOIN_171._col1=RS_164._col0(Inner),Output:["_col2","_col3","_col5"]
+                            <- Please refer to the previous Map 6 [BROADCAST_EDGE]
+                            <-Map Join Operator [MAPJOIN_171] (rows=27726856 width=16)
+                                Conds:SEL_170._col0=RS_162._col0(Inner),Output:["_col1","_col2","_col3"]
+                              <- Please refer to the previous Map 5 [BROADCAST_EDGE]
+                                 Please refer to the previous Select Operator [SEL_170]
 

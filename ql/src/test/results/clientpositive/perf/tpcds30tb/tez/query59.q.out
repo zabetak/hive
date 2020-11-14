@@ -2,10 +2,9 @@ Plan optimized by CBO.
 
 Vertex dependency in root stage
 Map 1 <- Map 2 (BROADCAST_EDGE)
-Map 10 <- Map 12 (BROADCAST_EDGE)
-Map 12 <- Reducer 8 (BROADCAST_EDGE), Reducer 9 (BROADCAST_EDGE)
+Map 10 <- Map 6 (BROADCAST_EDGE)
 Map 3 <- Map 6 (BROADCAST_EDGE)
-Map 6 <- Reducer 8 (BROADCAST_EDGE)
+Map 6 <- Reducer 8 (BROADCAST_EDGE), Reducer 8 (BROADCAST_EDGE), Reducer 9 (BROADCAST_EDGE)
 Reducer 11 <- Map 10 (SIMPLE_EDGE), Map 7 (BROADCAST_EDGE)
 Reducer 4 <- Map 1 (BROADCAST_EDGE), Map 3 (SIMPLE_EDGE), Map 7 (BROADCAST_EDGE), Reducer 11 (BROADCAST_EDGE)
 Reducer 5 <- Reducer 4 (SIMPLE_EDGE)
@@ -54,30 +53,26 @@ Stage-0
                               Select Operator [SEL_219] (rows=80569240632 width=145)
                                 Output:["_col0","_col1","_col2","_col3","_col5","_col6","_col7","_col8"]
                                 Map Join Operator [MAPJOIN_218] (rows=80569240632 width=145)
-                                  Conds:SEL_217._col2=RS_212._col0(Inner),Output:["_col0","_col1","_col4","_col5","_col6","_col8","_col9","_col10","_col11"]
-                                <-Map 12 [BROADCAST_EDGE] vectorized, llap
-                                  BROADCAST [RS_212]
+                                  Conds:SEL_217._col2=RS_199._col0(Inner),Output:["_col0","_col1","_col4","_col5","_col6","_col8","_col9","_col10","_col11"]
+                                <-Map 6 [BROADCAST_EDGE] vectorized, llap
+                                  BROADCAST [RS_199]
                                     PartitionCols:_col0
-                                    Select Operator [SEL_211] (rows=73049 width=40)
+                                    Select Operator [SEL_196] (rows=73049 width=40)
                                       Output:["_col0","_col1","_col2","_col3","_col5","_col6","_col7","_col8"]
-                                      Filter Operator [FIL_210] (rows=73049 width=103)
+                                      Filter Operator [FIL_194] (rows=73049 width=103)
                                         predicate:(d_week_seq is not null and d_week_seq BETWEEN DynamicValue(RS_45_d_d_week_seq_min) AND DynamicValue(RS_45_d_d_week_seq_max) and (d_week_seq - 52) BETWEEN DynamicValue(RS_23_d_d_week_seq_min) AND DynamicValue(RS_23_d_d_week_seq_max) and in_bloom_filter(d_week_seq, DynamicValue(RS_45_d_d_week_seq_bloom_filter)) and in_bloom_filter((d_week_seq - 52), DynamicValue(RS_23_d_d_week_seq_bloom_filter)))
-                                        TableScan [TS_29] (rows=73049 width=103)
+                                        TableScan [TS_7] (rows=73049 width=103)
                                           default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_week_seq","d_day_name"]
                                         <-Reducer 8 [BROADCAST_EDGE] vectorized, llap
                                           BROADCAST [RS_190]
                                             Group By Operator [GBY_188] (rows=1 width=12)
                                               Output:["_col0","_col1","_col2"],aggregations:["min(VALUE._col0)","max(VALUE._col1)","bloom_filter(VALUE._col2, expectedEntries=1000000)"]
+                                        <-Reducer 8 [BROADCAST_EDGE] vectorized, llap
+                                           Please refer to the previous BROADCAST [RS_190]
                                         <-Reducer 9 [BROADCAST_EDGE] vectorized, llap
-                                          BROADCAST [RS_209]
-                                            Group By Operator [GBY_208] (rows=1 width=12)
+                                          BROADCAST [RS_192]
+                                            Group By Operator [GBY_191] (rows=1 width=12)
                                               Output:["_col0","_col1","_col2"],aggregations:["min(VALUE._col0)","max(VALUE._col1)","bloom_filter(VALUE._col2, expectedEntries=1000000)"]
-                                  Dynamic Partitioning Event Operator [EVENT_215] (rows=36524 width=8)
-                                    Group By Operator [GBY_214] (rows=36524 width=8)
-                                      Output:["_col0"],keys:_col0
-                                      Select Operator [SEL_213] (rows=73049 width=8)
-                                        Output:["_col0"]
-                                         Please refer to the previous Select Operator [SEL_211]
                                 <-Select Operator [SEL_217] (rows=80569240632 width=125)
                                     Output:["_col0","_col1","_col2"]
                                     Filter Operator [FIL_216] (rows=80569240632 width=125)
@@ -85,20 +80,20 @@ Stage-0
                                       TableScan [TS_26] (rows=82510879939 width=125)
                                         default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_store_sk","ss_sales_price"]
                   <-Map Join Operator [MAPJOIN_227] (rows=312689 width=984)
-                      Conds:RS_207._col0=MAPJOIN_226._col1(Inner),Output:["_col1","_col2","_col3","_col5","_col7","_col8","_col9","_col10","_col11","_col12","_col13"]
+                      Conds:RS_215._col0=MAPJOIN_226._col1(Inner),Output:["_col1","_col2","_col3","_col5","_col7","_col8","_col9","_col10","_col11","_col12","_col13"]
                     <-Map 1 [BROADCAST_EDGE] vectorized, llap
-                      BROADCAST [RS_207]
+                      BROADCAST [RS_215]
                         PartitionCols:_col0
-                        Map Join Operator [MAPJOIN_206] (rows=3303 width=204)
-                          Conds:SEL_205._col1=RS_204._col1(Inner),Output:["_col0","_col1","_col2","_col3"]
+                        Map Join Operator [MAPJOIN_214] (rows=3303 width=204)
+                          Conds:SEL_213._col1=RS_212._col1(Inner),Output:["_col0","_col1","_col2","_col3"]
                         <-Map 2 [BROADCAST_EDGE] vectorized, llap
-                          BROADCAST [RS_204]
+                          BROADCAST [RS_212]
                             PartitionCols:_col1
-                            Select Operator [SEL_203] (rows=1704 width=108)
+                            Select Operator [SEL_211] (rows=1704 width=108)
                               Output:["_col0","_col1"]
                               TableScan [TS_2] (rows=1704 width=108)
                                 default@store,store, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["s_store_sk","s_store_id"]
-                        <-Select Operator [SEL_205] (rows=1704 width=196)
+                        <-Select Operator [SEL_213] (rows=1704 width=196)
                             Output:["_col0","_col1","_col2"]
                             TableScan [TS_0] (rows=1704 width=196)
                               default@store,store, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["s_store_sk","s_store_id","s_store_name"]
@@ -115,35 +110,25 @@ Stage-0
                       <-Group By Operator [GBY_225] (rows=9839687 width=795)
                           Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8"],aggregations:["sum(VALUE._col0)","sum(VALUE._col1)","sum(VALUE._col2)","sum(VALUE._col3)","sum(VALUE._col4)","sum(VALUE._col5)","sum(VALUE._col6)"],keys:KEY._col0, KEY._col1
                         <-Map 3 [SIMPLE_EDGE] vectorized, llap
-                          SHUFFLE [RS_202]
+                          SHUFFLE [RS_210]
                             PartitionCols:_col0, _col1
-                            Group By Operator [GBY_201] (rows=80569240632 width=795)
+                            Group By Operator [GBY_209] (rows=80569240632 width=795)
                               Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8"],aggregations:["sum(_col2)","sum(_col3)","sum(_col4)","sum(_col5)","sum(_col6)","sum(_col7)","sum(_col8)"],keys:_col0, _col1
-                              Select Operator [SEL_200] (rows=80569240632 width=149)
+                              Select Operator [SEL_208] (rows=80569240632 width=149)
                                 Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8"]
-                                Map Join Operator [MAPJOIN_199] (rows=80569240632 width=149)
-                                  Conds:SEL_198._col2=RS_193._col0(Inner),Output:["_col0","_col1","_col4","_col5","_col6","_col7","_col8","_col9","_col10","_col11"]
+                                Map Join Operator [MAPJOIN_207] (rows=80569240632 width=149)
+                                  Conds:SEL_206._col2=RS_197._col0(Inner),Output:["_col0","_col1","_col4","_col5","_col6","_col7","_col8","_col9","_col10","_col11"]
                                 <-Map 6 [BROADCAST_EDGE] vectorized, llap
-                                  BROADCAST [RS_193]
+                                  BROADCAST [RS_197]
                                     PartitionCols:_col0
-                                    Select Operator [SEL_192] (rows=73049 width=40)
+                                    Select Operator [SEL_195] (rows=73049 width=40)
                                       Output:["_col0","_col1","_col2","_col3","_col4","_col5","_col6","_col7","_col8"]
-                                      Filter Operator [FIL_191] (rows=73049 width=103)
+                                      Filter Operator [FIL_193] (rows=73049 width=103)
                                         predicate:(d_week_seq is not null and d_week_seq BETWEEN DynamicValue(RS_23_d_d_week_seq_min) AND DynamicValue(RS_23_d_d_week_seq_max) and in_bloom_filter(d_week_seq, DynamicValue(RS_23_d_d_week_seq_bloom_filter)))
-                                        TableScan [TS_7] (rows=73049 width=103)
-                                          default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_week_seq","d_day_name"]
-                                        <-Reducer 8 [BROADCAST_EDGE] vectorized, llap
-                                          BROADCAST [RS_189]
-                                             Please refer to the previous Group By Operator [GBY_188]
-                                  Dynamic Partitioning Event Operator [EVENT_196] (rows=36524 width=8)
-                                    Group By Operator [GBY_195] (rows=36524 width=8)
-                                      Output:["_col0"],keys:_col0
-                                      Select Operator [SEL_194] (rows=73049 width=8)
-                                        Output:["_col0"]
-                                         Please refer to the previous Select Operator [SEL_192]
-                                <-Select Operator [SEL_198] (rows=80569240632 width=125)
+                                         Please refer to the previous TableScan [TS_7]
+                                <-Select Operator [SEL_206] (rows=80569240632 width=125)
                                     Output:["_col0","_col1","_col2"]
-                                    Filter Operator [FIL_197] (rows=80569240632 width=125)
+                                    Filter Operator [FIL_205] (rows=80569240632 width=125)
                                       predicate:ss_store_sk is not null
                                       TableScan [TS_4] (rows=82510879939 width=125)
                                         default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_store_sk","ss_sales_price"]

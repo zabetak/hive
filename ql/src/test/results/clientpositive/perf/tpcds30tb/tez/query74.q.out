@@ -23,180 +23,172 @@ Stage-0
     limit:100
     Stage-1
       Reducer 12 vectorized, llap
-      File Output Operator [FS_346]
-        Limit [LIM_345] (rows=100 width=280)
+      File Output Operator [FS_338]
+        Limit [LIM_337] (rows=100 width=280)
           Number of rows:100
-          Select Operator [SEL_344] (rows=40000000 width=280)
+          Select Operator [SEL_336] (rows=40000000 width=280)
             Output:["_col0","_col1","_col2"]
           <-Reducer 11 [SIMPLE_EDGE] vectorized, llap
-            SHUFFLE [RS_343]
-              Select Operator [SEL_342] (rows=40000000 width=280)
+            SHUFFLE [RS_335]
+              Select Operator [SEL_334] (rows=40000000 width=280)
                 Output:["_col0","_col1","_col2"]
-                Top N Key Operator [TNK_341] (rows=40000000 width=732)
+                Top N Key Operator [TNK_333] (rows=40000000 width=732)
                   keys:_col2, _col0, _col1,top n:100
-                  Filter Operator [FIL_340] (rows=40000000 width=732)
+                  Filter Operator [FIL_332] (rows=40000000 width=732)
                     predicate:CASE WHEN (_col5 is not null) THEN (CASE WHEN (_col10) THEN (((_col7 / _col9) > (_col3 / _col5))) ELSE (false) END) ELSE (false) END
-                    Map Join Operator [MAPJOIN_339] (rows=80000000 width=732)
-                      Conds:RS_327.KEY.reducesinkkey0=RS_338.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5","_col7","_col9","_col10"]
+                    Map Join Operator [MAPJOIN_331] (rows=80000000 width=732)
+                      Conds:RS_319.KEY.reducesinkkey0=RS_330.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5","_col7","_col9","_col10"]
                     <-Reducer 18 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                      PARTITION_ONLY_SHUFFLE [RS_338]
+                      PARTITION_ONLY_SHUFFLE [RS_330]
                         PartitionCols:_col0
-                        Select Operator [SEL_337] (rows=80000000 width=216)
+                        Select Operator [SEL_329] (rows=80000000 width=216)
                           Output:["_col0","_col1","_col2"]
-                          Filter Operator [FIL_336] (rows=80000000 width=212)
+                          Filter Operator [FIL_328] (rows=80000000 width=212)
                             predicate:(_col1 > 0)
-                            Group By Operator [GBY_335] (rows=80000000 width=212)
+                            Group By Operator [GBY_327] (rows=80000000 width=212)
                               Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)"],keys:KEY._col0
                             <-Reducer 17 [SIMPLE_EDGE] vectorized, llap
-                              SHUFFLE [RS_334]
+                              SHUFFLE [RS_326]
                                 PartitionCols:_col0
-                                Group By Operator [GBY_333] (rows=80000000 width=212)
+                                Group By Operator [GBY_325] (rows=80000000 width=212)
                                   Output:["_col0","_col1"],aggregations:["sum(_col1)"],keys:_col5
-                                  Map Join Operator [MAPJOIN_332] (rows=4339613664 width=211)
-                                    Conds:RS_331.KEY.reducesinkkey0=RS_299.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
+                                  Map Join Operator [MAPJOIN_324] (rows=4339613664 width=211)
+                                    Conds:RS_323.KEY.reducesinkkey0=RS_291.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
                                   <-Map 5 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                    PARTITION_ONLY_SHUFFLE [RS_299]
+                                    PARTITION_ONLY_SHUFFLE [RS_291]
                                       PartitionCols:_col0
-                                      Select Operator [SEL_295] (rows=80000000 width=108)
+                                      Select Operator [SEL_287] (rows=80000000 width=108)
                                         Output:["_col0","_col1"]
                                         TableScan [TS_6] (rows=80000000 width=288)
                                           default@customer,customer, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["c_customer_sk","c_customer_id","c_first_name","c_last_name"]
                                   <-Map 16 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                    PARTITION_ONLY_SHUFFLE [RS_331]
+                                    PARTITION_ONLY_SHUFFLE [RS_323]
                                       PartitionCols:_col0
-                                      Map Join Operator [MAPJOIN_330] (rows=4339613664 width=119)
-                                        Conds:SEL_329._col2=RS_280._col0(Inner),Output:["_col0","_col1"]
+                                      Map Join Operator [MAPJOIN_322] (rows=4339613664 width=119)
+                                        Conds:SEL_321._col2=RS_275._col0(Inner),Output:["_col0","_col1"]
                                       <-Map 4 [BROADCAST_EDGE] vectorized, llap
-                                        BROADCAST [RS_280]
+                                        BROADCAST [RS_275]
                                           PartitionCols:_col0
-                                          Select Operator [SEL_273] (rows=367 width=8)
+                                          Select Operator [SEL_269] (rows=367 width=8)
                                             Output:["_col0"]
-                                            Filter Operator [FIL_269] (rows=367 width=12)
-                                              predicate:((d_year = 1998) and (d_year) IN (1998, 1999))
+                                            Filter Operator [FIL_267] (rows=367 width=12)
+                                              predicate:(d_year = 1998)
                                               TableScan [TS_3] (rows=73049 width=12)
                                                 default@date_dim,date_dim, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["d_date_sk","d_year"]
-                                      <-Select Operator [SEL_329] (rows=21591944812 width=127)
+                                      <-Select Operator [SEL_321] (rows=21591944812 width=127)
                                           Output:["_col0","_col1","_col2"]
-                                          Filter Operator [FIL_328] (rows=21591944812 width=127)
+                                          Filter Operator [FIL_320] (rows=21591944812 width=127)
                                             predicate:ws_bill_customer_sk is not null
                                             TableScan [TS_58] (rows=21594638446 width=127)
                                               default@web_sales,web_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ws_bill_customer_sk","ws_net_paid"]
                     <-Reducer 10 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                      PARTITION_ONLY_SHUFFLE [RS_327]
+                      PARTITION_ONLY_SHUFFLE [RS_319]
                         PartitionCols:_col0
-                        Map Join Operator [MAPJOIN_326] (rows=80000000 width=616)
-                          Conds:RS_316.KEY.reducesinkkey0=RS_325.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5","_col7"]
+                        Map Join Operator [MAPJOIN_318] (rows=80000000 width=616)
+                          Conds:RS_308.KEY.reducesinkkey0=RS_317.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5","_col7"]
                         <-Reducer 15 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                          PARTITION_ONLY_SHUFFLE [RS_325]
+                          PARTITION_ONLY_SHUFFLE [RS_317]
                             PartitionCols:_col0
-                            Group By Operator [GBY_324] (rows=80000000 width=212)
+                            Group By Operator [GBY_316] (rows=80000000 width=212)
                               Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)"],keys:KEY._col0
                             <-Reducer 14 [SIMPLE_EDGE] vectorized, llap
-                              SHUFFLE [RS_323]
+                              SHUFFLE [RS_315]
                                 PartitionCols:_col0
-                                Group By Operator [GBY_322] (rows=80000000 width=212)
+                                Group By Operator [GBY_314] (rows=80000000 width=212)
                                   Output:["_col0","_col1"],aggregations:["sum(_col1)"],keys:_col5
-                                  Map Join Operator [MAPJOIN_321] (rows=4339613664 width=211)
-                                    Conds:RS_320.KEY.reducesinkkey0=RS_298.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
+                                  Map Join Operator [MAPJOIN_313] (rows=4339613664 width=211)
+                                    Conds:RS_312.KEY.reducesinkkey0=RS_290.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
                                   <-Map 5 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                    PARTITION_ONLY_SHUFFLE [RS_298]
+                                    PARTITION_ONLY_SHUFFLE [RS_290]
                                       PartitionCols:_col0
-                                       Please refer to the previous Select Operator [SEL_295]
+                                       Please refer to the previous Select Operator [SEL_287]
                                   <-Map 13 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                    PARTITION_ONLY_SHUFFLE [RS_320]
+                                    PARTITION_ONLY_SHUFFLE [RS_312]
                                       PartitionCols:_col0
-                                      Map Join Operator [MAPJOIN_319] (rows=4339613664 width=119)
-                                        Conds:SEL_318._col2=RS_278._col0(Inner),Output:["_col0","_col1"]
+                                      Map Join Operator [MAPJOIN_311] (rows=4339613664 width=119)
+                                        Conds:SEL_310._col2=RS_272._col0(Inner),Output:["_col0","_col1"]
                                       <-Map 4 [BROADCAST_EDGE] vectorized, llap
-                                        BROADCAST [RS_278]
+                                        BROADCAST [RS_272]
                                           PartitionCols:_col0
-                                          Select Operator [SEL_272] (rows=367 width=8)
+                                          Select Operator [SEL_268] (rows=367 width=8)
                                             Output:["_col0"]
-                                            Filter Operator [FIL_268] (rows=367 width=12)
-                                              predicate:((d_year = 1999) and (d_year) IN (1998, 1999))
+                                            Filter Operator [FIL_266] (rows=367 width=12)
+                                              predicate:(d_year = 1999)
                                                Please refer to the previous TableScan [TS_3]
-                                      <-Select Operator [SEL_318] (rows=21591944812 width=127)
+                                      <-Select Operator [SEL_310] (rows=21591944812 width=127)
                                           Output:["_col0","_col1","_col2"]
-                                          Filter Operator [FIL_317] (rows=21591944812 width=127)
+                                          Filter Operator [FIL_309] (rows=21591944812 width=127)
                                             predicate:ws_bill_customer_sk is not null
                                             TableScan [TS_39] (rows=21594638446 width=127)
                                               default@web_sales,web_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ws_bill_customer_sk","ws_net_paid"]
                         <-Reducer 9 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                          PARTITION_ONLY_SHUFFLE [RS_316]
+                          PARTITION_ONLY_SHUFFLE [RS_308]
                             PartitionCols:_col0
-                            Map Join Operator [MAPJOIN_315] (rows=80000000 width=504)
-                              Conds:RS_314.KEY.reducesinkkey0=RS_305.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5"]
+                            Map Join Operator [MAPJOIN_307] (rows=80000000 width=504)
+                              Conds:RS_306.KEY.reducesinkkey0=RS_297.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col0","_col1","_col2","_col3","_col5"]
                             <-Reducer 3 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                              PARTITION_ONLY_SHUFFLE [RS_314]
+                              PARTITION_ONLY_SHUFFLE [RS_306]
                                 PartitionCols:_col0
-                                Group By Operator [GBY_313] (rows=80000000 width=392)
+                                Group By Operator [GBY_305] (rows=80000000 width=392)
                                   Output:["_col0","_col1","_col2","_col3"],aggregations:["sum(VALUE._col0)"],keys:KEY._col0, KEY._col1, KEY._col2
                                 <-Reducer 2 [SIMPLE_EDGE] vectorized, llap
-                                  SHUFFLE [RS_312]
+                                  SHUFFLE [RS_304]
                                     PartitionCols:_col0, _col1, _col2
-                                    Group By Operator [GBY_311] (rows=80000000 width=392)
+                                    Group By Operator [GBY_303] (rows=80000000 width=392)
                                       Output:["_col0","_col1","_col2","_col3"],aggregations:["sum(_col1)"],keys:_col5, _col6, _col7
-                                      Map Join Operator [MAPJOIN_310] (rows=16192399916 width=378)
-                                        Conds:RS_309.KEY.reducesinkkey0=RS_296.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5","_col6","_col7"]
+                                      Map Join Operator [MAPJOIN_302] (rows=16192399916 width=378)
+                                        Conds:RS_301.KEY.reducesinkkey0=RS_288.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5","_col6","_col7"]
                                       <-Map 5 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                        PARTITION_ONLY_SHUFFLE [RS_296]
+                                        PARTITION_ONLY_SHUFFLE [RS_288]
                                           PartitionCols:_col0
-                                          Select Operator [SEL_294] (rows=80000000 width=288)
+                                          Select Operator [SEL_286] (rows=80000000 width=288)
                                             Output:["_col0","_col1","_col2","_col3"]
                                              Please refer to the previous TableScan [TS_6]
                                       <-Map 1 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                        PARTITION_ONLY_SHUFFLE [RS_309]
+                                        PARTITION_ONLY_SHUFFLE [RS_301]
                                           PartitionCols:_col0
-                                          Map Join Operator [MAPJOIN_308] (rows=16192399916 width=105)
-                                            Conds:SEL_307._col2=RS_274._col0(Inner),Output:["_col0","_col1"]
+                                          Map Join Operator [MAPJOIN_300] (rows=16192399916 width=105)
+                                            Conds:SEL_299._col2=RS_270._col0(Inner),Output:["_col0","_col1"]
                                           <-Map 4 [BROADCAST_EDGE] vectorized, llap
-                                            BROADCAST [RS_274]
+                                            BROADCAST [RS_270]
                                               PartitionCols:_col0
-                                              Select Operator [SEL_270] (rows=367 width=8)
-                                                Output:["_col0"]
-                                                Filter Operator [FIL_266] (rows=367 width=12)
-                                                  predicate:((d_year = 1999) and (d_year) IN (1998, 1999))
-                                                   Please refer to the previous TableScan [TS_3]
-                                          <-Select Operator [SEL_307] (rows=80566020964 width=125)
+                                               Please refer to the previous Select Operator [SEL_268]
+                                          <-Select Operator [SEL_299] (rows=80566020964 width=125)
                                               Output:["_col0","_col1","_col2"]
-                                              Filter Operator [FIL_306] (rows=80566020964 width=125)
+                                              Filter Operator [FIL_298] (rows=80566020964 width=125)
                                                 predicate:ss_customer_sk is not null
                                                 TableScan [TS_0] (rows=82510879939 width=125)
                                                   default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_customer_sk","ss_net_paid"]
                             <-Reducer 8 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                              PARTITION_ONLY_SHUFFLE [RS_305]
+                              PARTITION_ONLY_SHUFFLE [RS_297]
                                 PartitionCols:_col0
-                                Filter Operator [FIL_304] (rows=80000000 width=212)
+                                Filter Operator [FIL_296] (rows=80000000 width=212)
                                   predicate:(_col1 > 0)
-                                  Group By Operator [GBY_303] (rows=80000000 width=212)
+                                  Group By Operator [GBY_295] (rows=80000000 width=212)
                                     Output:["_col0","_col1"],aggregations:["sum(VALUE._col0)"],keys:KEY._col0
                                   <-Reducer 7 [SIMPLE_EDGE] vectorized, llap
-                                    SHUFFLE [RS_302]
+                                    SHUFFLE [RS_294]
                                       PartitionCols:_col0
-                                      Group By Operator [GBY_301] (rows=80000000 width=212)
+                                      Group By Operator [GBY_293] (rows=80000000 width=212)
                                         Output:["_col0","_col1"],aggregations:["sum(_col1)"],keys:_col5
-                                        Map Join Operator [MAPJOIN_300] (rows=16192399916 width=198)
-                                          Conds:RS_293.KEY.reducesinkkey0=RS_297.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
+                                        Map Join Operator [MAPJOIN_292] (rows=16192399916 width=198)
+                                          Conds:RS_285.KEY.reducesinkkey0=RS_289.KEY.reducesinkkey0(Inner),DynamicPartitionHashJoin:true,Output:["_col1","_col5"]
                                         <-Map 5 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                          PARTITION_ONLY_SHUFFLE [RS_297]
+                                          PARTITION_ONLY_SHUFFLE [RS_289]
                                             PartitionCols:_col0
-                                             Please refer to the previous Select Operator [SEL_295]
+                                             Please refer to the previous Select Operator [SEL_287]
                                         <-Map 6 [CUSTOM_SIMPLE_EDGE] vectorized, llap
-                                          PARTITION_ONLY_SHUFFLE [RS_293]
+                                          PARTITION_ONLY_SHUFFLE [RS_285]
                                             PartitionCols:_col0
-                                            Map Join Operator [MAPJOIN_292] (rows=16192399916 width=105)
-                                              Conds:SEL_291._col2=RS_276._col0(Inner),Output:["_col0","_col1"]
+                                            Map Join Operator [MAPJOIN_284] (rows=16192399916 width=105)
+                                              Conds:SEL_283._col2=RS_273._col0(Inner),Output:["_col0","_col1"]
                                             <-Map 4 [BROADCAST_EDGE] vectorized, llap
-                                              BROADCAST [RS_276]
+                                              BROADCAST [RS_273]
                                                 PartitionCols:_col0
-                                                Select Operator [SEL_271] (rows=367 width=8)
-                                                  Output:["_col0"]
-                                                  Filter Operator [FIL_267] (rows=367 width=12)
-                                                    predicate:((d_year = 1998) and (d_year) IN (1998, 1999))
-                                                     Please refer to the previous TableScan [TS_3]
-                                            <-Select Operator [SEL_291] (rows=80566020964 width=125)
+                                                 Please refer to the previous Select Operator [SEL_269]
+                                            <-Select Operator [SEL_283] (rows=80566020964 width=125)
                                                 Output:["_col0","_col1","_col2"]
-                                                Filter Operator [FIL_290] (rows=80566020964 width=125)
+                                                Filter Operator [FIL_282] (rows=80566020964 width=125)
                                                   predicate:ss_customer_sk is not null
                                                   TableScan [TS_19] (rows=82510879939 width=125)
                                                     default@store_sales,store_sales, ACID table,Tbl:COMPLETE,Col:COMPLETE,Output:["ss_customer_sk","ss_net_paid"]

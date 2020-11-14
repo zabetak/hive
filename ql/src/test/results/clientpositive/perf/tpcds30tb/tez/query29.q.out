@@ -90,7 +90,7 @@ STAGE PLANS:
             Map Operator Tree:
                 TableScan
                   alias: d3
-                  filterExpr: ((d_year) IN (1999, 2000, 2001) or (((d_year = 1999) and (d_moy = 4)) or ((d_year = 1999) and d_moy BETWEEN 4 AND 7))) (type: boolean)
+                  filterExpr: ((d_year) IN (1999, 2000, 2001) or ((d_year = 1999) and (d_moy = 4)) or ((d_year = 1999) and d_moy BETWEEN 4 AND 7)) (type: boolean)
                   Statistics: Num rows: 73049 Data size: 876588 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: (d_year) IN (1999, 2000, 2001) (type: boolean)
