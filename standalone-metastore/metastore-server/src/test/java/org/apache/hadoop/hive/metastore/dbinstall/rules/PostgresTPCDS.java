@@ -17,6 +17,13 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
+
 /**
  * JUnit TestRule for Postgres metastore with TPCDS schema and stat information.
  */
@@ -45,6 +52,22 @@ public class PostgresTPCDS extends Postgres {
   public void install() {
     // Do not do anything since the postgres container contains a fully initialized
     // metastore
+  }
+
+  @Override
+  public boolean isContainerReady(String logOutput) {
+    SocketAddress socketAddress = new InetSocketAddress("localhost", 5432);
+    Socket socket = new Socket();
+
+    try {
+      socket.connect(socketAddress, 1000);
+      socket.close();
+      return logOutput.contains("PostgreSQL init process complete; ready for start up");
+    } catch (SocketTimeoutException exception) {
+      return false;
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
+    }
   }
 }
 
