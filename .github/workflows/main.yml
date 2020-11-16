@@ -35,4 +35,4 @@ jobs:
         run: |
            mvn clean install -DskipTests
            cd itests && mvn clean install -DskipTests
-           cd itests/qtest && mvn test -Dtest=TestTezTPCDS30TBPerfCliDriver
+           cd qtest && mvn test -Dtest=TestTezTPCDS30TBPerfCliDriver
