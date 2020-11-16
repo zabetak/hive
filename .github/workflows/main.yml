@@ -36,3 +36,7 @@ jobs:
            mvn clean install -DskipTests
            cd itests && mvn clean install -DskipTests
            cd qtest && mvn test -Dtest=TestTezTPCDS30TBPerfCliDriver
+      - name: 'Print log to console'
+        run: |
+           cat target/tmp/log/hive.log
+       
