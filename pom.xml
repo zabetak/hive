@@ -1344,7 +1344,7 @@
             <exclude>${test.excludes.additional}</exclude>
             <exclude>${skip.spark.files}</exclude>
           </excludes>
-          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <reuseForks>false</reuseForks>
           <failIfNoTests>false</failIfNoTests>
           <argLine>${maven.test.jvm.args}</argLine>
