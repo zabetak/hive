@@ -1,0 +1,141 @@
+PREHOOK: query: create table t11_n1 (c1 string, c2 string)
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@t11_n1
+POSTHOOK: query: create table t11_n1 (c1 string, c2 string)
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@t11_n1
+PREHOOK: query: create table t_map (id int, c1 map<int,int>, c2 map<int,int>)
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@t_map
+POSTHOOK: query: create table t_map (id int, c1 map<int,int>, c2 map<int,int>)
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@t_map
+PREHOOK: query: insert into t_map VALUES (1, map(1,1), map(2,1))
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@t_map
+POSTHOOK: query: insert into t_map VALUES (1, map(1,1), map(2,1))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@t_map
+POSTHOOK: Lineage: t_map.c1 SCRIPT []
+POSTHOOK: Lineage: t_map.c2 SCRIPT []
+POSTHOOK: Lineage: t_map.id SCRIPT []
+PREHOOK: query: insert into t_map VALUES (2, map(1,2), map(2,2))
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@t_map
+POSTHOOK: query: insert into t_map VALUES (2, map(1,2), map(2,2))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@t_map
+POSTHOOK: Lineage: t_map.c1 SCRIPT []
+POSTHOOK: Lineage: t_map.c2 SCRIPT []
+POSTHOOK: Lineage: t_map.id SCRIPT []
+PREHOOK: query: insert into t_map VALUES (3, map(1,3), map(2,3))
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@t_map
+POSTHOOK: query: insert into t_map VALUES (3, map(1,3), map(2,3))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@t_map
+POSTHOOK: Lineage: t_map.c1 SCRIPT []
+POSTHOOK: Lineage: t_map.c2 SCRIPT []
+POSTHOOK: Lineage: t_map.id SCRIPT []
+PREHOOK: query: insert into t_map VALUES (4, map(1,4), map(1,4))
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@t_map
+POSTHOOK: query: insert into t_map VALUES (4, map(1,4), map(1,4))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@t_map
+POSTHOOK: Lineage: t_map.c1 SCRIPT []
+POSTHOOK: Lineage: t_map.c2 SCRIPT []
+POSTHOOK: Lineage: t_map.id SCRIPT []
+PREHOOK: query: select id from t_map where c1 IN (c1)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (c1)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+2
+3
+4
+PREHOOK: query: select id from t_map where c1 IN (c2)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (c2)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+4
+PREHOOK: query: select id from t_map where c1 IN (map(1,1))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (map(1,1))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+PREHOOK: query: select id from t_map where map(1,1) IN (c1)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where map(1,1) IN (c1)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+PREHOOK: query: select id from t_map where c1 IN (map(1,1), map(1,2))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (map(1,1), map(1,2))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+2
+PREHOOK: query: select id from t_map where c1 IN (map(1,1), map(1,2), map(1,3))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (map(1,1), map(1,2), map(1,3))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+2
+3
+PREHOOK: query: select id from t_map where c1 IN (c2, map(1,1), map(1,2), map(1,3))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where c1 IN (c2, map(1,1), map(1,2), map(1,3))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1
+2
+3
+4
+PREHOOK: query: select id from t_map where map(1,1) IN (c1, c2)
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t_map
+#### A masked pattern was here ####
+POSTHOOK: query: select id from t_map where map(1,1) IN (c1, c2)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t_map
+#### A masked pattern was here ####
+1

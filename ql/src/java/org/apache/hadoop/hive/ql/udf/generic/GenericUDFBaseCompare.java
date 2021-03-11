@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFUtils.ReturnObjectInspectorResolver;
+import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters;
@@ -84,12 +85,14 @@ public abstract class GenericUDFBaseCompare extends GenericUDFBaseBinary {
 
     for (int i = 0; i < arguments.length; i++) {
       Category category = arguments[i].getCategory();
-      if (category != Category.PRIMITIVE) {
-        throw new UDFArgumentTypeException(i, "The "
-            + GenericUDFUtils.getOrdinal(i + 1)
-            + " argument of " + opName + "  is expected to a "
-            + Category.PRIMITIVE.toString().toLowerCase() + " type, but "
-            + category.toString().toLowerCase() + " is found");
+      switch (category) {
+      case PRIMITIVE:
+      case MAP:
+        break;
+      default:
+        throw new UDFArgumentTypeException(i,
+            "Unsupported type " + category.toString().toLowerCase() + " for argument " + GenericUDFUtils
+                .getOrdinal(i + 1) + " of " + opName);
       }
     }
 
@@ -132,7 +135,16 @@ public abstract class GenericUDFBaseCompare extends GenericUDFBaseBinary {
       compareType = CompareType.COMPARE_BOOL;
       boi0 = (BooleanObjectInspector) arguments[0];
       boi1 = (BooleanObjectInspector) arguments[1];
-     } else {
+    } else if (TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[0]).getCategory().equals(Category.MAP)
+        && TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[1]).getCategory().equals(Category.MAP)) {
+      TypeInfo oiTypeInfo0 = TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[0]);
+      TypeInfo oiTypeInfo1 = TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[1]);
+      if(oiTypeInfo0.equals(oiTypeInfo1)) {
+        compareType = CompareType.SAME_TYPE;
+      } else {
+        throw new UDFArgumentException("Incompatible types");
+      }
+    } else {
       TypeInfo oiTypeInfo0 = TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[0]);
       TypeInfo oiTypeInfo1 = TypeInfoUtils.getTypeInfoFromObjectInspector(arguments[1]);
 

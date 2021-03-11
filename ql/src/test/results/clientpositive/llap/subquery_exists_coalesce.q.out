@@ -1,0 +1,90 @@
+PREHOOK: query: create table person (
+    id int,
+    name varchar(20)
+)
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@person
+POSTHOOK: query: create table person (
+    id int,
+    name varchar(20)
+)
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@person
+PREHOOK: query: insert into person values (1, 'Stam')
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@person
+POSTHOOK: query: insert into person values (1, 'Stam')
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@person
+POSTHOOK: Lineage: person.id SCRIPT []
+POSTHOOK: Lineage: person.name SCRIPT []
+PREHOOK: query: insert into person values (2, null)
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@person
+POSTHOOK: query: insert into person values (2, null)
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@person
+POSTHOOK: Lineage: person.id SCRIPT []
+POSTHOOK: Lineage: person.name EXPRESSION []
+PREHOOK: query: explain
+cbo
+select p1.id
+from person p1 
+where exists 
+  (select id 
+  from person p2 
+  where coalesce(p1.name,'MARKER') = coalesce(p2.name,'MARKER'))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@person
+#### A masked pattern was here ####
+POSTHOOK: query: explain
+cbo
+select p1.id
+from person p1 
+where exists 
+  (select id 
+  from person p2 
+  where coalesce(p1.name,'MARKER') = coalesce(p2.name,'MARKER'))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@person
+#### A masked pattern was here ####
+CBO PLAN:
+HiveProject(id=[$0])
+  HiveSemiJoin(condition=[=($2, $1)], joinType=[semi])
+    HiveProject(id=[$0], name=[$1])
+      HiveFilter(condition=[IS NOT NULL($1)])
+        HiveTableScan(table=[[default, person]], table:alias=[p1])
+    HiveProject(name0=[$1])
+      HiveJoin(condition=[=($2, $0)], joinType=[inner], algorithm=[none], cost=[not available])
+        HiveProject(CASE=[CASE(IS NOT NULL($1), $1, _UTF-16LE'MARKER':VARCHAR(2147483647) CHARACTER SET "UTF-16LE")])
+          HiveTableScan(table=[[default, person]], table:alias=[p2])
+        HiveProject(name=[$0], CASE=[CASE(IS NOT NULL($0), $0, _UTF-16LE'MARKER':VARCHAR(2147483647) CHARACTER SET "UTF-16LE")])
+          HiveAggregate(group=[{1}])
+            HiveFilter(condition=[IS NOT NULL($1)])
+              HiveTableScan(table=[[default, person]], table:alias=[p1])
+
+PREHOOK: query: select p1.id
+from person p1
+where exists
+          (select id
+           from person p2
+           where coalesce(p1.name,'MARKER') = coalesce(p2.name,'MARKER'))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@person
+#### A masked pattern was here ####
+POSTHOOK: query: select p1.id
+from person p1
+where exists
+          (select id
+           from person p2
+           where coalesce(p1.name,'MARKER') = coalesce(p2.name,'MARKER'))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@person
+#### A masked pattern was here ####
+1

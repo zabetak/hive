@@ -1,0 +1,26 @@
+PREHOOK: query: create table test (m map<string,string>)
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@test
+POSTHOOK: query: create table test (m map<string,string>)
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@test
+PREHOOK: query: insert into table test values (map("a","b"))
+PREHOOK: type: QUERY
+PREHOOK: Input: _dummy_database@_dummy_table
+PREHOOK: Output: default@test
+POSTHOOK: query: insert into table test values (map("a","b"))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: _dummy_database@_dummy_table
+POSTHOOK: Output: default@test
+POSTHOOK: Lineage: test.m SCRIPT []
+PREHOOK: query: select * from test where m in (map("a","b"))
+PREHOOK: type: QUERY
+PREHOOK: Input: default@test
+#### A masked pattern was here ####
+POSTHOOK: query: select * from test where m in (map("a","b"))
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@test
+#### A masked pattern was here ####
+{"a":"b"}
