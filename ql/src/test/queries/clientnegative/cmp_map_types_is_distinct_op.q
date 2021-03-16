@@ -1,0 +1,1 @@
+select map(1,1) IS DISTINCT FROM map('A',1);

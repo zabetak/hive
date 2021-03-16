@@ -1,0 +1,1 @@
+select map(1,1) = map('A',2);

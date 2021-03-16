@@ -1,0 +1,1 @@
+select map(1,1) IN (map('A',2),map('B',3),map('C',4));
