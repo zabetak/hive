@@ -1,1 +1,0 @@
-FAILED: SemanticException [Error 10014]: Line 1:7 Wrong arguments '1': Type mismatch in EQUALNS(map<int,int>,map<string,int>)
