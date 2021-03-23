@@ -95,7 +95,9 @@ public abstract class GenericUDFBaseCompare extends GenericUDFBaseBinary {
       initForPrimitives(arguments[0], arguments[1]);
       break;
     case MAP:
-      initForMaps(arguments[0], arguments[1]);
+    case STRUCT:
+    case LIST:
+      initForNonPrimitives(arguments[0], arguments[1]);
       break;
     default:
       throw new AssertionError("Missing init method for " + c1 + " types");
@@ -160,9 +162,10 @@ public abstract class GenericUDFBaseCompare extends GenericUDFBaseBinary {
     }
   }
 
-  private void initForMaps(ObjectInspector arg0, ObjectInspector arg1) throws UDFArgumentException {
-    assert arg0.getCategory() == Category.MAP;
-    assert arg1.getCategory() == Category.MAP;
+  private void initForNonPrimitives(ObjectInspector arg0, ObjectInspector arg1) throws UDFArgumentException {
+    assert arg0.getCategory() != Category.PRIMITIVE;
+    assert arg1.getCategory() != Category.PRIMITIVE;
+    assert arg0.getCategory() == arg1.getCategory();
     final TypeInfo type0 = TypeInfoUtils.getTypeInfoFromObjectInspector(arg0);
     final TypeInfo type1 = TypeInfoUtils.getTypeInfoFromObjectInspector(arg1);
     if (type0.equals(type1)) {
