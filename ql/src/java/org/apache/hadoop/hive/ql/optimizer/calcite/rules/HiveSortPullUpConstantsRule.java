@@ -34,6 +34,7 @@ import org.apache.calcite.rel.RelFieldCollation;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.SingleRel;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
+import org.apache.calcite.rel.rules.ReduceExpressionsRule;
 import org.apache.calcite.rel.type.RelDataTypeField;
 import org.apache.calcite.rex.RexBuilder;
 import org.apache.calcite.rex.RexLiteral;
@@ -125,8 +126,8 @@ public final class HiveSortPullUpConstantsRule {
         return;
       }
 
-      Map<RexNode, RexNode> conditionsExtracted = HiveReduceExpressionsRule.predicateConstants(
-          RexNode.class, rexBuilder, predicates);
+      Map<RexNode, RexNode> conditionsExtracted =
+          ReduceExpressionsRule.predicateConstants(RexNode.class, rexBuilder, predicates);
       Map<RexNode, RexNode> constants = new HashMap<>();
       for (int i = 0; i < count; i++) {
         RexNode expr = rexBuilder.makeInputRef(sortNode.getInput(), i);

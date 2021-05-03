@@ -59,7 +59,9 @@ import org.apache.calcite.plan.RelOptCost;
 import org.apache.calcite.plan.RelOptMaterialization;
 import org.apache.calcite.plan.RelOptPlanner;
 import org.apache.calcite.plan.RelOptRule;
+import org.apache.calcite.plan.RelOptRuleCall;
 import org.apache.calcite.plan.RelOptSchema;
+import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.plan.hep.HepMatchOrder;
@@ -76,6 +78,7 @@ import org.apache.calcite.rel.RelCollations;
 import org.apache.calcite.rel.RelDistribution;
 import org.apache.calcite.rel.RelDistributions;
 import org.apache.calcite.rel.RelFieldCollation;
+import org.apache.calcite.rel.RelHomogeneousShuttle;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.RelVisitor;
 import org.apache.calcite.rel.convert.ConverterImpl;
@@ -86,6 +89,7 @@ import org.apache.calcite.rel.core.Filter;
 import org.apache.calcite.rel.core.JoinRelType;
 import org.apache.calcite.rel.core.SetOp;
 import org.apache.calcite.rel.core.TableScan;
+import org.apache.calcite.rel.logical.LogicalValues;
 import org.apache.calcite.rel.metadata.CachingRelMetadataProvider;
 import org.apache.calcite.rel.metadata.ChainedRelMetadataProvider;
 import org.apache.calcite.rel.metadata.JaninoRelMetadataProvider;
@@ -122,6 +126,7 @@ import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlOperator;
 import org.apache.calcite.sql.SqlWindow;
 import org.apache.calcite.sql.dialect.HiveSqlDialect;
+import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.sql.validate.SqlValidatorUtil;
@@ -164,6 +169,7 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.HiveCalciteUtil;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveConfPlannerContext;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveDefaultRelMetadataProvider;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveTezModelRelMetadataProvider;
+import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveFilterReduceExpressionsRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveJoinSwapConstraintsRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveSemiJoinProjectTransposeRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.views.ColumnPropagationException;
@@ -240,7 +246,6 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveProjectMergeRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveProjectOverIntersectRemoveRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveProjectSortExchangeTransposeRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveProjectSortTransposeRule;
-import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveReduceExpressionsRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveReduceExpressionsWithStatsRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRelDecorrelator;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRelFieldTrimmer;
@@ -307,6 +312,7 @@ import org.apache.hadoop.hive.ql.plan.SelectDesc;
 import org.apache.hadoop.hive.ql.plan.mapper.EmptyStatsSource;
 import org.apache.hadoop.hive.ql.plan.mapper.StatsSource;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFArray;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDTF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDTFInline;
@@ -349,6 +355,9 @@ import java.util.stream.IntStream;
 import javax.sql.DataSource;
 
 import static java.util.Collections.singletonList;
+import static org.apache.calcite.rel.rules.ReduceExpressionsRule.FilterReduceExpressionsRule;
+import static org.apache.calcite.rel.rules.ReduceExpressionsRule.JoinReduceExpressionsRule;
+import static org.apache.calcite.rel.rules.ReduceExpressionsRule.ProjectReduceExpressionsRule;
 import static org.apache.hadoop.hive.ql.optimizer.calcite.rules.views.HiveMaterializedViewUtils.extractTable;
 
 
@@ -434,6 +443,20 @@ public class CalcitePlanner extends SemanticAnalyzer {
           JdbcSort.class,
           JdbcUnion.class);
 
+  /**
+   * Rules applying simplifying transformations on RexNode trees matching and creating Hive operators.
+   */
+  private static final List<RelOptRule> REDUCE_EXPRESSION_RULES = ImmutableList.of( 
+//      new FilterReduceExpressionsRule(HiveFilter.class, true, HiveRelFactories.HIVE_BUILDER) {
+//        @Override
+//        protected RelNode createEmptyRelOrEquivalent(RelOptRuleCall call, Filter input) {
+//          return call.builder().push(input.getInput()).empty().build();
+//        }
+//      },
+      new HiveFilterReduceExpressionsRule(HiveFilter.class, HiveRelFactories.HIVE_BUILDER),
+      new ProjectReduceExpressionsRule(HiveProject.class, true, HiveRelFactories.HIVE_BUILDER),
+      new JoinReduceExpressionsRule(HiveJoin.class, false, HiveRelFactories.HIVE_BUILDER),
+      new JoinReduceExpressionsRule(HiveSemiJoin.class, false, HiveRelFactories.HIVE_BUILDER));
 
   public CalcitePlanner(QueryState queryState) throws SemanticException {
     super(queryState);
@@ -2107,7 +2130,54 @@ public class CalcitePlanner extends SemanticAnalyzer {
         LOG.debug("Plan After Join Reordering:\n"
             + RelOptUtil.toString(calciteOptimizedPlan, SqlExplainLevel.ALL_ATTRIBUTES));
       }
-      return calciteOptimizedPlan;
+      return calciteOptimizedPlan.accept(new RelHomogeneousShuttle(){
+        @Override
+        public RelNode visit(LogicalValues values) {
+          if(values.tuples.isEmpty()){
+            String tblName = SemanticAnalyzer.DUMMY_TABLE;
+            List<ColumnInfo> columnInfos = new ArrayList<>();
+            List<RexNode> inputRefs = new ArrayList<>();
+            for(RelDataTypeField f:values.getRowType().getFieldList()){
+              final ColumnInfo ci = new ColumnInfo(f.getName(), TypeConverter.convert(f.getType()), tblName, false);
+              columnInfos.add(ci);
+              inputRefs.add(new RexInputRef(f.getIndex(), f.getType()));
+            }
+
+            Table metadata = new Table(SemanticAnalyzer.DUMMY_DATABASE, tblName);
+            RelOptHiveTable optTable = new RelOptHiveTable(relOptSchema, relOptSchema.getTypeFactory(),
+                Arrays.asList(SemanticAnalyzer.DUMMY_DATABASE, tblName),
+                values.getRowType(), metadata, columnInfos, Collections.emptyList(), Collections.emptyList(), conf,
+                db, tabNameToTabObject, partitionCache, colStatsCache, noColsMissingStats);
+            HiveTableScan scan = new HiveTableScan(cluster, cluster.traitSetOf(HiveRelNode.CONVENTION), optTable,
+                tblName, "", false, false);
+            RexNode constLiteral = cluster.getRexBuilder().makeZeroLiteral(cluster.getTypeFactory().createSqlType(SqlTypeName.INTEGER));
+            HiveProject p = new HiveProject(cluster, cluster.traitSetOf(HiveRelNode.CONVENTION), scan,
+                Collections.singletonList(constLiteral), cluster.getTypeFactory()
+                .createStructType(Collections.singletonList(constLiteral.getType()), Collections.singletonList("f0")));
+
+            RelDataType argType = cluster.getTypeFactory().createArrayType(values.getRowType(),-1);
+            SqlOperator calciteOp = null;
+            try {
+              calciteOp = SqlFunctionConverter
+                  .getCalciteOperator("inline", (GenericUDTF) null, ImmutableList.of(argType), values.getRowType());
+            } catch (SemanticException e) {
+              throw new RuntimeException(e);
+            }
+
+            RexNode arrayInit = cluster.getRexBuilder()
+                .makeCall(argType, SqlStdOperatorTable.ARRAY_VALUE_CONSTRUCTOR, Collections.emptyList());
+            RexNode rexNode = cluster.getRexBuilder().makeCall(values.getRowType(), calciteOp,Collections.singletonList(arrayInit));
+
+            try {
+              return HiveTableFunctionScan.create(cluster, cluster.traitSetOf(HiveRelNode.CONVENTION), Collections.singletonList(p), rexNode, null, values.getRowType(),
+                  null);
+            } catch (CalciteSemanticException e) {
+              throw new RuntimeException(e);
+            }
+          }
+          throw new IllegalStateException();
+        }
+      });
     }
 
     /**
@@ -2208,10 +2278,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
         rules.add(HiveReduceExpressionsWithStatsRule.INSTANCE);
       }
       rules.add(HiveProjectFilterPullUpConstantsRule.INSTANCE);
-      rules.add(HiveReduceExpressionsRule.PROJECT_INSTANCE);
-      rules.add(HiveReduceExpressionsRule.FILTER_INSTANCE);
-      rules.add(HiveReduceExpressionsRule.JOIN_INSTANCE);
-      rules.add(HiveReduceExpressionsRule.SEMIJOIN_INSTANCE);
+      rules.addAll(REDUCE_EXPRESSION_RULES);
       rules.add(HiveAggregateReduceFunctionsRule.INSTANCE);
       rules.add(HiveAggregateReduceRule.INSTANCE);
       if (conf.getBoolVar(HiveConf.ConfVars.HIVEPOINTLOOKUPOPTIMIZER)) {

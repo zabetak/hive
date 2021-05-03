@@ -29,6 +29,7 @@ import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.Union;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
+import org.apache.calcite.rel.rules.ReduceExpressionsRule;
 import org.apache.calcite.rel.type.RelDataTypeField;
 import org.apache.calcite.rex.RexBuilder;
 import org.apache.calcite.rex.RexNode;
@@ -82,8 +83,8 @@ public class HiveUnionPullUpConstantsRule extends RelOptRule {
       return;
     }
 
-    Map<RexNode, RexNode> conditionsExtracted = HiveReduceExpressionsRule.predicateConstants(
-            RexNode.class, rexBuilder, predicates);
+    Map<RexNode, RexNode> conditionsExtracted =
+        ReduceExpressionsRule.predicateConstants(RexNode.class, rexBuilder, predicates);
     Map<RexNode, RexNode> constants = new HashMap<>();
     for (int i = 0; i < count ; i++) {
       RexNode expr = rexBuilder.makeInputRef(union, i);
