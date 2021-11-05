@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.externalDB;
 
+import com.jayway.jsonpath.JsonPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sqlline.SqlLine;
@@ -70,6 +71,7 @@ public abstract class AbstractExternalDB {
         cmd.add("--rm");
         cmd.add("--name");
         cmd.add(getDockerContainerName());
+        cmd.add("-P");
         cmd.addAll(Arrays.asList(getDockerAdditionalArgs()));
         cmd.add(getDockerImageName());
         return cmd.toArray(new String[cmd.size()]);
@@ -129,6 +131,19 @@ public abstract class AbstractExternalDB {
         if (startTime + MAX_STARTUP_WAIT < System.currentTimeMillis()) {
             throw new RuntimeException("Container failed to be ready in " + MAX_STARTUP_WAIT/1000 +
                     " seconds");
+        }
+    }
+
+    public final int getContainerMappedPort() {
+        try {
+            ProcessResults r = runCmd(new String[]{"docker", "inspect", getDockerContainerName()}, 600);
+            if(r.rc != 0) {
+                throw new RuntimeException("Cannot inspect container");
+            }
+            JsonPath path = JsonPath.compile("$['NetworkSettings']['Ports']['5432/tcp'][0]['HostPort']");
+            return path.read(r.stdout);    
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
