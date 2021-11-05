@@ -134,14 +134,16 @@ public abstract class AbstractExternalDB {
         }
     }
 
-    public final int getContainerMappedPort() {
+    public final String getContainerMappedPort() {
         try {
             ProcessResults r = runCmd(new String[]{"docker", "inspect", getDockerContainerName()}, 600);
             if(r.rc != 0) {
                 throw new RuntimeException("Cannot inspect container");
             }
-            JsonPath path = JsonPath.compile("$['NetworkSettings']['Ports']['5432/tcp'][0]['HostPort']");
-            return path.read(r.stdout);    
+            LOG.debug("Inspect out:{}", r.stdout);
+            LOG.debug("Inspect err:{}", r.stderr);
+            JsonPath path = JsonPath.compile("$[0]['NetworkSettings']['Ports']['5432/tcp'][0]['HostPort']");
+            return path.read(r.stdout);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

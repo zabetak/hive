@@ -24,6 +24,7 @@ import org.apache.hadoop.hive.ql.externalDB.MariaDB;
 import org.apache.hadoop.hive.ql.externalDB.MySQLExternalDB;
 import org.apache.hadoop.hive.ql.externalDB.Oracle;
 import org.apache.hadoop.hive.ql.externalDB.PostgresExternalDB;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,7 @@ public class QTestDatabaseHandler implements QTestOptionHandler {
       Path dbScript = Paths.get(scriptsDir, dbEntry.getValue());
       AbstractExternalDB db = dbEntry.getKey().create();
       db.launchDockerContainer();
+      SessionState.get().getHiveVariables().put("qt:postgres:port", db.getContainerMappedPort());
       if (Files.exists(dbScript)) {
         db.execute(dbScript.toString());
       } else {
