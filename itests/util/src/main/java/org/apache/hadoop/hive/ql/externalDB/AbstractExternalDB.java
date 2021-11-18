@@ -126,6 +126,8 @@ public abstract class AbstractExternalDB {
             }
         } while (startTime + MAX_STARTUP_WAIT >= System.currentTimeMillis() && !isContainerReady(pr));
         if (startTime + MAX_STARTUP_WAIT < System.currentTimeMillis()) {
+            LOG.error("Stdout from Docker logs: {}", pr.stdout);
+            LOG.error("Stderr from Docker logs: {}", pr.stderr);
             throw new RuntimeException("Container failed to be ready in " + MAX_STARTUP_WAIT/1000 +
                     " seconds");
         }
