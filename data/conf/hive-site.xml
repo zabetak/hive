@@ -187,6 +187,11 @@
 </property>
 
 <property>
+  <name>hive.txn.manager</name>
+  <value>org.apache.hadoop.hive.ql.lockmgr.DbTxnManager</value>
+</property>
+
+<property>
   <key>hive.unlock.numretries</key>
   <value>2</value>
   <description>The number of times you want to retry to do one unlock</description>
