@@ -78,7 +78,6 @@ public class OperationManager extends AbstractService {
   @Override
   public synchronized void init(HiveConf hiveConf) {
     LogDivertAppender.registerRoutingAppender(hiveConf);
-    LogDivertAppenderForTest.registerRoutingAppenderIfInTest(hiveConf);
     if (hiveConf.isWebUiEnabled()) {
       queryInfoCache = Optional.of(new QueryInfoCache(hiveConf));
     }

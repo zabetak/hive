@@ -629,7 +629,6 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
     try {
       LogUtils.initHiveExecLog4j();
       LogDivertAppender.registerRoutingAppender(conf);
-      LogDivertAppenderForTest.registerRoutingAppenderIfInTest(conf);
     } catch (LogInitializationException e) {
       System.err.println(e.getMessage());
     }
