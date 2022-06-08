@@ -29,7 +29,10 @@ import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.columnstats.ColStatsBuilder;
 import org.apache.hadoop.hive.metastore.utils.MetaStoreServerUtils.ColStatsObjWithSourceInfo;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -50,24 +53,20 @@ public class LongColumnStatsAggregatorTest {
       TableType.MANAGED_TABLE.toString());
   private static final FieldSchema COL = new FieldSchema("col", "int", "");
 
-  @Test
-  public void testAggregateSingleStat() throws MetaException {
-    LongColumnStatsAggregator aggregator = new LongColumnStatsAggregator();
+  private static ColStatsObjWithSourceInfo newStatsObj(ColumnStatisticsData data, String partName) {
+    ColumnStatisticsObj stats = new ColumnStatisticsObj(COL.getName(), COL.getType(), data);
+    return new ColStatsObjWithSourceInfo(stats, DEFAULT_CATALOG_NAME, TABLE.getDbName(), TABLE.getTableName(),
+        partName);
+  }
 
+  @Test public void testAggregateSingleStat() throws MetaException {
     List<String> partitionNames = Collections.singletonList("part1");
+    ColumnStatisticsData data = new ColStatsBuilder().nulls(1).dvs(2).low(1).high(4).hll(1, 3).buildLong();
+    List<ColStatsObjWithSourceInfo> statsList = Collections.singletonList(newStatsObj(data, partitionNames.get(0)));
 
-    HyperLogLog hll = createHll(1, 3);
-    ColumnStatisticsData data1 = StatisticsTestUtils.createLongStats(
-        1L, 2L, 1L, 4L, hll);
-    ColumnStatistics stats1 = StatisticsTestUtils.createColStats(data1, TABLE, COL, partitionNames.get(0));
-
-    List<ColStatsObjWithSourceInfo> statsList = Collections.singletonList(
-        new ColStatsObjWithSourceInfo(stats1.getStatsObj().get(0), DEFAULT_CATALOG_NAME, TABLE.getDbName(),
-            TABLE.getTableName(), partitionNames.get(0)));
-
-    ColumnStatisticsObj stats = aggregator.aggregate(statsList, partitionNames, true);
-
-    assertLongStats(stats, 1L, 2L, 1L, 4L, hll);
+    LongColumnStatsAggregator aggregator = new LongColumnStatsAggregator();
+    ColumnStatisticsData actualData = aggregator.aggregate(statsList, partitionNames, true).getStatsData();
+    Assert.assertEquals(data, actualData);
   }
 
   @Test
