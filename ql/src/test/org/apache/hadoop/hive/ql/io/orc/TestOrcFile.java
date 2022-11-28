@@ -18,27 +18,7 @@
 
 package org.apache.hadoop.hive.ql.io.orc;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import com.google.common.primitives.Longs;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -71,6 +51,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.FloatObjectInspec
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.HiveDecimalObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.IntObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.LongObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.ShortObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.TimestampObjectInspector;
@@ -87,16 +68,19 @@ import org.apache.orc.ColumnStatistics;
 import org.apache.orc.DecimalColumnStatistics;
 import org.apache.orc.DoubleColumnStatistics;
 import org.apache.orc.IntegerColumnStatistics;
-import org.apache.orc.OrcConf;
 import org.apache.orc.MemoryManager;
+import org.apache.orc.OrcConf;
 import org.apache.orc.OrcProto;
-
 import org.apache.orc.OrcUtils;
 import org.apache.orc.StringColumnStatistics;
 import org.apache.orc.StripeInformation;
 import org.apache.orc.StripeStatistics;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.impl.MemoryManagerImpl;
+
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Longs;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -106,7 +90,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Tests for the top level reader/streamFactory of ORC files.
@@ -766,8 +767,47 @@ public class TestOrcFile {
     assertEquals(false, rows.hasNext());
     rows.close();
   }
+  static final Path FAT_ORC_FILE_PATH = new Path("/tmp/OrcFileManyCols.orc");
+  @Test
+  public void testStringStatisticsWithManyColsWrite() throws Exception {
+    
+    List<String> colNames = new ArrayList<>();
+    List<ObjectInspector> colInspectors = new ArrayList<>();
+    int COL_NUM = 1_000;
+    for (int i = 0; i < COL_NUM; i++) {
+      colNames.add("col"+i);
+      colInspectors.add(PrimitiveObjectInspectorFactory.writableStringObjectInspector);
+    }
+    ObjectInspector structInspector = ObjectInspectorFactory.getStandardStructObjectInspector(colNames, colInspectors);
+    conf.set("orc.dictionary.key.threshold","0");
+    
+    Writer writer = OrcFile.createWriter(FAT_ORC_FILE_PATH,
+        OrcFile.writerOptions(conf)
+            .inspector(structInspector)
+            .stripeSize(100000)
+            .bufferSize(10000).encodingStrategy(org.apache.orc.OrcFile.EncodingStrategy.SPEED));
+    Text[] row = new Text[COL_NUM];
+    for (int i = 0; i < COL_NUM; i++) {
+      row[i] = new Text(RandomStringUtils.randomAlphabetic(1_000_000));
+    }
+    writer.addRow(row);
+    writer.close();
+  }
 
+  @Test
+  public void testStringStatisticsWithManyColsRead() throws Exception {
+    Reader reader = OrcFile.createReader(FAT_ORC_FILE_PATH,
+        OrcFile.readerOptions(conf).filesystem(fs));
 
+    TypeDescription schema = reader.getSchema();
+
+    // check the stats
+    ColumnStatistics[] stats = reader.getStatistics();
+    //    
+    //    Reader reader = OrcFile.createReader(testFilePath,
+    //        OrcFile.readerOptions(conf).filesystem(fs));
+  }
+  
   @Test
   public void testStripeLevelStats() throws Exception {
     ObjectInspector inspector;
