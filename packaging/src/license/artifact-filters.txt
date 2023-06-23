@@ -1,0 +1,10 @@
+exclude gaPattern org\.apache\.hadoop:.*
+exclude gaPattern org\.slf4j:.*
+exclude gaPattern log4j:.*
+exclude gaPattern ch\.qos\.reload4j:.*
+exclude gaPattern junit:.*
+exclude gaPattern commons-configuration:commons-configuration.*
+include scope compile
+include scope runtime
+exclude scope provided
+exclude scope test
