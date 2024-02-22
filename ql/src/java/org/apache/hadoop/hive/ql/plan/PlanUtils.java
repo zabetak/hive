@@ -543,9 +543,9 @@ public final class PlanUtils {
               serdeConstants.SERIALIZATION_LIB, BinarySortableSerDe.class.getName()));
     } else {
       return new TableDesc(SequenceFileInputFormat.class,
-          SequenceFileOutputFormat.class, Utilities.makeProperties("columns",
+          SequenceFileOutputFormat.class, Utilities.makeProperties(serdeConstants.LIST_COLUMNS,
               MetaStoreUtils.getColumnNamesFromFieldSchema(fieldSchemas),
-              "columns.types", MetaStoreUtils
+              serdeConstants.LIST_COLUMN_TYPES, MetaStoreUtils
               .getColumnTypesFromFieldSchema(fieldSchemas),
               serdeConstants.ESCAPE_CHAR, "\\",
               serdeConstants.SERIALIZATION_LIB,LazyBinarySerDe.class.getName()));
@@ -1238,11 +1238,11 @@ public final class PlanUtils {
   static Map<Object, Object> getPropertiesForExplain(Properties properties) {
     if (properties != null) {
       Map<Object, Object> clone = null;
-      String value = properties.getProperty("columns.comments");
+      String value = properties.getProperty(serdeConstants.LIST_COLUMN_COMMENTS);
       if (value != null) {
         // should copy properties first
         clone = new HashMap<>(properties);
-        clone.put("columns.comments", quoteComments(value));
+        clone.put(serdeConstants.LIST_COLUMN_COMMENTS, quoteComments(value));
       }
       value = properties.getProperty(StatsSetupConst.NUM_ERASURE_CODED_FILES);
       if ("0".equals(value)) {

@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.ql.parse.StorageFormat;
 import org.apache.hadoop.hive.ql.parse.rewrite.sql.MultiInsertSqlGenerator;
 import org.apache.hadoop.hive.ql.parse.rewrite.sql.SqlGeneratorFactory;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.serde.serdeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +142,7 @@ public class MergeRewriter implements Rewriter<MergeStatement>, MergeStatement.D
         Table table = db.newTable(tableName);
         table.setSerializationLib(format.getSerde());
         List<FieldSchema> fields = new ArrayList<>();
-        fields.add(new FieldSchema("val", "int", null));
+        fields.add(new FieldSchema("val", serdeConstants.INT_TYPE_NAME, null));
         table.setFields(fields);
         table.setDataLocation(Warehouse.getDnsPath(new Path(SessionState.get().getTempTableSpace(),
             tableName), conf));

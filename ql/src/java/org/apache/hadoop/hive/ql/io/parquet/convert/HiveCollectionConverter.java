@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.ListTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.MapTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
@@ -184,7 +185,7 @@ public class HiveCollectionConverter extends HiveGroupConverter {
     if (repeatedType.isPrimitive() ||
         (repeatedType.asGroupType().getFieldCount() != 1)) {
       return true;
-    } else if (repeatedType.getName().equals("array")) {
+    } else if (repeatedType.getName().equals(serdeConstants.LIST_TYPE_NAME)) {
       return true; // existing avro data
     } else if (repeatedType.getName().equals(parentName + "_tuple")) {
       return true; // existing thrift data

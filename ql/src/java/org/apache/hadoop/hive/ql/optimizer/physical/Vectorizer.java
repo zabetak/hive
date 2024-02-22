@@ -259,7 +259,7 @@ public class Vectorizer implements PhysicalPlanResolver {
 
   static {
     StringBuilder patternBuilder = new StringBuilder();
-    patternBuilder.append("int");
+    patternBuilder.append(serdeConstants.INT_TYPE_NAME);
     patternBuilder.append("|smallint");
     patternBuilder.append("|tinyint");
     patternBuilder.append("|bigint");
@@ -280,7 +280,7 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     // Decimal types can be specified with different precision and scales e.g. decimal(10,5),
     // as opposed to other data types which can be represented by constant strings.
-    // The regex matches only the "decimal" prefix of the type.
+    // The regex matches only the serdeConstants.DECIMAL_TYPE_NAME prefix of the type.
     patternBuilder.append("|decimal.*");
 
     // CHAR and VARCHAR types can be specified with maximum length.
@@ -3255,7 +3255,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     type = type.toLowerCase();
     boolean result = supportedDataTypesPattern.matcher(type).matches();
     if (result && !allowVoidProjection &&
-        mode == VectorExpressionDescriptor.Mode.PROJECTION && type.equals("void")) {
+        mode == VectorExpressionDescriptor.Mode.PROJECTION && type.equals(serdeConstants.VOID_TYPE_NAME)) {
       return false;
     }
 
@@ -3283,7 +3283,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     type = type.toLowerCase();
     boolean result = supportedDataTypesPattern.matcher(type).matches();
     if (result && !allowVoidProjection &&
-        mode == VectorExpressionDescriptor.Mode.PROJECTION && type.equals("void")) {
+        mode == VectorExpressionDescriptor.Mode.PROJECTION && type.equals(serdeConstants.VOID_TYPE_NAME)) {
       return "Vectorizing data type void not supported when mode = PROJECTION";
     }
 

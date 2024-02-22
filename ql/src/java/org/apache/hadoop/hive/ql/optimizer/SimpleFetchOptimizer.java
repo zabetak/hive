@@ -90,6 +90,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDFToDecimal;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFToUnixTimeStamp;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFToUtcTimestamp;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFToVarchar;
+import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
@@ -231,7 +232,7 @@ public class SimpleFetchOptimizer extends Transform {
       if (op instanceof FilterOperator) {
         ExprNodeDesc predicate = ((FilterOperator) op).getConf().getPredicate();
         if (predicate instanceof ExprNodeConstantDesc
-                && "boolean".equals(predicate.getTypeInfo().getTypeName())) {
+                && serdeConstants.BOOLEAN_TYPE_NAME.equals(predicate.getTypeInfo().getTypeName())) {
           continue;
         } else if (PartitionPruner.onlyContainsPartnCols(table, predicate)) {
           continue;

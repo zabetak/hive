@@ -35,6 +35,7 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
+import org.apache.hadoop.hive.serde.serdeConstants;
 
 /**
  * DfsProcessor.
@@ -56,7 +57,7 @@ public class DfsProcessor implements CommandProcessor {
   public DfsProcessor(Configuration conf, boolean addSchema) {
     dfs = new FsShell(conf);
     dfsSchema = new Schema();
-    dfsSchema.addToFieldSchemas(new FieldSchema(DFS_RESULT_HEADER, "string", ""));
+    dfsSchema.addToFieldSchemas(new FieldSchema(DFS_RESULT_HEADER, serdeConstants.STRING_TYPE_NAME, ""));
   }
 
   @Override
