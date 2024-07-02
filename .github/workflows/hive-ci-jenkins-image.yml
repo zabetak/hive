@@ -39,4 +39,4 @@ jobs:
           file: ./ci/jenkins/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ github.repository.owner }}/hive-ci-jenkins:lts-jdk21
+          tags: ${{ github.repository_owner }}/hive-ci-jenkins:lts-jdk21
