@@ -28,6 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -90,7 +93,13 @@ public class HikariCPDataSourceProvider implements DataSourceProvider {
       config.addDataSourceProperty(kv.getKey(), kv.getValue());
     }
 
-    return new HikariDataSource(initMetrics(config));
+    return new HikariDataSource(initMetrics(config)) {
+      @Override
+      public Connection getConnection() throws SQLException {
+        Connection c = super.getConnection();
+        return RandomFailingConnectionFactory.create(c); 
+      }
+    };
   }
 
   @Override
