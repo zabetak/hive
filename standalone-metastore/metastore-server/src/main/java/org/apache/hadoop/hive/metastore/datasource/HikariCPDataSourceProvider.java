@@ -65,6 +65,7 @@ public class HikariCPDataSourceProvider implements DataSourceProvider {
     if (!StringUtils.isEmpty(poolName)) {
       config.setPoolName(poolName);
     }
+    config.setExceptionOverrideClassName(HikariCPExceptionOverride.class.getName());
 
     // It's kind of a waste to create a fixed size connection pool as same as the TxnHandler#connPool,
     // TxnHandler#connPoolMutex is mostly used for MutexAPI that is primarily designed to
