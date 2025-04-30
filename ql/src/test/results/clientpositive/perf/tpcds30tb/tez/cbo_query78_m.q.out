@@ -1,0 +1,8 @@
+CBO PLAN:
+HiveAggregate(group=[{0, 1}]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+  HiveAntiJoin(condition=[AND(=($4, $2), =($0, $3))], joinType=[anti]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+    HiveProject(ss_item_sk=[$1], ss_customer_sk=[$2], ss_ticket_number=[$8]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+      HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+    HiveProject(sr_item_sk=[$1], sr_ticket_number=[$8]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+      HiveTableScan(table=[[default, store_returns]], table:alias=[store_returns]): rowcount = ###Masked###, cumulative cost = ###Masked###, id = ###Masked###
+

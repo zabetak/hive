@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.calcite.linq4j.tree.Expression;
+import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptSchema;
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.plan.RelOptUtil.InputFinder;
@@ -63,6 +64,8 @@ import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.metadata.UniqueConstraint;
 import org.apache.hadoop.hive.ql.metadata.UniqueConstraint.UniqueConstraintCol;
 import org.apache.hadoop.hive.ql.metadata.VirtualColumn;
+import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveRelNode;
+import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveTableScan;
 import org.apache.hadoop.hive.ql.optimizer.calcite.translator.ExprNodeConverter;
 import org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner;
 import org.apache.hadoop.hive.ql.parse.ColumnStatsList;
@@ -380,7 +383,9 @@ public class RelOptHiveTable implements RelOptTable {
 
   @Override
   public RelNode toRel(ToRelContext context) {
-    return new LogicalTableScan(context.getCluster(), this);
+    RelOptCluster cluster = context.getCluster();
+    return new HiveTableScan(cluster, cluster.traitSetOf(HiveRelNode.CONVENTION), this, getHiveTableMD().getTableName(),
+        null, false, getHiveTableMD().isView(), null);
   }
 
   @Override

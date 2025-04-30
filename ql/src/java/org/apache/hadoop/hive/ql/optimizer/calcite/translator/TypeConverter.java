@@ -128,6 +128,10 @@ public class TypeConverter {
   public static RelDataType getType(RelOptCluster cluster, RowResolver rr, List<String> neededCols) {
     RexBuilder rexBuilder = cluster.getRexBuilder();
     RelDataTypeFactory dtFactory = rexBuilder.getTypeFactory();
+    return getType(dtFactory, rr, neededCols);
+  }
+
+  public static RelDataType getType(RelDataTypeFactory dtFactory, RowResolver rr, List<String> neededCols) {
     RowSchema rs = rr.getRowSchema();
     List<RelDataType> fieldTypes = new LinkedList<>();
     List<String> fieldNames = new LinkedList<>();
