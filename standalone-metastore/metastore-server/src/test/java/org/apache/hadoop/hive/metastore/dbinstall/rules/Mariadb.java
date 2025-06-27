@@ -18,19 +18,21 @@
 
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.hive.testutils.docker.MariaDBContainer;
+
+import java.io.IOException;
 
 public class Mariadb extends DatabaseRule {
+  private final MariaDBContainer container = new MariaDBContainer("its-a-secret");
 
   @Override
-  public String getDockerImageName() {
-    return "mariadb:11.4";
+  public void before() throws IOException, InterruptedException {
+    container.start();
   }
 
   @Override
-  public String[] getDockerAdditionalArgs() {
-    return buildArray("-p", "3306:3306", "-e", "MYSQL_ROOT_PASSWORD=" + getDbRootPassword(), "-d");
+  public void after() {
+    container.stop();
   }
 
   @Override
@@ -54,20 +56,13 @@ public class Mariadb extends DatabaseRule {
   }
 
   @Override
-  public String getJdbcUrl(String hostAddress) {
-    return "jdbc:mariadb://" + hostAddress + ":3306/" + HIVE_DB;
+  public String getJdbcUrl() {
+    return "jdbc:mariadb://" + container.getHostAddress() + ":3306/" + HIVE_DB;
   }
 
   @Override
-  public String getInitialJdbcUrl(String hostAddress) {
-    return "jdbc:mariadb://" + hostAddress + ":3306/?allowPublicKeyRetrieval=true";
-  }
-
-  @Override
-  public boolean isContainerReady(ProcessResults pr) {
-    Pattern pat = Pattern.compile("ready for connections");
-    Matcher m = pat.matcher(pr.stderr);
-    return m.find() && m.find();
+  public String getInitialJdbcUrl() {
+    return "jdbc:mariadb://" + container.getHostAddress() + ":3306/?allowPublicKeyRetrieval=true";
   }
 
   @Override

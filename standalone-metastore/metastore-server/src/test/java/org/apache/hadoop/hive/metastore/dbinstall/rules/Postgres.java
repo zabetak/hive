@@ -17,18 +17,23 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
+import org.apache.hive.testutils.docker.PostgresContainer;
+
+import java.io.IOException;
+
 /**
  * JUnit TestRule for Postgres.
  */
 public class Postgres extends DatabaseRule {
+  private final PostgresContainer container = new PostgresContainer("postgres:11.6", "postgres", "its-a-secret");
   @Override
-  public String getDockerImageName() {
-    return "postgres:11.6";
+  public void before() throws IOException, InterruptedException {
+    container.start();
   }
 
   @Override
-  public String[] getDockerAdditionalArgs() {
-    return buildArray("-p", "5432:5432", "-e", "POSTGRES_PASSWORD=" + getDbRootPassword(), "-d");
+  public void after() {
+    container.stop();
   }
 
   @Override
@@ -52,19 +57,13 @@ public class Postgres extends DatabaseRule {
   }
 
   @Override
-  public String getJdbcUrl(String hostAddress) {
-    return "jdbc:postgresql://" + hostAddress + ":5432/" + HIVE_DB;
+  public String getJdbcUrl() {
+    return "jdbc:postgresql://" + container.getHostAddress() + ":5432/" + HIVE_DB;
   }
 
   @Override
-  public String getInitialJdbcUrl(String hostAddress) {
-    return "jdbc:postgresql://" + hostAddress + ":5432/postgres";
-  }
-
-  @Override
-  public boolean isContainerReady(ProcessResults pr) {
-    return pr.stdout.contains("database system is ready to accept connections") &&
-        pr.stderr.contains("database system is ready to accept connections");
+  public String getInitialJdbcUrl() {
+    return "jdbc:postgresql://" + container.getHostAddress() + ":5432/postgres";
   }
 
   @Override

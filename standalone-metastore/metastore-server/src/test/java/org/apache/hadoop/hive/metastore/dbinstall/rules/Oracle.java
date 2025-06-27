@@ -17,25 +17,23 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
+import org.apache.hive.testutils.docker.OracleContainer;
+
+import java.io.IOException;
+
 /**
  * JUnit TestRule for Oracle.
  */
 public class Oracle extends DatabaseRule {
-
+  private final OracleContainer container = new OracleContainer("oracle");
   @Override
-  public String getDockerImageName() {
-    return "abstractdog/oracle-xe:18.4.0-slim";
+  public void before() throws IOException, InterruptedException {
+    container.start();
   }
 
   @Override
-  public String[] getDockerAdditionalArgs() {
-    return buildArray(
-        "-p",
-        "1521:1521",
-        "-d",
-        "-e",
-        "ORACLE_PASSWORD=" + getDbRootPassword()
-    );
+  public void after() {
+    container.stop();
   }
 
   @Override
@@ -59,18 +57,13 @@ public class Oracle extends DatabaseRule {
   }
 
   @Override
-  public String getJdbcUrl(String hostAddress) {
-    return "jdbc:oracle:thin:@//" + hostAddress + ":1521/xe";
+  public String getJdbcUrl() {
+    return "jdbc:oracle:thin:@//" + container.getHostAddress() + ":1521/xe";
   }
 
   @Override
-  public String getInitialJdbcUrl(String hostAddress) {
-    return "jdbc:oracle:thin:@//" + hostAddress + ":1521/xe";
-  }
-
-  @Override
-  public boolean isContainerReady(ProcessResults pr) {
-    return pr.stdout.contains("DATABASE IS READY TO USE!");
+  public String getInitialJdbcUrl() {
+    return "jdbc:oracle:thin:@//" + container.getHostAddress() + ":1521/xe";
   }
 
   @Override

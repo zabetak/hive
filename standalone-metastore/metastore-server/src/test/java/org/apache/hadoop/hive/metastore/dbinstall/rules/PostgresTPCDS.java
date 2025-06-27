@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.metastore.dbinstall.rules;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfoFactory;
 import org.apache.hadoop.hive.metastore.tools.schematool.MetastoreSchemaTool;
+import org.apache.hive.testutils.docker.PostgresContainer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,14 +30,21 @@ import java.io.UncheckedIOException;
  * JUnit TestRule for Postgres metastore with TPCDS schema and stat information.
  */
 public class PostgresTPCDS extends Postgres {
+  private final PostgresContainer container =
+      new PostgresContainer("zabetak/postgres-tpcds-metastore:1.3", "tpcds-metastore", "its-a-secret");
   @Override
-  public String getDockerImageName() {
-    return "zabetak/postgres-tpcds-metastore:1.3";
+  public void before() throws IOException, InterruptedException {
+    container.start();
   }
 
   @Override
-  public String getJdbcUrl(String hostAddress) {
-    return "jdbc:postgresql://" + hostAddress + ":5432/metastore";
+  public void after() {
+    container.stop();
+  }
+
+  @Override
+  public String getJdbcUrl() {
+    return "jdbc:postgresql://" + container.getHostAddress() + ":5432/metastore";
   }
 
   @Override

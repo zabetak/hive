@@ -17,27 +17,24 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
+import org.apache.hive.testutils.docker.MssqlContainer;
+
+import java.io.IOException;
+
 /**
  * JUnit TestRule for Mssql.
  */
 public class Mssql extends DatabaseRule {
+  private final MssqlContainer container = new MssqlContainer("Its-a-s3cret");
 
   @Override
-  public String getDockerImageName() {
-    return "mcr.microsoft.com/mssql/server:2019-latest";
+  public void before() throws IOException, InterruptedException {
+    container.start();
   }
 
   @Override
-  public String[] getDockerAdditionalArgs() {
-    return buildArray(
-        "-p",
-        "1433:1433",
-        "-e",
-        "ACCEPT_EULA=Y",
-        "-e",
-        "SA_PASSWORD=" + getDbRootPassword(),
-        "-d"
-    );
+  public void after() {
+    container.stop();
   }
 
   @Override
@@ -62,20 +59,13 @@ public class Mssql extends DatabaseRule {
   }
 
   @Override
-  public String getJdbcUrl(String hostAddress) {
-    return "jdbc:sqlserver://" + hostAddress + ":1433;DatabaseName=" + HIVE_DB + ";";
+  public String getJdbcUrl() {
+    return "jdbc:sqlserver://" + container.getHostAddress() + ":1433;DatabaseName=" + HIVE_DB + ";";
   }
 
   @Override
-  public String getInitialJdbcUrl(String hostAddress) {
-    return "jdbc:sqlserver://" + hostAddress + ":1433";
-  }
-
-  @Override
-  public boolean isContainerReady(ProcessResults pr) {
-    return pr.stdout
-        .contains(
-        "Recovery is complete. This is an informational message only. No user action is required.");
+  public String getInitialJdbcUrl() {
+    return "jdbc:sqlserver://" + container.getHostAddress() + ":1433";
   }
 
   @Override

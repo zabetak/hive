@@ -506,6 +506,11 @@
         <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-testutils</artifactId>
+        <version>${hive.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
