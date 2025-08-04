@@ -1,0 +1,33 @@
+PREHOOK: query: create table t1 (event_time timestamp) stored as parquet
+PREHOOK: type: CREATETABLE
+PREHOOK: Output: database:default
+PREHOOK: Output: default@t1
+POSTHOOK: query: create table t1 (event_time timestamp) stored as parquet
+POSTHOOK: type: CREATETABLE
+POSTHOOK: Output: database:default
+POSTHOOK: Output: default@t1
+PREHOOK: query: load data local inpath '../../data/files/engesc30381_data.parquet' into table t1
+PREHOOK: type: LOAD
+#### A masked pattern was here ####
+PREHOOK: Output: default@t1
+POSTHOOK: query: load data local inpath '../../data/files/engesc30381_data.parquet' into table t1
+POSTHOOK: type: LOAD
+#### A masked pattern was here ####
+POSTHOOK: Output: default@t1
+PREHOOK: query: select case
+           when event_time < TIMESTAMP '1970-01-01 00:00:00'
+               then event_time + INTERVAL '28' minute + INTERVAL '18' second
+           else event_time end
+from t1
+PREHOOK: type: QUERY
+PREHOOK: Input: default@t1
+#### A masked pattern was here ####
+POSTHOOK: query: select case
+           when event_time < TIMESTAMP '1970-01-01 00:00:00'
+               then event_time + INTERVAL '28' minute + INTERVAL '18' second
+           else event_time end
+from t1
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@t1
+#### A masked pattern was here ####
+1874-11-12 00:00:00
