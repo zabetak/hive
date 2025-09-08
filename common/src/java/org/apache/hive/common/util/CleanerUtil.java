@@ -97,10 +97,7 @@ public final class CleanerUtil {
         final MethodHandle unmapper = lookup.findVirtual(unsafeClass,
             "invokeCleaner", methodType(void.class, ByteBuffer.class));
         // fetch the unsafe instance and bind it to the virtual MH:
-        final Field f = unsafeClass.getDeclaredField("theUnsafe");
-        f.setAccessible(true);
-        final Object theUnsafe = f.get(null);
-        return newBufferCleaner(ByteBuffer.class, unmapper.bindTo(theUnsafe));
+        final Field f = unsafeClass.getDeclaredField("theUnsafe"); f.setAccessible(true); final Object theUnsafe = f.get(null); return newBufferCleaner(ByteBuffer.class, unmapper.bindTo(theUnsafe));
       } catch (SecurityException se) {
         // rethrow to report errors correctly (we need to catch it here,
         // as we also catch RuntimeException below!):
