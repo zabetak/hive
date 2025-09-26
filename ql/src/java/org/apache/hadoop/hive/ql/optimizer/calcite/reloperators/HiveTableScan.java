@@ -40,10 +40,8 @@ import org.apache.calcite.sql.SqlExplainLevel;
 import org.apache.calcite.tools.RelBuilder;
 import org.apache.calcite.util.ImmutableBitSet;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.hadoop.hive.common.TableName;
 import org.apache.hadoop.hive.conf.Constants;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveCalciteUtil;
-import org.apache.hadoop.hive.ql.optimizer.calcite.HiveRelEnumTypes;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveRelShuttle;
 import org.apache.hadoop.hive.ql.optimizer.calcite.RelOptHiveTable;
 import org.apache.hadoop.hive.ql.optimizer.calcite.TraitsUtil;
@@ -368,8 +366,7 @@ public class HiveTableScan extends TableScan implements HiveRelNode {
     if (enumName == null) {
       return null;
     }
-
-    return HiveRelEnumTypes.toEnum(enumName);
+    return HiveTableScanTrait.valueOf(enumName);
   }
 
   @Override
