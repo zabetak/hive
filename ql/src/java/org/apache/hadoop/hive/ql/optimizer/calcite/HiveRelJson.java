@@ -175,16 +175,6 @@ public class HiveRelJson extends RelJson {
     return map;
   }
 
-  private SqlOperator getOperatorFromDefault(String op) {
-    final List<SqlOperator> operatorList = SqlStdOperatorTable.instance().getOperatorList();
-    for (SqlOperator operator : operatorList) {
-      if (operator.getName().equals(op)) {
-        return operator;
-      }
-    }
-    return null;
-  }
-
   public SqlAggFunction toAggregation(RelInput input, String aggName, Map<String, Object> map) {
     final Boolean distinct = (Boolean) map.get(DISTINCT);
     @SuppressWarnings("unchecked") final List<Object> operands = (List<Object>) map.get(OPERANDS);
@@ -206,130 +196,10 @@ public class HiveRelJson extends RelJson {
       typeFamilyBuilder.add(Util.first(at.getSqlTypeName().getFamily(), SqlTypeFamily.ANY));
     }
     final SqlOperandTypeChecker operandTypeChecker = OperandTypes.family(typeFamilyBuilder.build());
-    return switch (aggName) {
-      case "$SUM0" -> new HiveSqlSumEmptyIsZeroAggFunction(
-          distinct, returnTypeInference, operandTypeInference, operandTypeChecker
-      );
-      case "sum" -> new HiveSqlSumAggFunction(distinct, returnTypeInference, operandTypeInference, operandTypeChecker);
-      case "count" ->
-          new HiveSqlCountAggFunction(distinct, returnTypeInference, operandTypeInference, operandTypeChecker);
-      case "min" -> new HiveSqlMinMaxAggFunction(returnTypeInference, operandTypeInference, operandTypeChecker, true);
-      case "max" -> new HiveSqlMinMaxAggFunction(returnTypeInference, operandTypeInference, operandTypeChecker, false);
-      case "avg" ->
-          new HiveSqlAverageAggFunction(distinct, returnTypeInference, operandTypeInference, operandTypeChecker);
-      case "std", "stddev", "stddev_pop" ->
-          new HiveSqlVarianceAggFunction("stddev_pop", SqlKind.STDDEV_POP, returnTypeInference, operandTypeInference,
-              operandTypeChecker);
-      case "stddev_samp" -> new HiveSqlVarianceAggFunction("stddev_samp", SqlKind.STDDEV_SAMP, returnTypeInference,
-          operandTypeInference, operandTypeChecker);
-      case "variance", "var_pop" ->
-          new HiveSqlVarianceAggFunction("var_pop", SqlKind.VAR_POP, returnTypeInference, operandTypeInference,
-              operandTypeChecker);
-      case "var_samp" ->
-          new HiveSqlVarianceAggFunction("var_samp", SqlKind.VAR_SAMP, returnTypeInference, operandTypeInference,
-              operandTypeChecker);
-      default -> {
-        SqlOperator operator = getOperatorFromDefault(aggName);
-        if (operator != null) {
-          yield (SqlAggFunction) operator;
-        }
-        yield new SqlFunctionConverter.CalciteUDAF(distinct, aggName, returnTypeInference, operandTypeInference, operandTypeChecker);
-      }
-    };
+
   }
 
-  private SqlOperator toOp(RelInput input, String op, Map<String, Object> map) {
-    return switch (op) {
-      case "IN" -> HiveIn.INSTANCE;
-      case "BETWEEN" -> HiveBetween.INSTANCE;
-      case "YEAR" -> HiveExtractDate.YEAR;
-      case "QUARTER" -> HiveExtractDate.QUARTER;
-      case "MONTH" -> HiveExtractDate.MONTH;
-      case "WEEK" -> HiveExtractDate.WEEK;
-      case "DAY" -> HiveExtractDate.DAY;
-      case "HOUR" -> HiveExtractDate.HOUR;
-      case "MINUTE" -> HiveExtractDate.MINUTE;
-      case "SECOND" -> HiveExtractDate.SECOND;
-      case "FLOOR_YEAR" -> HiveFloorDate.YEAR;
-      case "FLOOR_QUARTER" -> HiveFloorDate.QUARTER;
-      case "FLOOR_MONTH" -> HiveFloorDate.MONTH;
-      case "FLOOR_WEEK" -> HiveFloorDate.WEEK;
-      case "FLOOR_DAY" -> HiveFloorDate.DAY;
-      case "FLOOR_HOUR" -> HiveFloorDate.HOUR;
-      case "FLOOR_MINUTE" -> HiveFloorDate.MINUTE;
-      case "FLOOR_SECOND" -> HiveFloorDate.SECOND;
-      case "||" -> HiveConcat.INSTANCE;
-      case "TRUNC" -> HiveTruncSqlOperator.INSTANCE;
-      case "TO_DATE" -> HiveToDateSqlOperator.INSTANCE;
-      case "UNIX_TIMESTAMP" -> {
-        if (!((List) map.get(OPERANDS)).isEmpty()) {
-          yield HiveToUnixTimestampSqlOperator.INSTANCE;
-        }
-        yield HiveUnixTimestampSqlOperator.INSTANCE;
-      }
-      case "FROM_UNIXTIME" -> HiveFromUnixTimeSqlOperator.INSTANCE;
-      case "DATE_ADD" -> HiveDateAddSqlOperator.INSTANCE;
-      case "DATE_SUB" -> HiveDateSubSqlOperator.INSTANCE;
-      case "+" -> {
-        if (((List) map.get(OPERANDS)).size() > 1) {
-          yield SqlStdOperatorTable.PLUS;
-        }
-        yield SqlStdOperatorTable.UNARY_PLUS;
-      }
-      case "-" -> {
-        if (((List) map.get(OPERANDS)).size() > 1) {
-          yield SqlStdOperatorTable.MINUS;
-        }
-        yield SqlStdOperatorTable.UNARY_MINUS;
-      }
-      case "MAP" -> SqlStdOperatorTable.MAP_VALUE_CONSTRUCTOR;
-      case "ARRAY" -> SqlStdOperatorTable.ARRAY_VALUE_CONSTRUCTOR;
-      default -> {
-        SqlOperator operator = getOperatorFromDefault(op);
-        if (operator != null) {
-          yield operator;
-        }
-        final Object jsonType = map.get("type");
-        final RelDataType type = toType(input.getCluster().getTypeFactory(), jsonType);
-        final List operands = (List) map.get(OPERANDS);
-        final List<RelDataType> operandsTypes =
-            toRexList(input, operands).stream().map(RexNode::getType).collect(Collectors.toList());
-        final List<SqlTypeFamily> typeFamily = operandsTypes.stream()
-            .map(e -> Util.first(e.getSqlTypeName().getFamily(), SqlTypeFamily.ANY))
-            .collect(Collectors.toList());
-        final boolean isDeterministic = (boolean) map.get("deterministic");
-        final boolean isDynamicFunction = (boolean) map.get("dynamic");
-        yield new CalciteSqlFn(
-            op, SqlKind.OTHER_FUNCTION, ReturnTypes.explicit(type),
-            InferTypes.explicit(operandsTypes), OperandTypes.family(typeFamily),
-            SqlFunctionCategory.USER_DEFINED_FUNCTION, isDeterministic, isDynamicFunction
-        );
-      }
-    };
-  }
 
-  private static class CalciteSqlFn extends SqlFunction {
-    private final boolean deterministic;
-    private final boolean dynamicFunction;
-
-    public CalciteSqlFn(String name, SqlKind kind, SqlReturnTypeInference returnTypeInference,
-                        SqlOperandTypeInference operandTypeInference, SqlOperandTypeChecker operandTypeChecker,
-                        SqlFunctionCategory category, boolean deterministic, boolean dynamicFunction) {
-      super(name, kind, returnTypeInference, operandTypeInference, operandTypeChecker, category);
-      this.deterministic = deterministic;
-      this.dynamicFunction = dynamicFunction;
-    }
-
-    @Override
-    public boolean isDeterministic() {
-      return deterministic;
-    }
-
-    @Override
-    public boolean isDynamicFunction() {
-      return dynamicFunction;
-    }
-  }
 
   public RexNode toRex(RelInput relInput, Object o) {
     if (o == null) {

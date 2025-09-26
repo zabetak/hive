@@ -17,18 +17,28 @@
 
 package org.apache.hadoop.hive.ql.optimizer.calcite;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
+import org.apache.calcite.plan.RelOptPlanner;
+import org.apache.calcite.plan.RelOptSchema;
+import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.rel.RelCollations;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.JoinRelType;
+import org.apache.calcite.rel.externalize.RelJsonReader;
 import org.apache.calcite.rel.type.RelDataType;
+import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.rex.RexLiteral;
 import org.apache.calcite.rex.RexNode;
 import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.views.TestRuleBase;
+import org.apache.hadoop.hive.ql.parse.QueryTables;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -44,10 +54,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -210,7 +224,7 @@ public class TestRelPlanParser extends TestRuleBase {
   private void serializeDeserializeAndAssertEquals(RelNode plan) throws IOException {
     Optional<String> planJson = HiveRelOptUtil.serializeToJSON(plan);
     if (planJson.isPresent()) {
-      RelPlanParser parser = new RelPlanParser(relOptCluster, conf);
+      RelPlanParser parser = new RelPlanParser(relOptCluster, conf, null);
       RelNode parsedPlan = parser.parse(planJson.get());
 
       assertEquals(RelOptUtil.toString(plan), RelOptUtil.toString(parsedPlan));
@@ -244,10 +258,55 @@ public class TestRelPlanParser extends TestRuleBase {
         continue;
       }
 
+      System.out.println("Processing JSON file: " + jsonFile.getName() + " with CBO file: " + cboFile.getName());
+      ObjectMapper mapper = new ObjectMapper();
       String jsonPlan = new String(Files.readAllBytes(Paths.get(jsonFile.getPath())));
-      String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath()))).trim();
+      JsonNode node = mapper.readTree(jsonPlan);
+      Map<List<String>, RelDataType> tables = new HashMap<>();
+      for(JsonNode scan: node.findParents("table")){
+        List<String> names = new ArrayList<>();
+        for (JsonNode n : scan.get("table")) {
+          names.add(n.asText());
+        }
+        JsonNode type = scan.get("rowType");
+        tables.put(names, RelJsonReader.readType(relOptCluster.getTypeFactory(), type.toString()));
+      }
+      RelOptSchema  relOptSchema = new RelOptSchema() {
+        @Override
+        public @Nullable RelOptTable getTableForMember(List<String> names) {
+          RelDataType type = tables.get(names);
 
-      RelNode deserializedPlan = HiveRelOptUtil.deserializePlan(conf, jsonPlan);
+          return new RelOptHiveTable(
+              this,
+              relOptCluster.getTypeFactory(),
+              names,
+              type,
+              new Table(names.get(0), names.get(1)),
+              new ArrayList<>(),
+              new ArrayList<>(),
+              new ArrayList<>(),
+              conf,
+              new QueryTables(true),
+              new HashMap<>(),
+              new HashMap<>(),
+              new AtomicInteger()
+          );
+        }
+
+        @Override
+        public RelDataTypeFactory getTypeFactory() {
+          return null;
+        }
+
+        @Override
+        public void registerRules(RelOptPlanner planner) throws Exception {
+
+        }
+      };
+
+
+      String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath()))).trim();
+      RelNode deserializedPlan = HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema );
       executables.add(() ->
           Assertions.assertEquals(
               cboPlan, RelOptUtil.toString(deserializedPlan).trim(),

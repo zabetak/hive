@@ -43,11 +43,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.calcite.adapter.jdbc.JdbcRel;
 import org.apache.calcite.config.CalciteConnectionConfig;
 import org.apache.calcite.config.CalciteConnectionConfigImpl;
 import org.apache.calcite.config.CalciteConnectionProperty;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptPlanner;
+import org.apache.calcite.plan.RelOptSchema;
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.plan.hep.HepMatchOrder;
@@ -57,6 +59,7 @@ import org.apache.calcite.plan.hep.HepProgramBuilder;
 import org.apache.calcite.rel.RelCollation;
 import org.apache.calcite.rel.RelDistribution;
 import org.apache.calcite.rel.RelFieldCollation;
+import org.apache.calcite.rel.RelHomogeneousShuttle;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.RelReferentialConstraint;
 import org.apache.calcite.rel.core.Aggregate;
@@ -98,7 +101,6 @@ import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.optimizer.calcite.cost.HiveAlgorithmsConf;
 import org.apache.hadoop.hive.ql.optimizer.calcite.cost.HiveVolcanoPlanner;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveProject;
-import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveRelNode;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HivePartitionPruneRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRulesRegistry;
 import org.apache.hadoop.hive.ql.optimizer.calcite.translator.TypeConverter;
@@ -1121,32 +1123,27 @@ public class HiveRelOptUtil extends RelOptUtil {
     if (!isSerializable(plan)) {
       return Optional.empty();
     }
-
-    JSONObject outJSONObject = new JSONObject(new LinkedHashMap<>());
-    outJSONObject.put("CBOPlan", serializeWithPlanWriter(plan, new HiveRelJsonImpl()));
-    String jsonPlan = outJSONObject.toString();
-
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Plan to serialize: \n{}", RelOptUtil.toString(plan));
-      LOG.debug("JSON plan: \n{}", jsonPlan);
-    }
-
-    return Optional.of(jsonPlan);
+    return Optional.of(serializeWithPlanWriter(plan, new HiveRelJsonImpl()));
   }
 
   private static boolean isSerializable(RelNode plan) {
-    return HiveRelNode.stream(plan)
-        .noneMatch(node ->
-            Objects.requireNonNull(node.getConvention()).getName().toLowerCase().contains("jdbc")
-        );
+    boolean[] hasJdbcRel = new boolean[] { false };
+    plan.accept(new RelHomogeneousShuttle() {
+      @Override
+      public RelNode visit(RelNode other) {
+        hasJdbcRel[0] |= other instanceof JdbcRel;
+        return hasJdbcRel[0] ? other : super.visit(other);
+      }
+    });
+    return !hasJdbcRel[0];
   }
 
-  public static RelNode deserializePlan(HiveConf conf, String jsonPlan) throws IOException {
+  public static RelNode deserializePlan(HiveConf conf, String jsonPlan, RelOptSchema schema) throws IOException {
     RelOptPlanner planner = HiveRelOptUtil.createPlanner(conf, StatsSources.getStatsSource(conf), false);
     RexBuilder rexBuilder = new RexBuilder(new HiveTypeFactory());
     RelOptCluster cluster = RelOptCluster.create(planner, rexBuilder);
 
-    RelPlanParser parser = new RelPlanParser(cluster, conf);
+    RelPlanParser parser = new RelPlanParser(cluster, conf, schema);
     RelNode deserializedPlan = parser.parse(jsonPlan);
     // Apply partition pruning to compute partition list in HiveTableScan
     deserializedPlan = applyPartitionPruning(conf, deserializedPlan, cluster, planner);
