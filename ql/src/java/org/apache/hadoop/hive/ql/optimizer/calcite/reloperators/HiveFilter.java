@@ -61,7 +61,6 @@ public class HiveFilter extends Filter implements HiveRelNode {
 
     @Override
     public Filter copy(RelTraitSet traitSet, RelNode input, RexNode condition) {
-      assert traitSet.containsIfApplicable(HiveRelNode.CONVENTION);
       return new StatEnhancedHiveFilter(getCluster(), traitSet, input, condition, rowCount);
     }
 
@@ -78,7 +77,6 @@ public class HiveFilter extends Filter implements HiveRelNode {
 
   @Override
   public Filter copy(RelTraitSet traitSet, RelNode input, RexNode condition) {
-    assert traitSet.containsIfApplicable(HiveRelNode.CONVENTION);
     return new HiveFilter(getCluster(), traitSet, input, condition);
   }
 

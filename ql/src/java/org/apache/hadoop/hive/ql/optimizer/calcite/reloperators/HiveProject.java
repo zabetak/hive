@@ -64,7 +64,6 @@ public class HiveProject extends Project implements HiveRelNode {
       RelDataType rowType) {
     super(cluster, traitSet, child, exps, rowType);
     this.correlationInfos = new CorrelationInfoSupplier(getProjects());
-    assert traitSet.containsIfApplicable(HiveRelNode.CONVENTION);
   }
 
   public HiveProject(RelInput input) {
@@ -115,7 +114,6 @@ public class HiveProject extends Project implements HiveRelNode {
 
   @Override
   public Project copy(RelTraitSet traitSet, RelNode input, List<RexNode> exps, RelDataType rowType) {
-    assert traitSet.containsIfApplicable(HiveRelNode.CONVENTION);
     HiveProject hp = new HiveProject(getCluster(), traitSet, input, exps, rowType);
     if (this.isSynthetic()) {
       hp.setSynthetic();

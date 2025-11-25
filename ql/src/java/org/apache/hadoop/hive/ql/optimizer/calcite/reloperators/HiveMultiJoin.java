@@ -134,7 +134,6 @@ public final class HiveMultiJoin extends AbstractRelNode implements HiveRelNode{
 
   @Override
   public RelNode copy(RelTraitSet traitSet, List<RelNode> inputs) {
-    assert traitSet.containsIfApplicable(HiveRelNode.CONVENTION);
     return new HiveMultiJoin(
         getCluster(),
         inputs,
