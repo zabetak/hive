@@ -153,7 +153,7 @@ public class SqlFunctionConverter {
           null));
     aggOperators.put("count",new HiveSqlCountAggFunction(
         isDistinct,
-        SqlStdOperatorTable.COUNT.getReturnTypeInference(),
+        ReturnTypes.BIGINT_NULLABLE,
         null,
         null));
     aggOperators.put("min", new HiveSqlMinMaxAggFunction(
