@@ -190,6 +190,11 @@ public class RelOptHiveTable implements RelOptTable {
   }
 
   public RelOptHiveTable copy(RelDataType newRowType) {
+    if (this.rowType.equals(newRowType)) {
+      return new RelOptHiveTable(this.schema, this.typeFactory, this.qualifiedTblName, newRowType, this.hiveTblMetadata,
+          this.hiveNonPartitionCols, this.hivePartitionCols, this.hiveVirtualCols, this.hiveConf, this.tablesCache,
+          this.partitionCache, this.colStatsCache, this.noColsMissingStats);
+    }
     // 1. Build map of column name to col index of original schema
     // Assumption: Hive Table can not contain duplicate column names
     Map<String, Integer> nameToColIndxMap = new HashMap<String, Integer>();
