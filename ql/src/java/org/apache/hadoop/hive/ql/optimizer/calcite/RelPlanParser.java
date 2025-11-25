@@ -24,6 +24,7 @@ import org.apache.calcite.rel.externalize.RelJsonReader;
 import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.util.SqlOperatorTables;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.optimizer.calcite.translator.SqlFunctionConverter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -36,8 +37,8 @@ public class RelPlanParser {
   private final RelJsonReader reader;
 
   public RelPlanParser(RelOptCluster cluster, HiveConf conf, RelOptSchema optSchema) {
-    this.reader = new RelJsonReader(cluster, optSchema, null,
-        t -> t.withOperatorTable(SqlOperatorTables.chain(new HiveSqlOperatorTable(), SqlStdOperatorTable.instance())));
+    this.reader = new RelJsonReader(cluster, optSchema, null, t -> t.withOperatorTable(
+        SqlOperatorTables.chain(SqlFunctionConverter.opTable(), SqlStdOperatorTable.instance())));
   }
 
   public RelNode parse(String json) throws IOException {

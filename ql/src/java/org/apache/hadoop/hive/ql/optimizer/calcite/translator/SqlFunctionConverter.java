@@ -18,6 +18,9 @@
 package org.apache.hadoop.hive.ql.optimizer.calcite.translator;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,8 +28,11 @@ import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.sql.SqlAggFunction;
 import org.apache.calcite.sql.SqlFunction;
 import org.apache.calcite.sql.SqlFunctionCategory;
+import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlKind;
 import org.apache.calcite.sql.SqlOperator;
+import org.apache.calcite.sql.SqlOperatorTable;
+import org.apache.calcite.sql.SqlSyntax;
 import org.apache.calcite.sql.fun.SqlMonotonicBinaryOperator;
 import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.type.InferTypes;
@@ -36,6 +42,7 @@ import org.apache.calcite.sql.type.SqlOperandTypeChecker;
 import org.apache.calcite.sql.type.SqlOperandTypeInference;
 import org.apache.calcite.sql.type.SqlReturnTypeInference;
 import org.apache.calcite.sql.type.SqlTypeFamily;
+import org.apache.calcite.sql.validate.SqlNameMatcher;
 import org.apache.calcite.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.ql.exec.DataSketchesFunctions;
@@ -83,6 +90,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import org.apache.hive.plugin.api.HiveUDFPlugin;
 import org.apache.hive.plugin.api.HiveUDFPlugin.UDFDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +102,7 @@ public class SqlFunctionConverter {
   private static final Logger LOG = LoggerFactory.getLogger(SqlFunctionConverter.class);
 
   static final Map<String, SqlOperator>    hiveToCalcite;
+  static final Map<String, SqlOperator> aggOperators = initAggregateOperators();
   static final Map<SqlOperator, HiveToken> calciteToHiveToken;
   static final Map<SqlOperator, String>    reverseOperatorMap;
 
@@ -102,6 +111,96 @@ public class SqlFunctionConverter {
     hiveToCalcite = ImmutableMap.copyOf(builder.hiveToCalcite);
     calciteToHiveToken = ImmutableMap.copyOf(builder.calciteToHiveToken);
     reverseOperatorMap = ImmutableMap.copyOf(builder.reverseOperatorMap);
+  }
+
+  public static SqlOperatorTable opTable(){
+    return new SqlOperatorTable() {
+      @Override
+      public void lookupOperatorOverloads(SqlIdentifier opName, @Nullable SqlFunctionCategory category,
+          SqlSyntax syntax, List<SqlOperator> operatorList, SqlNameMatcher nameMatcher) {
+        SqlOperator op = hiveToCalcite.get(opName.getSimple());
+        if (op != null) {
+          operatorList.add(op);
+        }
+        op = aggOperators.get(opName.getSimple());
+        if (op != null) {
+          operatorList.add(op);
+        }
+      }
+
+      @Override
+      public List<SqlOperator> getOperatorList() {
+        List<SqlOperator> ops = new ArrayList<>(hiveToCalcite.size() + aggOperators.size());
+        ops.addAll(hiveToCalcite.values());
+        ops.addAll(aggOperators.values());
+        return ops;
+      }
+    };
+  }
+
+  private static Map<String, SqlOperator> initAggregateOperators() {
+    Map<String, SqlOperator> aggOperators = new HashMap<>();
+    boolean isDistinct = false;
+    aggOperators.put("sum",new HiveSqlSumAggFunction(
+        isDistinct,
+        SqlStdOperatorTable.SUM.getReturnTypeInference(),
+        null,
+        null));
+    aggOperators.put("$sum0",new HiveSqlSumEmptyIsZeroAggFunction(
+          isDistinct,
+          SqlStdOperatorTable.SUM0.getReturnTypeInference(),
+          null,
+          null));
+    aggOperators.put("count",new HiveSqlCountAggFunction(
+        isDistinct,
+        SqlStdOperatorTable.COUNT.getReturnTypeInference(),
+        null,
+        null));
+    aggOperators.put("min", new HiveSqlMinMaxAggFunction(
+          SqlStdOperatorTable.MIN.getReturnTypeInference(),
+          null,
+          null, true));
+
+    aggOperators.put("max",new HiveSqlMinMaxAggFunction(
+          SqlStdOperatorTable.MAX.getReturnTypeInference(),
+          null,
+          null, false));
+
+    aggOperators.put("avg", new HiveSqlAverageAggFunction(
+          isDistinct,
+          SqlStdOperatorTable.AVG.getReturnTypeInference(),
+          null,
+          null));
+    SqlOperator stddev_pop = new HiveSqlVarianceAggFunction(
+        "stddev_pop",
+        SqlKind.STDDEV_POP,
+        SqlStdOperatorTable.STDDEV_POP.getReturnTypeInference(),
+        null,
+        null);
+      aggOperators.put("std", stddev_pop);
+    aggOperators.put("stddev", stddev_pop);
+    aggOperators.put("stddev_pop", stddev_pop);
+    aggOperators.put("stddev_samp", new HiveSqlVarianceAggFunction(
+        "stddev_samp",
+        SqlKind.STDDEV_SAMP,
+        SqlStdOperatorTable.STDDEV_SAMP.getReturnTypeInference(),
+        null,
+        null));
+    SqlOperator var_pop = new HiveSqlVarianceAggFunction(
+        "var_pop",
+        SqlKind.VAR_POP,
+        SqlStdOperatorTable.VAR_POP.getReturnTypeInference(),
+        null,
+        null);
+    aggOperators.put("variance", var_pop);
+    aggOperators.put("var_pop", var_pop);
+    aggOperators.put("var_samp", new HiveSqlVarianceAggFunction(
+          "var_samp",
+          SqlKind.VAR_SAMP,
+          SqlStdOperatorTable.VAR_SAMP.getReturnTypeInference(),
+          null,
+          null));
+    return Collections.unmodifiableMap(aggOperators);
   }
 
   public static SqlOperator getCalciteOperator(String funcTextName, GenericUDF hiveUDF,
