@@ -118,11 +118,11 @@ public class SqlFunctionConverter {
       @Override
       public void lookupOperatorOverloads(SqlIdentifier opName, @Nullable SqlFunctionCategory category,
           SqlSyntax syntax, List<SqlOperator> operatorList, SqlNameMatcher nameMatcher) {
-        SqlOperator op = hiveToCalcite.get(opName.getSimple());
+        SqlOperator op = hiveToCalcite.get(opName.getSimple().toLowerCase());
         if (op != null) {
           operatorList.add(op);
         }
-        op = aggOperators.get(opName.getSimple());
+        op = aggOperators.get(opName.getSimple().toLowerCase());
         if (op != null) {
           operatorList.add(op);
         }
