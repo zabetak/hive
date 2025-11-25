@@ -65,6 +65,7 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveDateSubSqlOp
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveExtractDate;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveFloorDate;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveFromUnixTimeSqlOperator;
+import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveGroupingID;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveIn;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveSqlFunction;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveToDateSqlOperator;
@@ -201,6 +202,7 @@ public class SqlFunctionConverter {
           new SqlUDAFEvaluatorReturnTypeInference("var_samp"),
           null,
           null));
+    aggOperators.put("GROUPING_ID", HiveGroupingID.INSTANCE);
     return Collections.unmodifiableMap(aggOperators);
   }
 
