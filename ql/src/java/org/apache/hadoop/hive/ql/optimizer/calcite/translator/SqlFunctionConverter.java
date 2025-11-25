@@ -123,7 +123,7 @@ public class SqlFunctionConverter {
         if (op != null) {
           operatorList.add(op);
         }
-        op = aggOperators.get(opName.getSimple().toLowerCase());
+        op = aggOperators.get(opName.getSimple());
         if (op != null) {
           operatorList.add(op);
         }
