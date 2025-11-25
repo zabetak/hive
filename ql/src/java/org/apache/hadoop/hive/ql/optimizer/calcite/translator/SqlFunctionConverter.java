@@ -71,6 +71,7 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveToDateSqlOpe
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveTruncSqlOperator;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveToUnixTimestampSqlOperator;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveUnixTimestampSqlOperator;
+import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveSubQueryRemoveRule;
 import org.apache.hadoop.hive.ql.parse.ASTNode;
 import org.apache.hadoop.hive.ql.parse.HiveParser;
 import org.apache.hadoop.hive.ql.parse.ParseDriver;
@@ -581,7 +582,8 @@ public class SqlFunctionConverter {
           hToken(HiveParser.Identifier, "from_unixtime"));
       registerFunction("date_add", HiveDateAddSqlOperator.INSTANCE, hToken(HiveParser.Identifier, "date_add"));
       registerFunction("date_sub", HiveDateSubSqlOperator.INSTANCE, hToken(HiveParser.Identifier, "date_sub"));
-
+      registerFunction("sq_count_check", HiveSubQueryRemoveRule.SQ_COUNT_CHECK,
+          hToken(HiveParser.Identifier, "sq_count_check"));
       registerPlugin(DataSketchesFunctions.INSTANCE);
     }
 
