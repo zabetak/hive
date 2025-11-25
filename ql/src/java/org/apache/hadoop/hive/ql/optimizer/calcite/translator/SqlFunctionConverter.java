@@ -143,38 +143,38 @@ public class SqlFunctionConverter {
     boolean isDistinct = false;
     aggOperators.put("sum",new HiveSqlSumAggFunction(
         isDistinct,
-        SqlStdOperatorTable.SUM.getReturnTypeInference(),
+        new SqlUDAFEvaluatorReturnTypeInference("sum"),
         null,
         null));
     aggOperators.put("$sum0",new HiveSqlSumEmptyIsZeroAggFunction(
           isDistinct,
-          SqlStdOperatorTable.SUM0.getReturnTypeInference(),
+          new SqlUDAFEvaluatorReturnTypeInference("sum"),
           null,
           null));
     aggOperators.put("count",new HiveSqlCountAggFunction(
         isDistinct,
-        ReturnTypes.BIGINT_NULLABLE,
+        new SqlUDAFEvaluatorReturnTypeInference("count"),
         null,
         null));
     aggOperators.put("min", new HiveSqlMinMaxAggFunction(
-          SqlStdOperatorTable.MIN.getReturnTypeInference(),
+          new SqlUDAFEvaluatorReturnTypeInference("min"),
           null,
           null, true));
 
     aggOperators.put("max",new HiveSqlMinMaxAggFunction(
-          SqlStdOperatorTable.MAX.getReturnTypeInference(),
+          new SqlUDAFEvaluatorReturnTypeInference("max"),
           null,
           null, false));
 
     aggOperators.put("avg", new HiveSqlAverageAggFunction(
           isDistinct,
-          SqlStdOperatorTable.AVG.getReturnTypeInference(),
+          new SqlUDAFEvaluatorReturnTypeInference("avg"),
           null,
           null));
     SqlOperator stddev_pop = new HiveSqlVarianceAggFunction(
         "stddev_pop",
         SqlKind.STDDEV_POP,
-        SqlStdOperatorTable.STDDEV_POP.getReturnTypeInference(),
+        new SqlUDAFEvaluatorReturnTypeInference("stddev_pop"),
         null,
         null);
       aggOperators.put("std", stddev_pop);
@@ -183,13 +183,13 @@ public class SqlFunctionConverter {
     aggOperators.put("stddev_samp", new HiveSqlVarianceAggFunction(
         "stddev_samp",
         SqlKind.STDDEV_SAMP,
-        SqlStdOperatorTable.STDDEV_SAMP.getReturnTypeInference(),
+        new SqlUDAFEvaluatorReturnTypeInference("stddev_samp"),
         null,
         null));
     SqlOperator var_pop = new HiveSqlVarianceAggFunction(
         "var_pop",
         SqlKind.VAR_POP,
-        SqlStdOperatorTable.VAR_POP.getReturnTypeInference(),
+        new SqlUDAFEvaluatorReturnTypeInference("var_pop"),
         null,
         null);
     aggOperators.put("variance", var_pop);
@@ -197,7 +197,7 @@ public class SqlFunctionConverter {
     aggOperators.put("var_samp", new HiveSqlVarianceAggFunction(
           "var_samp",
           SqlKind.VAR_SAMP,
-          SqlStdOperatorTable.VAR_SAMP.getReturnTypeInference(),
+          new SqlUDAFEvaluatorReturnTypeInference("var_samp"),
           null,
           null));
     return Collections.unmodifiableMap(aggOperators);
