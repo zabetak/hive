@@ -1146,7 +1146,7 @@ public class HiveRelOptUtil extends RelOptUtil {
     RelPlanParser parser = new RelPlanParser(cluster, conf, schema);
     RelNode deserializedPlan = parser.parse(jsonPlan);
     // Apply partition pruning to compute partition list in HiveTableScan
-    deserializedPlan = applyPartitionPruning(conf, deserializedPlan, cluster, planner);
+//    deserializedPlan = applyPartitionPruning(conf, deserializedPlan, cluster, planner);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Deserialized plan: \n{}", RelOptUtil.toString(deserializedPlan));
     }
