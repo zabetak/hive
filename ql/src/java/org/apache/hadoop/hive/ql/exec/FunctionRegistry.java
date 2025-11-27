@@ -32,6 +32,17 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.calcite.sql.SqlBasicFunction;
+import org.apache.calcite.sql.SqlFunctionCategory;
+import org.apache.calcite.sql.SqlIdentifier;
+import org.apache.calcite.sql.SqlKind;
+import org.apache.calcite.sql.SqlOperator;
+import org.apache.calcite.sql.SqlOperatorTable;
+import org.apache.calcite.sql.SqlSyntax;
+import org.apache.calcite.sql.fun.SqlBasicAggFunction;
+import org.apache.calcite.sql.type.OperandTypes;
+import org.apache.calcite.sql.type.ReturnTypes;
+import org.apache.calcite.sql.validate.SqlNameMatcher;
 import org.apache.hadoop.hive.ql.udf.esri.ST_Aggr_ConvexHull;
 import org.apache.hadoop.hive.ql.udf.esri.ST_Aggr_Union;
 import org.apache.hadoop.hive.ql.udf.esri.ST_Area;
@@ -231,6 +242,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hive.common.util.AnnotationUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -824,6 +836,34 @@ public final class FunctionRegistry {
     return info != null ? info : system.getFunctionInfo(functionName);
   }
 
+  public static SqlOperatorTable opTable() {
+    return new SqlOperatorTable() {
+      @Override
+      public void lookupOperatorOverloads(SqlIdentifier opName, @Nullable SqlFunctionCategory category,
+          SqlSyntax syntax, List<SqlOperator> operatorList, SqlNameMatcher nameMatcher) {
+        try {
+          FunctionInfo fi = getFunctionInfo(opName.getSimple());
+          if(fi == null) {
+            return;
+          }
+          if(fi.isGenericUDF()) {
+            // TODO fix return type and operand type inference
+            operatorList.add(SqlBasicFunction.create(SqlKind.OTHER_FUNCTION, ReturnTypes.ARG0, OperandTypes.ANY));
+          }
+          if(fi.isGenericUDAF()) {
+            operatorList.add(SqlBasicAggFunction.create(SqlKind.OTHER_FUNCTION, ReturnTypes.ARG0, OperandTypes.ANY));
+          }
+        } catch (Exception e) {
+          // ignore
+        }
+      }
+
+      @Override
+      public List<SqlOperator> getOperatorList() {
+        return List.of();
+      }
+    };
+  }
   public static FunctionInfo getTemporaryFunctionInfo(String functionName) throws SemanticException {
     Registry registry = SessionState.getRegistry();
     return registry == null ? null : registry.getFunctionInfo(functionName);
