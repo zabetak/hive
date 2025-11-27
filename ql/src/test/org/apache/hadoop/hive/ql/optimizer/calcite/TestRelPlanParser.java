@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -306,12 +307,14 @@ public class TestRelPlanParser extends TestRuleBase {
 
 
       String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath()))).trim();
-      RelNode deserializedPlan = HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema );
+      String deserializedPlan = RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema )).trim();
+      File cboActualFile = new File(tpcdsCBODirectory, "actual_" + cboFileName);
+      Files.writeString(Paths.get(cboActualFile.getPath()), deserializedPlan, StandardOpenOption.CREATE);
       executables.add(() ->
-          Assertions.assertEquals(
-              cboPlan, RelOptUtil.toString(deserializedPlan).trim(),
-              "Failed for: " + jsonFile.getName() + "\n"
-          )
+      Assertions.assertEquals(
+          cboPlan, deserializedPlan,
+          "Failed for: " + jsonFile.getName() + "\n"
+        )
       );
     }
     
