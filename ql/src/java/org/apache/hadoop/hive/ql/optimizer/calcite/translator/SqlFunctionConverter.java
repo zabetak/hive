@@ -202,7 +202,7 @@ public class SqlFunctionConverter {
           new SqlUDAFEvaluatorReturnTypeInference("var_samp"),
           null,
           null));
-    aggOperators.put("GROUPING_ID", HiveGroupingID.INSTANCE);
+    aggOperators.put("GROUPING__ID", HiveGroupingID.INSTANCE);
     return Collections.unmodifiableMap(aggOperators);
   }
 
