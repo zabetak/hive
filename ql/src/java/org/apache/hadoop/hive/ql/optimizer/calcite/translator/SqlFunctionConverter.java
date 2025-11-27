@@ -553,6 +553,9 @@ public class SqlFunctionConverter {
       registerFunction("concat", HiveConcat.INSTANCE,
           hToken(HiveParser.Identifier, "concat")
       );
+      registerDuplicateFunction("||", HiveConcat.INSTANCE,
+          hToken(HiveParser.Identifier, "concat")
+      );
       registerFunction("substring", SqlStdOperatorTable.SUBSTRING,
           hToken(HiveParser.Identifier, "substring")
       );
