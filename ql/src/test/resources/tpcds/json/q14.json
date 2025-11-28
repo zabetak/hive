@@ -1,7 +1,3 @@
-Warning: Map Join MAPJOIN[1090][bigTable=?] in task 'Reducer 8' is a cross product
-Warning: Map Join MAPJOIN[1135][bigTable=?] in task 'Reducer 11' is a cross product
-Warning: Map Join MAPJOIN[1151][bigTable=?] in task 'Reducer 17' is a cross product
-Warning: Map Join MAPJOIN[1187][bigTable=?] in task 'Reducer 26' is a cross product
 {
   "rels": [
     {
