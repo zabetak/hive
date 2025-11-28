@@ -1,18 +1,3 @@
-Warning: Map Join MAPJOIN[185][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[184][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[183][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[182][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[181][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[180][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[179][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[178][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[177][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[176][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[175][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[174][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[173][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[172][bigTable=?] in task 'Map 1' is a cross product
-Warning: Map Join MAPJOIN[171][bigTable=?] in task 'Map 1' is a cross product
 {
   "rels": [
     {

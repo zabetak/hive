@@ -1,4 +1,3 @@
-Warning: Map Join MAPJOIN[331][bigTable=?] in task 'Reducer 7' is a cross product
 {
   "rels": [
     {
