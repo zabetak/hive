@@ -20,39 +20,49 @@ package org.apache.hadoop.hive.ql.optimizer.calcite.translator;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.sql.SqlOperatorBinding;
 import org.apache.calcite.sql.type.SqlReturnTypeInference;
+import org.apache.hadoop.hive.ql.exec.FunctionInfo;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
-import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.List;
+import java.util.Arrays;
 
-class SqlUDAFEvaluatorReturnTypeInference implements SqlReturnTypeInference {
-  private final String aggName;
+public class SqlEvaluatorReturnTypeInference implements SqlReturnTypeInference {
+  private final String funcName;
 
-  SqlUDAFEvaluatorReturnTypeInference(String aggName) {
-    this.aggName = aggName;
+  public SqlEvaluatorReturnTypeInference(String funcName) {
+    this.funcName = funcName;
   }
 
   @Override
   public @Nullable RelDataType inferReturnType(SqlOperatorBinding opBinding) {
-    List<ObjectInspector> oiBinding = opBinding.collectOperandTypes()
-        .stream()
-        .map(TypeConverter::convert)
+    TypeInfo[] opTypes =
+        opBinding.collectOperandTypes().stream().map(TypeConverter::convert).toArray(TypeInfo[]::new);
+    ObjectInspector[] oiBinding = Arrays.stream(opTypes)
         .map(TypeInfoUtils::getStandardWritableObjectInspectorFromTypeInfo)
-        .toList();
+        .toArray(ObjectInspector[]::new);
+    ObjectInspector roi = null;
     try {
-      GenericUDAFEvaluator udaf =
-          FunctionRegistry.getGenericUDAFEvaluator(aggName, oiBinding, false, opBinding.getOperandCount() == 0);
-      if (udaf == null) {
-        throw new IllegalStateException("Could not get evaluator for " + aggName);
+      FunctionInfo fi = FunctionRegistry.getFunctionInfo(funcName);
+      if (fi == null) {
+        throw new IllegalStateException("Could not get function info for " + funcName);
       }
-      ObjectInspector roi = udaf.init(GenericUDAFEvaluator.Mode.COMPLETE, oiBinding.toArray(new ObjectInspector[0]));
+      if (fi.isGenericUDF()) {
+        roi = fi.getGenericUDF().initialize(oiBinding);
+      }
+      if (fi.isGenericUDAF()) {
+        roi = fi.getGenericUDAFResolver().getEvaluator(opTypes).init(GenericUDAFEvaluator.Mode.COMPLETE, oiBinding);
+      }
+    } catch (Exception e) {
+      throw new IllegalStateException("Could not initialize " + funcName, e);
+    }
+    if (roi != null) {
       return TypeConverter.convert(TypeInfoUtils.getTypeInfoFromObjectInspector(roi), opBinding.getTypeFactory());
-    } catch (HiveException e) {
-      throw new IllegalStateException("Could not infer type for " + aggName, e);
+    } else {
+      throw new IllegalStateException("Could not get evaluator for " + funcName);
     }
   }
 }
