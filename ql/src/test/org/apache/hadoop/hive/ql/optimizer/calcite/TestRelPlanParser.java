@@ -310,8 +310,8 @@ public class TestRelPlanParser extends TestRuleBase {
       };
 
 
-      String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath()))).trim();
-      String deserializedPlan = RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema )).trim();
+      String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath())));
+      String deserializedPlan = RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema ));
       Files.writeString(tpcdsCBOActualDir.resolve(cboFileName), deserializedPlan, StandardOpenOption.CREATE);
       executables.add(() ->
       Assertions.assertEquals(
