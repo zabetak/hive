@@ -577,6 +577,7 @@ public class SqlFunctionConverter {
       registerFunction("length", SqlStdOperatorTable.CHARACTER_LENGTH,
           hToken(HiveParser.Identifier, "length")
       );
+      registerFunction("round", SqlStdOperatorTable.ROUND, hToken(HiveParser.Identifier, "round"));
       registerFunction("trunc", HiveTruncSqlOperator.INSTANCE, hToken(HiveParser.Identifier, "trunc"));
       registerFunction("to_date", HiveToDateSqlOperator.INSTANCE, hToken(HiveParser.Identifier, "to_date"));
       registerFunction("to_unix_timestamp", HiveToUnixTimestampSqlOperator.INSTANCE,
