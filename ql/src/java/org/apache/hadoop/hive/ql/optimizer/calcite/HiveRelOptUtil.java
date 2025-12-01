@@ -105,13 +105,13 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HivePartitionPruneRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRulesRegistry;
 import org.apache.hadoop.hive.ql.optimizer.calcite.translator.TypeConverter;
 import org.apache.hadoop.hive.ql.parse.CalcitePlanner;
+import org.apache.hadoop.hive.ql.parse.type.RexNodeExprFactory;
 import org.apache.hadoop.hive.ql.plan.mapper.StatsSource;
 import org.apache.hadoop.hive.ql.plan.mapper.StatsSources;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 
-
-import org.json.JSONObject;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1140,7 +1140,19 @@ public class HiveRelOptUtil extends RelOptUtil {
 
   public static RelNode deserializePlan(HiveConf conf, String jsonPlan, RelOptSchema schema) throws IOException {
     RelOptPlanner planner = HiveRelOptUtil.createPlanner(conf, StatsSources.getStatsSource(conf), false);
-    RexBuilder rexBuilder = new RexBuilder(new HiveTypeFactory());
+    RexBuilder rexBuilder = new RexBuilder(new HiveTypeFactory()) {
+      @Override
+      public RexNode makeLiteral(@Nullable Object value, RelDataType type, boolean allowCast, boolean trim) {
+        switch (type.getSqlTypeName()) {
+          case VARCHAR:
+            // If we don't allow cast here, the RexLiteral created will come back as CHAR type
+            allowCast = true;
+          case CHAR:
+            value = RexNodeExprFactory.makeHiveUnicodeString((String) value);
+        }
+        return super.makeLiteral(value, type, allowCast, trim);
+      }
+    };
     RelOptCluster cluster = RelOptCluster.create(planner, rexBuilder);
 
     RelPlanParser parser = new RelPlanParser(cluster, conf, schema);
