@@ -1,0 +1,17 @@
+Basically, in the RelJson customization implemented by Soumy each RexCall was
+serializing in the JSON file the type of the call. Once, I removed all code around
+RelJson the standard operators do not contain the type in the JSON file so it has
+to be derived. The diff between q4.json and q4_old.json demonstrates that.
+
+Even though, the inference type logic for /, +, - and * is already implemented in
+there are some corner cases that are not covered because operands can have different
+types due to `HiveFunctionHelper.convertInputs`.
+
+The problem is that if we don;t have the original arg/type to the function
+before converting the inputs there is no way to derive the same/correct type
+when deserializing from JSON.
+
+If we put the type back in the JSON file for each RexCall then probably things will work
+although the assertions in Aggregate etc may need to be relaxed a bit.
+
+Do we want to ignore/override operator type inference during deserialization?
