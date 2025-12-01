@@ -20,7 +20,15 @@ package org.apache.hadoop.hive.ql.optimizer.calcite;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.rel.type.RelDataTypeSystemImpl;
+import org.apache.calcite.sql.ExplicitOperatorBinding;
+import org.apache.calcite.sql.fun.SqlStdOperatorTable;
+import org.apache.calcite.sql.type.SqlReturnTypeInference;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.apache.hadoop.hive.ql.optimizer.calcite.translator.SqlEvaluatorReturnTypeInference;
+
+import javax.annotation.Nullable;
+
+import java.util.Arrays;
 
 import static org.apache.hadoop.hive.ql.udf.generic.GenericUDAFSum.SUM_RESULT_PRECISION_INCREASE;
 
@@ -48,7 +56,10 @@ public class HiveTypeSystemImpl extends RelDataTypeSystemImpl {
   private static final int DEFAULT_FLOAT_PRECISION    = 7;
   private static final int DEFAULT_DOUBLE_PRECISION   = 15;
 
-
+  private static final SqlReturnTypeInference MULTIPLY_INFERENCE = new SqlEvaluatorReturnTypeInference("*");
+  private static final SqlReturnTypeInference DIVIDE_INFERENCE = new SqlEvaluatorReturnTypeInference("/");
+  private static final SqlReturnTypeInference PLUS_INFERENCE = new SqlEvaluatorReturnTypeInference("+");
+  private static final SqlReturnTypeInference MOD_INFERENCE = new SqlEvaluatorReturnTypeInference("%");
   @Override
   public int getMaxScale(SqlTypeName typeName) {
     switch (typeName) {
@@ -189,4 +200,31 @@ public class HiveTypeSystemImpl extends RelDataTypeSystemImpl {
     return argumentType;
   }
 
+  @Override
+  public @Nullable RelDataType deriveDecimalMultiplyType(RelDataTypeFactory typeFactory, RelDataType type1,
+      RelDataType type2) {
+    return MULTIPLY_INFERENCE.inferReturnType(
+        new ExplicitOperatorBinding(typeFactory, SqlStdOperatorTable.MULTIPLY, Arrays.asList(type1, type2)));
+  }
+
+  @Override
+  public @org.checkerframework.checker.nullness.qual.Nullable RelDataType deriveDecimalDivideType(
+      RelDataTypeFactory typeFactory, RelDataType type1, RelDataType type2) {
+    return DIVIDE_INFERENCE.inferReturnType(
+        new ExplicitOperatorBinding(typeFactory, SqlStdOperatorTable.DIVIDE, Arrays.asList(type1, type2)));
+  }
+
+  @Override
+  public @org.checkerframework.checker.nullness.qual.Nullable RelDataType deriveDecimalPlusType(
+      RelDataTypeFactory typeFactory, RelDataType type1, RelDataType type2) {
+    return PLUS_INFERENCE.inferReturnType(
+        new ExplicitOperatorBinding(typeFactory, SqlStdOperatorTable.PLUS, Arrays.asList(type1, type2)));
+  }
+
+  @Override
+  public @org.checkerframework.checker.nullness.qual.Nullable RelDataType deriveDecimalModType(
+      RelDataTypeFactory typeFactory, RelDataType type1, RelDataType type2) {
+    return MOD_INFERENCE.inferReturnType(
+        new ExplicitOperatorBinding(typeFactory, SqlStdOperatorTable.MOD, Arrays.asList(type1, type2)));
+  }
 }
