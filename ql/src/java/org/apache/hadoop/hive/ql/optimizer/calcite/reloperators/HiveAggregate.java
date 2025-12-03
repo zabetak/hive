@@ -33,12 +33,15 @@ import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.rel.type.RelDataTypeField;
+import org.apache.calcite.sql.SqlAggFunction;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.apache.calcite.sql.type.SqlTypeUtil;
 import org.apache.calcite.util.ImmutableBitSet;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveRelShuttle;
 import org.apache.hadoop.hive.ql.optimizer.calcite.TraitsUtil;
 
 import com.google.common.collect.Sets;
+import org.apache.hadoop.hive.ql.optimizer.calcite.translator.SqlFunctionConverter;
 
 public class HiveAggregate extends Aggregate implements HiveRelNode {
 
@@ -53,8 +56,19 @@ public class HiveAggregate extends Aggregate implements HiveRelNode {
   }
 
   public HiveAggregate(RelInput input) {
-    this(input.getCluster(), input.getTraitSet(), input.getInput(),
-        input.getBitSet("group"), input.getBitSetList("groups"), input.getAggregateCalls("aggs"));
+    this(input.getCluster(), input.getTraitSet(), input.getInput(), input.getBitSet("group"),
+        input.getBitSetList("groups"), input.getAggregateCalls("aggs")
+            .stream()
+            .map((call) -> HiveAggregate.replaceAggFunction(input.getInput().getRowType(), call))
+            .toList());
+  }
+
+  private static AggregateCall replaceAggFunction(RelDataType rowType, AggregateCall aggCall) {
+    SqlAggFunction aggFunction =
+        SqlFunctionConverter.getCalciteAggFn(aggCall, SqlTypeUtil.projectTypes(rowType, aggCall.getArgList()));
+    return AggregateCall.create(aggFunction, aggCall.isDistinct(), aggCall.isApproximate(), aggCall.ignoreNulls(),
+        aggCall.getArgList(), aggCall.filterArg, aggCall.distinctKeys, aggCall.getCollation(), aggCall.getType(),
+        aggCall.getName());
   }
 
   @Override

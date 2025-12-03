@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.calcite.rel.core.AggregateCall;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.sql.SqlAggFunction;
 import org.apache.calcite.sql.SqlFunction;
@@ -703,8 +705,16 @@ public class SqlFunctionConverter {
     return calciteOp;
   }
 
+  public static SqlAggFunction getCalciteAggFn(AggregateCall aggCall, List<RelDataType> argTypes) {
+    return getCalciteAggFn(
+        aggCall.getAggregation().getName(),
+        aggCall.isDistinct(),
+        argTypes,
+        aggCall.getType());
+  }
+
   public static SqlAggFunction getCalciteAggFn(String hiveUdfName, boolean isDistinct,
-      ImmutableList<RelDataType> calciteArgTypes, RelDataType calciteRetType) {
+      List<RelDataType> calciteArgTypes, RelDataType calciteRetType) {
     SqlAggFunction calciteAggFn = (SqlAggFunction) hiveToCalcite.get(hiveUdfName);
 
     if (calciteAggFn == null) {
