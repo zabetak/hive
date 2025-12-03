@@ -355,6 +355,21 @@ public class CliConfigs {
     }
   }
 
+  public static class TPCDSFormattedCBOConfig extends AbstractCliConfig {
+    public TPCDSFormattedCBOConfig() {
+      super(CorePerfCliDriver.class);
+      setQueryDir("ql/src/test/queries/clientpositive/perf");
+      setLogDir("itests/qtest/target/qfile-results/clientpositive/perf/tpcds30tb/json");
+      setResultsDir("ql/src/test/results/clientpositive/perf/tpcds30tb/json");
+      setHiveConfDir("data/conf/perf/tpcds30tb/json");
+      setClusterType(MiniClusterType.LLAP_LOCAL);
+      setMetastoreType("postgres.tpcds");
+      for (int i = 1; i < 100; i++) {
+        includeQuery("query" + i + ".q");
+      }
+    }
+  }
+
   public static class NegativeLlapLocalCliConfig extends AbstractCliConfig {
     public NegativeLlapLocalCliConfig() {
       super(CoreNegativeCliDriver.class);
