@@ -42,6 +42,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.google.common.base.Joiner;
+
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.hadoop.fs.Path;
@@ -163,7 +165,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
     if (cboPlan != null) {
       String ruleExclusionRegex = getRuleExcludedRegex();
       if (jsonOutput) {
-        outJSONObject.put(CBO_PLAN_JSON_LABEL, cboPlan);
+        outJSONObject.put(CBO_PLAN_JSON_LABEL, new JSONObject(cboPlan));
         if (!ruleExclusionRegex.isEmpty()) {
           outJSONObject.put(CBO_INFO_JSON_LABEL, EXCLUDED_RULES_PREFIX + ruleExclusionRegex);
         }
@@ -549,31 +551,33 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
       Path resFile = work.getResFile();
       OutputStream outS = resFile.getFileSystem(conf).create(resFile);
       out = new PrintStream(outS, false, StandardCharsets.UTF_8.name());
+      boolean indentJson = HiveConf.getBoolVar(conf, ConfVars.HIVE_EXPLAIN_JSON_INDENT);
+      Function<JSONObject, String> formatJson = jsonObj -> indentJson ? jsonObj.toString(2) : jsonObj.toString();
 
       if(work.isDDL()){
         getDDLPlan(out);
       } else if (work.isCbo()) {
         JSONObject jsonCBOPlan = getJSONCBOPlan(out, work);
         if (work.isFormatted()) {
-          out.print(jsonCBOPlan);
+          out.print(formatJson.apply(jsonCBOPlan));
         }
       } else if (work.isLogical()) {
         JSONObject jsonLogicalPlan = getJSONLogicalPlan(out, work);
         if (work.isFormatted()) {
-          out.print(jsonLogicalPlan);
+          out.print(formatJson.apply(jsonLogicalPlan));
         }
       } else if (work.isAuthorize()) {
         JSONObject jsonAuth = collectAuthRelatedEntities(out, work);
         if (work.isFormatted()) {
-          out.print(jsonAuth);
+          out.print(formatJson.apply(jsonAuth));
         }
       } else if (work.getDependency()) {
         JSONObject jsonDependencies = getJSONDependencies(work);
-        out.print(jsonDependencies);
+        out.print(formatJson.apply(jsonDependencies));
       } else if (work.isLocks()) {
         JSONObject jsonLocks = getLocks(out, work);
         if(work.isFormatted()) {
-          out.print(jsonLocks);
+          out.print(formatJson.apply(jsonLocks));
         }
       } else if (work.isAst()) {
         // Print out the parse AST

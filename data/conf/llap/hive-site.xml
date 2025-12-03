@@ -294,7 +294,10 @@
   <name>hive.explain.user</name>
   <value>false</value>
 </property>
-
+<property>
+  <name>hive.explain.json.indent</name>
+  <value>true</value>
+</property>
 <property>
   <name>hive.join.inner.residual</name>
   <value>true</value>
