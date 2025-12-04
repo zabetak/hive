@@ -62,7 +62,7 @@ public class TestRelPlanParser {
     final File tpcdsJsonDirectory =
         new File(HiveTestEnvSetup.HIVE_ROOT + "ql/src/test/results/clientpositive/perf/tpcds30tb/json");
     String qfile = System.getProperty("qfile");
-    if (qfile == null) {
+    if (qfile == null || qfile.isBlank()) {
       return Objects.requireNonNull(tpcdsJsonDirectory.listFiles());
     } else {
       return new File[] {new File(tpcdsJsonDirectory, qfile)};
