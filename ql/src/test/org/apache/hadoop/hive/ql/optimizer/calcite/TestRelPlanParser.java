@@ -61,7 +61,12 @@ public class TestRelPlanParser {
   static File[] inputJsonFiles() {
     final File tpcdsJsonDirectory =
         new File(HiveTestEnvSetup.HIVE_ROOT + "ql/src/test/results/clientpositive/perf/tpcds30tb/json");
-    return Objects.requireNonNull(tpcdsJsonDirectory.listFiles());
+    String qfile = System.getProperty("qfile");
+    if (qfile == null) {
+      return Objects.requireNonNull(tpcdsJsonDirectory.listFiles());
+    } else {
+      return new File[] {new File(tpcdsJsonDirectory, qfile)};
+    }
   }
 
   @ParameterizedTest
