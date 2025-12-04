@@ -17,6 +17,7 @@
 
 package org.apache.hadoop.hive.ql.optimizer.calcite;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
@@ -38,7 +39,9 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.views.TestRuleBase;
 import org.apache.hadoop.hive.ql.parse.QueryTables;
+import org.apache.hive.testutils.HiveTestEnvSetup;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jline.utils.DiffHelper;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -62,6 +65,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -237,26 +242,19 @@ public class TestRelPlanParser extends TestRuleBase {
   
   @Test
   public void testDeserializeFromFile() throws IOException {
-    final File tpcdsJsonDirectory = new File(
-        Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("tpcds/json")).getFile()
-    );
-    final File tpcdsCBODirectory = new File(
-        Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("tpcds/cbo")).getFile()
-    );
+    final File tpcdsJsonDirectory =
+        new File(HiveTestEnvSetup.HIVE_ROOT + "ql/src/test/results/clientpositive/perf/tpcds30tb/json");
+    final File tpcdsCBODirectory =
+        new File(HiveTestEnvSetup.HIVE_ROOT + "ql/src/test/results/clientpositive/perf/tpcds30tb/tez");
 
-    Path tpcdsCBOActualDir = Paths.get(tpcdsCBODirectory.getPath(), "actual");
-    Files.createDirectory(tpcdsCBOActualDir);
+    Path tpcdsCBOActualDir = Files.createTempDirectory("cbo_actual");
 
     File[] jsonFiles = Objects.requireNonNull(tpcdsJsonDirectory.listFiles());
     Arrays.sort(jsonFiles);
 
     List<Executable> executables = new ArrayList<>();
     for (File jsonFile : jsonFiles) {
-      if (!jsonFile.getName().endsWith(".json")) {
-        LOG.warn("Skipping non-json file: {}", jsonFile.getName());
-        continue;
-      }
-      String cboFileName = jsonFile.getName().replace(".json", ".txt");
+      String cboFileName = jsonFile.getName().replace("query", "cbo_query");
       File cboFile = new File(tpcdsCBODirectory, cboFileName);
       if (!cboFile.exists()) {
         LOG.warn("CBO file not found for JSON file: {}, expected at: {}", jsonFile.getName(), cboFile.getPath());
@@ -265,7 +263,11 @@ public class TestRelPlanParser extends TestRuleBase {
 
       System.out.println("Processing JSON file: " + jsonFile.getName() + " with CBO file: " + cboFile.getName());
       ObjectMapper mapper = new ObjectMapper();
-      String jsonPlan = new String(Files.readAllBytes(Paths.get(jsonFile.getPath())));
+      mapper.enable(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION);
+      String jsonPlan = Files.readAllLines(Paths.get(jsonFile.getPath()))
+          .stream()
+          .filter(line -> !line.startsWith("Warning"))
+          .collect(Collectors.joining());
       JsonNode node = mapper.readTree(jsonPlan);
       Map<List<String>, RelDataType> tables = new HashMap<>();
       for(JsonNode scan: node.findParents("table")){
@@ -309,13 +311,19 @@ public class TestRelPlanParser extends TestRuleBase {
         }
       };
 
-
-      String cboPlan = new String(Files.readAllBytes(Paths.get(cboFile.getPath())));
-      String deserializedPlan = RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, jsonPlan,relOptSchema ));
-      Files.writeString(tpcdsCBOActualDir.resolve(cboFileName), deserializedPlan, StandardOpenOption.CREATE);
+      Stream<String> cboPlan = Files.readAllLines(Paths.get(cboFile.getPath()))
+          .stream()
+          .filter(line -> !line.startsWith("Warning"))
+          .filter(line -> !line.startsWith("CBO PLAN:"))
+          .filter(line -> !line.isBlank());
+      Stream<String> deserializedPlan =
+          RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, node.get("CBOPlan").toString(), relOptSchema)).lines()
+              .filter(line -> !line.isBlank());
+//      if (!cboPlan.equals(deserializedPlan)) {
+//        Files.writeString(tpcdsCBOActualDir.resolve(cboFileName), String.join("", deserializedPlan), StandardOpenOption.CREATE);
+//      }
       executables.add(() ->
-      Assertions.assertEquals(
-          cboPlan, deserializedPlan,
+        Assertions.assertLinesMatch(cboPlan, deserializedPlan,
           "Failed for: " + jsonFile.getName() + "\n"
         )
       );
