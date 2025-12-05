@@ -488,7 +488,7 @@
         "colStats": [
           {
             "name": "ss_customer_sk",
-            "ndv": 3110787,
+            "ndv": 78525965,
             "minValue": 1,
             "maxValue": 80000000
           },
@@ -506,25 +506,25 @@
           },
           {
             "name": "ss_item_sk",
-            "ndv": 247584,
+            "ndv": 462000,
             "minValue": 1,
             "maxValue": 462000
           },
           {
             "name": "ss_cdemo_sk",
-            "ndv": 1603552,
+            "ndv": 1920801,
             "minValue": 1,
             "maxValue": 1920800
           },
           {
             "name": "ss_hdemo_sk",
-            "ndv": 7200,
+            "ndv": 7201,
             "minValue": 1,
             "maxValue": 7200
           },
           {
             "name": "ss_addr_sk",
-            "ndv": 3043783,
+            "ndv": 40000001,
             "minValue": 1,
             "maxValue": 40000000
           },
@@ -536,19 +536,19 @@
           },
           {
             "name": "ss_promo_sk",
-            "ndv": 2300,
+            "ndv": 2301,
             "minValue": 1,
             "maxValue": 2300
           },
           {
             "name": "ss_ticket_number",
-            "ndv": 10415354,
+            "ndv": 7200000000,
             "minValue": 1,
             "maxValue": 7200000000
           },
           {
             "name": "ss_quantity",
-            "ndv": 100,
+            "ndv": 101,
             "minValue": 1,
             "maxValue": 100
           },
@@ -566,19 +566,19 @@
           },
           {
             "name": "ss_sales_price",
-            "ndv": 20202,
+            "ndv": 20315,
             "minValue": 0,
             "maxValue": 200
           },
           {
             "name": "ss_ext_discount_amt",
-            "ndv": 515105,
+            "ndv": 1219691,
             "minValue": 0,
             "maxValue": 19778
           },
           {
             "name": "ss_ext_sales_price",
-            "ndv": 598995,
+            "ndv": 738605,
             "minValue": 0,
             "maxValue": 19972
           },
@@ -590,37 +590,37 @@
           },
           {
             "name": "ss_ext_list_price",
-            "ndv": 735317,
+            "ndv": 759913,
             "minValue": 1,
             "maxValue": 20000
           },
           {
             "name": "ss_ext_tax",
-            "ndv": 116308,
+            "ndv": 158652,
             "minValue": 0,
             "maxValue": 1797.48
           },
           {
             "name": "ss_coupon_amt",
-            "ndv": 515105,
+            "ndv": 1219691,
             "minValue": 0,
             "maxValue": 19778
           },
           {
             "name": "ss_net_paid",
-            "ndv": 788886,
+            "ndv": 1330581,
             "minValue": 0,
             "maxValue": 19972
           },
           {
             "name": "ss_net_paid_inc_tax",
-            "ndv": 1123266,
+            "ndv": 1755573,
             "minValue": 0,
             "maxValue": 21769.48
           },
           {
             "name": "ss_net_profit",
-            "ndv": 950271,
+            "ndv": 1466906,
             "minValue": -10000,
             "maxValue": 9986
           }
@@ -1557,7 +1557,7 @@
         "colStats": [
           {
             "name": "cs_bill_customer_sk",
-            "ndv": 5550154,
+            "ndv": 78525965,
             "minValue": 1,
             "maxValue": 80000000
           },
@@ -1575,61 +1575,61 @@
           },
           {
             "name": "cs_ship_date_sk",
-            "ndv": 93,
+            "ndv": 1880,
             "minValue": 2450817,
             "maxValue": 2452744
           },
           {
             "name": "cs_bill_cdemo_sk",
-            "ndv": 1912941,
+            "ndv": 1920801,
             "minValue": 1,
             "maxValue": 1920800
           },
           {
             "name": "cs_bill_hdemo_sk",
-            "ndv": 7200,
+            "ndv": 7201,
             "minValue": 1,
             "maxValue": 7200
           },
           {
             "name": "cs_bill_addr_sk",
-            "ndv": 5476488,
+            "ndv": 40000001,
             "minValue": 1,
             "maxValue": 40000000
           },
           {
             "name": "cs_ship_customer_sk",
-            "ndv": 5543120,
+            "ndv": 78525965,
             "minValue": 1,
             "maxValue": 80000000
           },
           {
             "name": "cs_ship_cdemo_sk",
-            "ndv": 1910681,
+            "ndv": 1920801,
             "minValue": 1,
             "maxValue": 1920800
           },
           {
             "name": "cs_ship_hdemo_sk",
-            "ndv": 7200,
+            "ndv": 7201,
             "minValue": 1,
             "maxValue": 7200
           },
           {
             "name": "cs_ship_addr_sk",
-            "ndv": 5368063,
+            "ndv": 40000001,
             "minValue": 1,
             "maxValue": 40000000
           },
           {
             "name": "cs_call_center_sk",
-            "ndv": 30,
+            "ndv": 61,
             "minValue": 1,
             "maxValue": 60
           },
           {
             "name": "cs_catalog_page_sk",
-            "ndv": 1364,
+            "ndv": 27932,
             "minValue": 1,
             "maxValue": 38675
           },
@@ -1647,25 +1647,25 @@
           },
           {
             "name": "cs_item_sk",
-            "ndv": 247584,
+            "ndv": 462000,
             "minValue": 1,
             "maxValue": 462000
           },
           {
             "name": "cs_promo_sk",
-            "ndv": 2300,
+            "ndv": 2301,
             "minValue": 1,
             "maxValue": 2300
           },
           {
             "name": "cs_order_number",
-            "ndv": 5699077,
+            "ndv": 4459647885,
             "minValue": 1,
             "maxValue": 4800000000
           },
           {
             "name": "cs_quantity",
-            "ndv": 100,
+            "ndv": 101,
             "minValue": 1,
             "maxValue": 100
           },
@@ -1689,13 +1689,13 @@
           },
           {
             "name": "cs_ext_discount_amt",
-            "ndv": 963841,
+            "ndv": 1138649,
             "minValue": 0,
             "maxValue": 29982
           },
           {
             "name": "cs_ext_sales_price",
-            "ndv": 969161,
+            "ndv": 1151692,
             "minValue": 0,
             "maxValue": 29943
           },
@@ -1707,55 +1707,55 @@
           },
           {
             "name": "cs_ext_list_price",
-            "ndv": 1180059,
+            "ndv": 1208442,
             "minValue": 1,
             "maxValue": 30000
           },
           {
             "name": "cs_ext_tax",
-            "ndv": 182673,
+            "ndv": 228881,
             "minValue": 0,
             "maxValue": 2673.27
           },
           {
             "name": "cs_coupon_amt",
-            "ndv": 878979,
+            "ndv": 1643867,
             "minValue": 0,
             "maxValue": 28730
           },
           {
             "name": "cs_ext_ship_cost",
-            "ndv": 512616,
+            "ndv": 571510,
             "minValue": 0,
             "maxValue": 14994
           },
           {
             "name": "cs_net_paid",
-            "ndv": 1300616,
+            "ndv": 1883946,
             "minValue": 0,
             "maxValue": 29943
           },
           {
             "name": "cs_net_paid_inc_tax",
-            "ndv": 1801743,
+            "ndv": 2551581,
             "minValue": 0,
             "maxValue": 32376.27
           },
           {
             "name": "cs_net_paid_inc_ship",
-            "ndv": 1792832,
+            "ndv": 2600391,
             "minValue": 0,
             "maxValue": 43956
           },
           {
             "name": "cs_net_paid_inc_ship_tax",
-            "ndv": 2372389,
+            "ndv": 3397311,
             "minValue": 0,
             "maxValue": 46593.36
           },
           {
             "name": "cs_net_profit",
-            "ndv": 1492246,
+            "ndv": 2083412,
             "minValue": -10000,
             "maxValue": 19962
           }
@@ -2598,7 +2598,7 @@
         "colStats": [
           {
             "name": "ws_bill_customer_sk",
-            "ndv": 2692187,
+            "ndv": 78525965,
             "minValue": 1,
             "maxValue": 80000000
           },
@@ -2616,67 +2616,67 @@
           },
           {
             "name": "ws_ship_date_sk",
-            "ndv": 125,
+            "ndv": 1902,
             "minValue": 2450817,
             "maxValue": 2452762
           },
           {
             "name": "ws_item_sk",
-            "ndv": 247584,
+            "ndv": 462000,
             "minValue": 1,
             "maxValue": 462000
           },
           {
             "name": "ws_bill_cdemo_sk",
-            "ndv": 1458761,
+            "ndv": 1920801,
             "minValue": 1,
             "maxValue": 1920800
           },
           {
             "name": "ws_bill_hdemo_sk",
-            "ndv": 7200,
+            "ndv": 7201,
             "minValue": 1,
             "maxValue": 7200
           },
           {
             "name": "ws_bill_addr_sk",
-            "ndv": 2506350,
+            "ndv": 40000001,
             "minValue": 1,
             "maxValue": 40000000
           },
           {
             "name": "ws_ship_customer_sk",
-            "ndv": 1703159,
+            "ndv": 78525965,
             "minValue": 1,
             "maxValue": 80000000
           },
           {
             "name": "ws_ship_cdemo_sk",
-            "ndv": 1150831,
+            "ndv": 1920801,
             "minValue": 1,
             "maxValue": 1920800
           },
           {
             "name": "ws_ship_hdemo_sk",
-            "ndv": 7200,
+            "ndv": 7201,
             "minValue": 1,
             "maxValue": 7200
           },
           {
             "name": "ws_ship_addr_sk",
-            "ndv": 2511952,
+            "ndv": 40000001,
             "minValue": 1,
             "maxValue": 40000000
           },
           {
             "name": "ws_web_page_sk",
-            "ndv": 2387,
+            "ndv": 4556,
             "minValue": 1,
             "maxValue": 4602
           },
           {
             "name": "ws_web_site_sk",
-            "ndv": 43,
+            "ndv": 85,
             "minValue": 1,
             "maxValue": 84
           },
@@ -2694,19 +2694,19 @@
           },
           {
             "name": "ws_promo_sk",
-            "ndv": 2300,
+            "ndv": 2301,
             "minValue": 1,
             "maxValue": 2300
           },
           {
             "name": "ws_order_number",
-            "ndv": 2539087,
+            "ndv": 1800000000,
             "minValue": 1,
             "maxValue": 1800000000
           },
           {
             "name": "ws_quantity",
-            "ndv": 100,
+            "ndv": 101,
             "minValue": 1,
             "maxValue": 100
           },
@@ -2724,19 +2724,19 @@
           },
           {
             "name": "ws_sales_price",
-            "ndv": 30544,
+            "ndv": 31054,
             "minValue": 0,
             "maxValue": 300
           },
           {
             "name": "ws_ext_discount_amt",
-            "ndv": 839307,
+            "ndv": 1141615,
             "minValue": 0,
             "maxValue": 29982
           },
           {
             "name": "ws_ext_sales_price",
-            "ndv": 853975,
+            "ndv": 1155428,
             "minValue": 0,
             "maxValue": 29970
           },
@@ -2748,55 +2748,55 @@
           },
           {
             "name": "ws_ext_list_price",
-            "ndv": 1115677,
+            "ndv": 1208442,
             "minValue": 1,
             "maxValue": 30000
           },
           {
             "name": "ws_ext_tax",
-            "ndv": 160251,
+            "ndv": 233719,
             "minValue": 0,
             "maxValue": 2682.9
           },
           {
             "name": "ws_coupon_amt",
-            "ndv": 617359,
+            "ndv": 1659025,
             "minValue": 0,
             "maxValue": 28824
           },
           {
             "name": "ws_ext_ship_cost",
-            "ndv": 458263,
+            "ndv": 564319,
             "minValue": 0,
             "maxValue": 14950
           },
           {
             "name": "ws_net_paid",
-            "ndv": 1064365,
+            "ndv": 1870760,
             "minValue": 0,
             "maxValue": 29970
           },
           {
             "name": "ws_net_paid_inc_tax",
-            "ndv": 1467343,
+            "ndv": 2521035,
             "minValue": 0,
             "maxValue": 32492.9
           },
           {
             "name": "ws_net_paid_inc_ship",
-            "ndv": 1432709,
+            "ndv": 2577850,
             "minValue": 0,
             "maxValue": 44263
           },
           {
             "name": "ws_net_paid_inc_ship_tax",
-            "ndv": 1910821,
+            "ndv": 3413793,
             "minValue": 0,
             "maxValue": 46389.84
           },
           {
             "name": "ws_net_profit",
-            "ndv": 1237985,
+            "ndv": 2074138,
             "minValue": -10000,
             "maxValue": 19980
           }

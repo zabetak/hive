@@ -361,7 +361,11 @@ public class CliConfigs {
       setQueryDir("ql/src/test/queries/clientpositive/perf");
       setLogDir("itests/qtest/target/qfile-results/clientpositive/perf/tpcds30tb/json");
       setResultsDir("ql/src/test/results/clientpositive/perf/tpcds30tb/json");
-      setHiveConfDir("data/conf/perf/tpcds30tb/json");
+      setHiveConfDir("data/conf/perf/tpcds30tb/tez");
+      Map<HiveConf.ConfVars, String> conf = new HashMap<>();
+      conf.put(HiveConf.ConfVars.HIVE_EXPLAIN_JSON_INDENT, "true");
+      conf.put(HiveConf.ConfVars.SEMANTIC_ANALYZER_HOOK, "org.apache.hadoop.hive.ql.hooks.ExplainFormattedCBOHook");
+      setCustomConfigValueMap(conf);
       setClusterType(MiniClusterType.LLAP_LOCAL);
       setMetastoreType("postgres.tpcds");
       for (int i = 1; i < 100; i++) {
