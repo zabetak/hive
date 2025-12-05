@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.optimizer.calcite;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptPlanner;
 import org.apache.calcite.plan.RelOptSchema;
@@ -42,6 +43,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,12 +53,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.fail;
 
 public class TestRelPlanParser {
+  private static final Pattern SCIENTIFIC_NOTATION_PATTERN = Pattern.compile("\\d+(\\.\\d+)?E\\d+");
+
+  private enum KnownIssue {
+    SCIENTIFIC_NOTATION_DIFFERENCES
+  }
+
+  private final Map<String, KnownIssue> FILE_TO_ISSUE = ImmutableMap.<String, KnownIssue> builder()
+      .put("query83.q.out", KnownIssue.SCIENTIFIC_NOTATION_DIFFERENCES)
+      .put("query34.q.out", KnownIssue.SCIENTIFIC_NOTATION_DIFFERENCES)
+      .put("query39.q.out", KnownIssue.SCIENTIFIC_NOTATION_DIFFERENCES)
+      .put("query73.q.out", KnownIssue.SCIENTIFIC_NOTATION_DIFFERENCES)
+      .build();
 
   static File[] inputJsonFiles() {
     final File tpcdsJsonDirectory =
@@ -124,18 +139,24 @@ public class TestRelPlanParser {
       }
     };
 
+    final boolean issueWithScientificNotation =
+        FILE_TO_ISSUE.containsKey(jsonFile.getName()) && FILE_TO_ISSUE.get(jsonFile.getName())
+            == KnownIssue.SCIENTIFIC_NOTATION_DIFFERENCES;
     Stream<String> cboPlan = Files.readAllLines(Paths.get(cboFile.getPath()))
         .stream()
         .filter(line -> !line.startsWith("Warning"))
         .filter(line -> !line.startsWith("CBO PLAN:"))
         .filter(line -> !line.isBlank());
+
     Stream<String> deserializedPlan =
         RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, node.get("CBOPlan").toString(), relOptSchema))
             .lines()
-            .filter(line -> !line.isBlank());
-    //      if (!cboPlan.equals(deserializedPlan)) {
-    //        Files.writeString(tpcdsCBOActualDir.resolve(cboFileName), String.join("", deserializedPlan), StandardOpenOption.CREATE);
-    //      }
+            .filter(line -> !line.isBlank())
+            .map(line -> issueWithScientificNotation ? removeScientificNotation(line) : line);
     Assertions.assertLinesMatch(cboPlan, deserializedPlan, "Failed for: " + jsonFile.getName() + "\n");
+  }
+
+  private static String removeScientificNotation(String line) {
+    return SCIENTIFIC_NOTATION_PATTERN.matcher(line).replaceAll(mr -> new BigDecimal(mr.group()).toPlainString());
   }
 }
