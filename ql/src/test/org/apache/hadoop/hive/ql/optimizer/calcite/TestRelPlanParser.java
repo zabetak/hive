@@ -146,7 +146,8 @@ public class TestRelPlanParser {
         .stream()
         .filter(line -> !line.startsWith("Warning"))
         .filter(line -> !line.startsWith("CBO PLAN:"))
-        .filter(line -> !line.isBlank());
+        .filter(line -> !line.isBlank())
+        .map(line -> issueWithScientificNotation ? removeScientificNotation(line) : line);
 
     Stream<String> deserializedPlan =
         RelOptUtil.toString(HiveRelOptUtil.deserializePlan(conf, node.get("CBOPlan").toString(), relOptSchema))
