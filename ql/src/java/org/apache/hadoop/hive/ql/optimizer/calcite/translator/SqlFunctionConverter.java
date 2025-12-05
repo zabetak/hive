@@ -45,6 +45,7 @@ import org.apache.calcite.sql.type.SqlOperandTypeInference;
 import org.apache.calcite.sql.type.SqlReturnTypeInference;
 import org.apache.calcite.sql.type.SqlTypeFamily;
 import org.apache.calcite.sql.validate.SqlNameMatcher;
+import org.apache.calcite.sql.validate.SqlValidatorUtil;
 import org.apache.calcite.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.ql.exec.DataSketchesFunctions;
@@ -706,6 +707,11 @@ public class SqlFunctionConverter {
   }
 
   public static SqlAggFunction getCalciteAggFn(AggregateCall aggCall, List<RelDataType> argTypes) {
+    // If the agg function is a standard function return it directly and don't alter it with Hive's version
+    SqlAggFunction f = aggCall.getAggregation();
+    if (f.equals(SqlValidatorUtil.lookupSqlFunctionByID(SqlStdOperatorTable.instance(), f.getNameAsId(), null))) {
+      return f;
+    }
     return getCalciteAggFn(
         aggCall.getAggregation().getName(),
         aggCall.isDistinct(),
