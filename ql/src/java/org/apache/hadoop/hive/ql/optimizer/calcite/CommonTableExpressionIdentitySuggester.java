@@ -17,6 +17,7 @@
 package org.apache.hadoop.hive.ql.optimizer.calcite;
 
 import org.apache.calcite.plan.Contexts;
+import org.apache.calcite.plan.hep.HepMatchOrder;
 import org.apache.calcite.plan.hep.HepPlanner;
 import org.apache.calcite.plan.hep.HepProgram;
 import org.apache.calcite.plan.hep.HepProgramBuilder;
@@ -25,6 +26,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.CommonRelSubExprRegisterRule;
+import org.apache.hadoop.hive.ql.optimizer.calcite.rules.NormalizeScanRule;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,9 +48,16 @@ public class CommonTableExpressionIdentitySuggester implements CommonTableExpres
         .addRuleInstance(CommonRelSubExprRegisterRule.PROJECT)
         .build();
     HepPlanner planner = new HepPlanner(ruleProgram, Contexts.of(localRegistry));
-    planner.setRoot(input);
+    planner.setRoot(normalizeScan(input));
     planner.findBestExp();
     return localRegistry.entries().collect(Collectors.toList());
+  }
+  private static RelNode normalizeScan(RelNode input) {
+    HepProgramBuilder builder = new HepProgramBuilder();
+    builder.addRuleInstance(new NormalizeScanRule());
+    HepPlanner planner = new HepPlanner(builder.build());
+    planner.setRoot(input);
+    return planner.findBestExp();
   }
 
 }

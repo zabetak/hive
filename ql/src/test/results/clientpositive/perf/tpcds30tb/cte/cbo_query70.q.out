@@ -1,3 +1,7 @@
+CTE Suggestion:
+HiveFilter(condition=[IS NOT NULL($24)])
+  HiveTableScan(table=[[default, store]], table:alias=[store])
+
 CBO PLAN:
 HiveProject(total_sum=[$0], s_state=[$1], s_county=[$2], lochierarchy=[$3], rank_within_parent=[$4])
   HiveSortLimit(sort0=[$3], sort1=[$5], sort2=[$4], dir0=[DESC], dir1=[ASC], dir2=[ASC], fetch=[100])

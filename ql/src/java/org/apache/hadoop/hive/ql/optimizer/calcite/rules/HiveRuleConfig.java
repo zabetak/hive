@@ -33,7 +33,7 @@ public abstract class HiveRuleConfig implements RelRule.Config {
   }
 
   @Override
-  public RelRule.Config withRelBuilderFactory(RelBuilderFactory factory) {
+  public HiveRuleConfig withRelBuilderFactory(RelBuilderFactory factory) {
     this.factory = Objects.requireNonNull(factory);
     return this;
   }
@@ -44,7 +44,7 @@ public abstract class HiveRuleConfig implements RelRule.Config {
   }
 
   @Override
-  public RelRule.Config withDescription(String description) {
+  public HiveRuleConfig withDescription(String description) {
     if (description == null || description.isEmpty()) {
       throw new IllegalArgumentException("Description can not be null/empty");
     }
@@ -58,7 +58,7 @@ public abstract class HiveRuleConfig implements RelRule.Config {
   }
 
   @Override
-  public RelRule.Config withOperandSupplier(RelRule.OperandTransform transform) {
+  public HiveRuleConfig withOperandSupplier(RelRule.OperandTransform transform) {
     this.operandSupplier = Objects.requireNonNull(transform);
     return this;
   }

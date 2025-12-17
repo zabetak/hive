@@ -1,3 +1,23 @@
+CTE Suggestion:
+HiveFilter(condition=[BETWEEN(false, $9, 1, 20)])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveFilter(condition=[BETWEEN(false, $9, 21, 40)])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveFilter(condition=[BETWEEN(false, $9, 41, 60)])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveFilter(condition=[BETWEEN(false, $9, 61, 80)])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveFilter(condition=[BETWEEN(false, $9, 81, 100)])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
 Warning: Map Join MAPJOIN[185][bigTable=?] in task 'Map 1' is a cross product
 Warning: Map Join MAPJOIN[184][bigTable=?] in task 'Map 1' is a cross product
 Warning: Map Join MAPJOIN[183][bigTable=?] in task 'Map 1' is a cross product

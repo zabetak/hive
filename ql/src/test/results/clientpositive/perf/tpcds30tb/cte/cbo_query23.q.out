@@ -1,4 +1,8 @@
 CTE Suggestion:
+HiveFilter(condition=[IN($6, 1999, 2000, 2001, 2002)])
+  HiveTableScan(table=[[default, date_dim]], table:alias=[date_dim])
+
+CTE Suggestion:
 HiveProject($f1=[$0])
   HiveFilter(condition=[>($2, 4)])
     HiveProject(i_item_sk=[$3], d_date=[$1], $f2=[$2])
