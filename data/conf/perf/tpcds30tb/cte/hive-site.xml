@@ -47,4 +47,8 @@
         <name>hive.optimize.cte.suggester.class</name>
         <value>org.apache.hadoop.hive.ql.optimizer.calcite.CommonTableExpressionPrintSuggester</value>
     </property>
+    <property>
+        <name>hive.optimize.cte.materialize.full.aggregate.only</name>
+        <value>false</value>
+    </property>
 </configuration>

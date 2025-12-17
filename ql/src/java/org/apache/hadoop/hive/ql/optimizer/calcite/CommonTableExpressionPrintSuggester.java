@@ -30,7 +30,7 @@ import java.util.List;
 @InterfaceAudience.Private
 public class CommonTableExpressionPrintSuggester implements CommonTableExpressionSuggester {
 
-  private final CommonTableExpressionSuggester internal = new CommonTableExpressionIdentitySuggester();
+  private final CommonTableExpressionSuggester internal = new CommonTableExpressionAggFilterSuggester();
 
   @Override
   public List<RelNode> suggest(final RelNode input, final Configuration configuration) {
