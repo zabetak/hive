@@ -42,11 +42,14 @@ public class ScanRegistry {
   }
 
   public static class NodeInfo {
+    public final List<RexNode> project;
     public final RexNode filterCondition;
     public final ImmutableBitSet groupSet;
     public final List<AggregateCall> aggCalls;
 
-    public NodeInfo(RexNode filterCondition, ImmutableBitSet groupSet, List<AggregateCall> aggCalls) {
+    public NodeInfo(List<RexNode> project, RexNode filterCondition, ImmutableBitSet groupSet,
+        List<AggregateCall> aggCalls) {
+      this.project = project;
       this.filterCondition = filterCondition;
       this.groupSet = groupSet;
       this.aggCalls = aggCalls;

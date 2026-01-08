@@ -1,53 +1,57 @@
 CTE Suggestion:
-HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-  HiveFilter(condition=[SEARCH($9, Sarg[[1..20]])])
+HiveAggregate(group=[{}], agg#0=[count($6)], agg#1=[sum($14)], agg#2=[count($8)], agg#3=[count($10)], agg#4=[sum($8)], agg#5=[sum($10)], agg#6=[sum($1)], agg#7=[count($14)], agg#8=[count($12)], agg#9=[count($4)], agg#10=[count($0)], agg#11=[count($2)], agg#12=[count($7)], agg#13=[sum($13)], agg#14=[count($9)], agg#15=[sum($7)], agg#16=[sum($5)], agg#17=[sum($11)], agg#18=[sum($2)], agg#19=[sum($4)], agg#20=[count($13)], agg#21=[count($11)], agg#22=[count($5)], agg#23=[count($3)], agg#24=[count($1)])
+  HiveProject($f0=[CASE(AND(<=(1, $9), <=($9, 20)), 1, null:INTEGER)], $f1=[CASE(AND(<=(1, $9), <=($9, 20)), $16, null:DECIMAL(7, 2))], $f2=[CASE(AND(<=(1, $9), <=($9, 20)), $20, null:DECIMAL(7, 2))], $f3=[CASE(AND(<=(21, $9), <=($9, 40)), 1, null:INTEGER)], $f4=[CASE(AND(<=(21, $9), <=($9, 40)), $16, null:DECIMAL(7, 2))], $f5=[CASE(AND(<=(21, $9), <=($9, 40)), $20, null:DECIMAL(7, 2))], $f6=[CASE(AND(<=(41, $9), <=($9, 60)), 1, null:INTEGER)], $f7=[CASE(AND(<=(41, $9), <=($9, 60)), $16, null:DECIMAL(7, 2))], $f8=[CASE(AND(<=(41, $9), <=($9, 60)), $20, null:DECIMAL(7, 2))], $f9=[CASE(AND(<=(61, $9), <=($9, 80)), 1, null:INTEGER)], $f10=[CASE(AND(<=(61, $9), <=($9, 80)), $16, null:DECIMAL(7, 2))], $f11=[CASE(AND(<=(61, $9), <=($9, 80)), $20, null:DECIMAL(7, 2))], $f12=[CASE(AND(<=(81, $9), <=($9, 100)), 1, null:INTEGER)], $f13=[CASE(AND(<=(81, $9), <=($9, 100)), $16, null:DECIMAL(7, 2))], $f14=[CASE(AND(<=(81, $9), <=($9, 100)), $20, null:DECIMAL(7, 2))])
     HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
 
 CTE Suggestion:
-HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-  HiveFilter(condition=[SEARCH($9, Sarg[[21..40]])])
-    HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-
-CTE Suggestion:
-HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-  HiveFilter(condition=[SEARCH($9, Sarg[[41..60]])])
-    HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-
-CTE Suggestion:
-HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-  HiveFilter(condition=[SEARCH($9, Sarg[[61..80]])])
-    HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-
-CTE Suggestion:
-HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-  HiveFilter(condition=[SEARCH($9, Sarg[[81..100]])])
-    HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-
-CTE Suggestion:
-HiveFilter(condition=[SEARCH($9, Sarg[[1..20], [21..40], [41..60], [61..80], [81..100]])])
-  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-
-CTE Suggestion:
-HiveProject($f0=[$0], $f1=[$1], $f2=[$2], $f3=[$3], $f4=[$4], $f00=[$0], $f10=[$1], $f20=[$2], $f30=[$3], $f40=[$4], $f01=[$0], $f11=[$1], $f21=[$2], $f31=[$3], $f41=[$4], $f02=[$0], $f12=[$1], $f22=[$2], $f32=[$3], $f42=[$4], $f03=[$0], $f13=[$1], $f23=[$2], $f33=[$3], $f43=[$4])
-  HiveAggregate(group=[{}], agg#0=[count()], agg#1=[sum($16)], agg#2=[count($16)], agg#3=[sum($20)], agg#4=[count($20)])
-    HiveFilter(condition=[SEARCH($9, Sarg[[1..20], [21..40], [41..60], [61..80], [81..100]])])
+HiveAggregate(group=[{}], agg#0=[sum($1)], agg#1=[sum($0)], agg#2=[count()], agg#3=[count($0)], agg#4=[count($1)])
+  HiveProject(ss_ext_list_price=[$16], ss_net_paid_inc_tax=[$20])
+    HiveFilter(condition=[AND(<=(1, $9), <=($9, 20))])
       HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
 
-Warning: Map Join MAPJOIN[191][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[190][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[189][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[188][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[187][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[186][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[185][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[184][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[183][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[182][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[181][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[180][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[179][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[178][bigTable=?] in task 'Map 2' is a cross product
-Warning: Map Join MAPJOIN[177][bigTable=?] in task 'Map 2' is a cross product
+CTE Suggestion:
+HiveAggregate(group=[{}], agg#0=[sum($1)], agg#1=[sum($0)], agg#2=[count()], agg#3=[count($0)], agg#4=[count($1)])
+  HiveProject(ss_ext_list_price=[$16], ss_net_paid_inc_tax=[$20])
+    HiveFilter(condition=[AND(<=(21, $9), <=($9, 40))])
+      HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveAggregate(group=[{}], agg#0=[sum($1)], agg#1=[sum($0)], agg#2=[count()], agg#3=[count($0)], agg#4=[count($1)])
+  HiveProject(ss_ext_list_price=[$16], ss_net_paid_inc_tax=[$20])
+    HiveFilter(condition=[AND(<=(41, $9), <=($9, 60))])
+      HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveAggregate(group=[{}], agg#0=[sum($1)], agg#1=[sum($0)], agg#2=[count()], agg#3=[count($0)], agg#4=[count($1)])
+  HiveProject(ss_ext_list_price=[$16], ss_net_paid_inc_tax=[$20])
+    HiveFilter(condition=[AND(<=(61, $9), <=($9, 80))])
+      HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveAggregate(group=[{}], agg#0=[sum($1)], agg#1=[sum($0)], agg#2=[count()], agg#3=[count($0)], agg#4=[count($1)])
+  HiveProject(ss_ext_list_price=[$16], ss_net_paid_inc_tax=[$20])
+    HiveFilter(condition=[AND(<=(81, $9), <=($9, 100))])
+      HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+CTE Suggestion:
+HiveFilter(condition=[OR(AND(<=(1, $9), <=($9, 20)), AND(<=(21, $9), <=($9, 40)), AND(<=(41, $9), <=($9, 60)), AND(<=(61, $9), <=($9, 80)), AND(<=(81, $9), <=($9, 100)))])
+  HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+
+Warning: Map Join MAPJOIN[108][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[107][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[106][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[105][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[104][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[103][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[102][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[101][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[100][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[99][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[98][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[97][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[96][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[95][bigTable=?] in task 'Map 3' is a cross product
+Warning: Map Join MAPJOIN[94][bigTable=?] in task 'Map 3' is a cross product
 CBO PLAN:
 HiveProject(bucket1=[CASE($1, $2, $3)], bucket2=[CASE($4, $5, $6)], bucket3=[CASE($7, $8, $9)], bucket4=[CASE($10, $11, $12)], bucket5=[CASE($13, $14, $15)])
   HiveJoin(condition=[true], joinType=[left], algorithm=[none], cost=[not available])
@@ -68,67 +72,38 @@ HiveProject(bucket1=[CASE($1, $2, $3)], bucket2=[CASE($4, $5, $6)], bucket3=[CAS
                                 HiveProject(r_reason_sk=[1:BIGINT])
                                   HiveFilter(condition=[=($0, 1)])
                                     HiveTableScan(table=[[default, reason]], table:alias=[reason])
-                                HiveProject(EXPR$0=[>($0, 409437)])
-                                  HiveAggregate(group=[{}], agg#0=[count()])
-                                    HiveFilter(condition=[BETWEEN(false, $9, 1, 20)])
-                                      HiveTableSpool(table=[[cte, cte_suggestion_5]])
-                                        HiveProject(ss_sold_time_sk=[$0], ss_item_sk=[$1], ss_customer_sk=[$2], ss_cdemo_sk=[$3], ss_hdemo_sk=[$4], ss_addr_sk=[$5], ss_store_sk=[$6], ss_promo_sk=[$7], ss_ticket_number=[$8], ss_quantity=[$9], ss_wholesale_cost=[$10], ss_list_price=[$11], ss_sales_price=[$12], ss_ext_discount_amt=[$13], ss_ext_sales_price=[$14], ss_ext_wholesale_cost=[$15], ss_ext_list_price=[$16], ss_ext_tax=[$17], ss_coupon_amt=[$18], ss_net_paid=[$19], ss_net_paid_inc_tax=[$20], ss_net_profit=[$21], ss_sold_date_sk=[$22], BLOCK__OFFSET__INSIDE__FILE=[$23], INPUT__FILE__NAME=[$24], ROW__ID=[$25], ROW__IS__DELETED=[$26])
-                                          HiveFilter(condition=[OR(BETWEEN(false, $9, 1, 20), BETWEEN(false, $9, 21, 40), BETWEEN(false, $9, 41, 60), BETWEEN(false, $9, 61, 80), BETWEEN(false, $9, 81, 100))])
-                                            HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
-                              HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                                HiveAggregate(group=[{}], agg#0=[sum($16)], agg#1=[count($16)])
-                                  HiveFilter(condition=[BETWEEN(false, $9, 1, 20)])
-                                    HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                            HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                              HiveAggregate(group=[{}], agg#0=[sum($20)], agg#1=[count($20)])
-                                HiveFilter(condition=[BETWEEN(false, $9, 1, 20)])
-                                  HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                          HiveProject(EXPR$1=[>($0, 4595804)])
-                            HiveAggregate(group=[{}], agg#0=[count()])
-                              HiveFilter(condition=[BETWEEN(false, $9, 21, 40)])
-                                HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                        HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                          HiveAggregate(group=[{}], agg#0=[sum($16)], agg#1=[count($16)])
-                            HiveFilter(condition=[BETWEEN(false, $9, 21, 40)])
-                              HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                      HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                        HiveAggregate(group=[{}], agg#0=[sum($20)], agg#1=[count($20)])
-                          HiveFilter(condition=[BETWEEN(false, $9, 21, 40)])
-                            HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                    HiveProject(EXPR$2=[>($0, 7887297)])
-                      HiveAggregate(group=[{}], agg#0=[count()])
-                        HiveFilter(condition=[BETWEEN(false, $9, 41, 60)])
-                          HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                  HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                    HiveAggregate(group=[{}], agg#0=[sum($16)], agg#1=[count($16)])
-                      HiveFilter(condition=[BETWEEN(false, $9, 41, 60)])
-                        HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-                HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-                  HiveAggregate(group=[{}], agg#0=[sum($20)], agg#1=[count($20)])
-                    HiveFilter(condition=[BETWEEN(false, $9, 41, 60)])
-                      HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-              HiveProject(EXPR$3=[>($0, 10872978)])
-                HiveAggregate(group=[{}], agg#0=[count()])
-                  HiveFilter(condition=[BETWEEN(false, $9, 61, 80)])
-                    HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-            HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-              HiveAggregate(group=[{}], agg#0=[sum($16)], agg#1=[count($16)])
-                HiveFilter(condition=[BETWEEN(false, $9, 61, 80)])
-                  HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-          HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-            HiveAggregate(group=[{}], agg#0=[sum($20)], agg#1=[count($20)])
-              HiveFilter(condition=[BETWEEN(false, $9, 61, 80)])
-                HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-        HiveProject(EXPR$4=[>($0, 43571537)])
-          HiveAggregate(group=[{}], agg#0=[count()])
-            HiveFilter(condition=[BETWEEN(false, $9, 81, 100)])
-              HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-      HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-        HiveAggregate(group=[{}], agg#0=[sum($16)], agg#1=[count($16)])
-          HiveFilter(condition=[BETWEEN(false, $9, 81, 100)])
-            HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
-    HiveProject(_o__c0=[CAST(/($0, $1)):DECIMAL(11, 6)])
-      HiveAggregate(group=[{}], agg#0=[sum($20)], agg#1=[count($20)])
-        HiveFilter(condition=[BETWEEN(false, $9, 81, 100)])
-          HiveTableScan(table=[[cte, cte_suggestion_5]], table:alias=[cte_suggestion_5])
+                                HiveProject($f0=[>($10, 409437)])
+                                  HiveTableSpool(table=[[cte, cte_suggestion_0]])
+                                    HiveProject($f0=[$0], $f1=[$1], $f2=[$2], $f3=[$3], $f4=[$4], $f5=[$5], $f6=[$6], $f7=[$7], $f8=[$8], $f9=[$9], $f10=[$10], $f11=[$11], $f12=[$12], $f13=[$13], $f14=[$14], $f15=[$15], $f16=[$16], $f17=[$17], $f18=[$18], $f19=[$19], $f20=[$20], $f21=[$21], $f22=[$22], $f23=[$23], $f24=[$24])
+                                      HiveAggregate(group=[{}], agg#0=[count($6)], agg#1=[sum($14)], agg#2=[count($8)], agg#3=[count($10)], agg#4=[sum($8)], agg#5=[sum($10)], agg#6=[sum($1)], agg#7=[count($14)], agg#8=[count($12)], agg#9=[count($4)], agg#10=[count($0)], agg#11=[count($2)], agg#12=[count($7)], agg#13=[sum($13)], agg#14=[count($9)], agg#15=[sum($7)], agg#16=[sum($5)], agg#17=[sum($11)], agg#18=[sum($2)], agg#19=[sum($4)], agg#20=[count($13)], agg#21=[count($11)], agg#22=[count($5)], agg#23=[count($3)], agg#24=[count($1)])
+                                        HiveProject($f0=[CASE(AND(<=(1, $9), <=($9, 20)), 1, null:INTEGER)], $f1=[CASE(AND(<=(1, $9), <=($9, 20)), $16, null:DECIMAL(7, 2))], $f2=[CASE(AND(<=(1, $9), <=($9, 20)), $20, null:DECIMAL(7, 2))], $f3=[CASE(AND(<=(21, $9), <=($9, 40)), 1, null:INTEGER)], $f4=[CASE(AND(<=(21, $9), <=($9, 40)), $16, null:DECIMAL(7, 2))], $f5=[CASE(AND(<=(21, $9), <=($9, 40)), $20, null:DECIMAL(7, 2))], $f6=[CASE(AND(<=(41, $9), <=($9, 60)), 1, null:INTEGER)], $f7=[CASE(AND(<=(41, $9), <=($9, 60)), $16, null:DECIMAL(7, 2))], $f8=[CASE(AND(<=(41, $9), <=($9, 60)), $20, null:DECIMAL(7, 2))], $f9=[CASE(AND(<=(61, $9), <=($9, 80)), 1, null:INTEGER)], $f10=[CASE(AND(<=(61, $9), <=($9, 80)), $16, null:DECIMAL(7, 2))], $f11=[CASE(AND(<=(61, $9), <=($9, 80)), $20, null:DECIMAL(7, 2))], $f12=[CASE(AND(<=(81, $9), <=($9, 100)), 1, null:INTEGER)], $f13=[CASE(AND(<=(81, $9), <=($9, 100)), $16, null:DECIMAL(7, 2))], $f14=[CASE(AND(<=(81, $9), <=($9, 100)), $20, null:DECIMAL(7, 2))])
+                                          HiveTableScan(table=[[default, store_sales]], table:alias=[store_sales])
+                              HiveProject($f0=[CAST(/($6, $24)):DECIMAL(11, 6)])
+                                HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                            HiveProject($f0=[CAST(/($18, $11)):DECIMAL(11, 6)])
+                              HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                          HiveProject($f0=[>($23, 4595804)])
+                            HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                        HiveProject($f0=[CAST(/($19, $9)):DECIMAL(11, 6)])
+                          HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                      HiveProject($f0=[CAST(/($16, $22)):DECIMAL(11, 6)])
+                        HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                    HiveProject($f0=[>($0, 7887297)])
+                      HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                  HiveProject($f0=[CAST(/($15, $12)):DECIMAL(11, 6)])
+                    HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+                HiveProject($f0=[CAST(/($4, $2)):DECIMAL(11, 6)])
+                  HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+              HiveProject($f0=[>($14, 10872978)])
+                HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+            HiveProject($f0=[CAST(/($5, $3)):DECIMAL(11, 6)])
+              HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+          HiveProject($f0=[CAST(/($17, $21)):DECIMAL(11, 6)])
+            HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+        HiveProject($f0=[>($8, 43571537)])
+          HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+      HiveProject($f0=[CAST(/($13, $20)):DECIMAL(11, 6)])
+        HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
+    HiveProject($f0=[CAST(/($1, $7)):DECIMAL(11, 6)])
+      HiveTableScan(table=[[cte, cte_suggestion_0]], table:alias=[cte_suggestion_0])
 

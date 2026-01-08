@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.ql.optimizer.calcite;
 
 import org.apache.calcite.plan.Contexts;
 import org.apache.calcite.plan.hep.HepPlanner;
+import org.apache.calcite.plan.hep.HepProgram;
 import org.apache.calcite.plan.hep.HepProgramBuilder;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.AggregateCall;
@@ -27,25 +28,41 @@ import org.apache.calcite.rex.RexNode;
 import org.apache.calcite.tools.RelBuilder;
 import org.apache.calcite.util.ImmutableBitSet;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.ql.optimizer.calcite.rules.AggregateFilterToConditionalAggregateRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveInBetweenExpandRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CommonTableExpressionAggFilterSuggester implements CommonTableExpressionSuggester {
+  private static final HepProgram EXPAND_PROGRAM =
+      new HepProgramBuilder().addRuleInstance(HiveInBetweenExpandRule.FILTER_INSTANCE)
+          .addRuleInstance(HiveInBetweenExpandRule.PROJECT_INSTANCE)
+          .addRuleInstance(HiveInBetweenExpandRule.JOIN_INSTANCE)
+          .build();
+
+  private final List<RelNode> suggestions = new ArrayList<>();
+
   @Override
   public List<RelNode> suggest(RelNode input, Configuration configuration) {
     HepProgramBuilder b = new HepProgramBuilder();
     b.addRuleInstance(HiveInBetweenExpandRule.FILTER_INSTANCE);
-    b.addRuleInstance(new AggregateFilterScanRegisterRule());
+    b.addRuleInstance(HiveInBetweenExpandRule.PROJECT_INSTANCE);
+    b.addRuleInstance(HiveInBetweenExpandRule.JOIN_INSTANCE);
+    b.addRuleCollection(Arrays.asList(
+        new AggregateFilterScanRegisterRule(),
+        new AggregateFilterToConditionalAggregateRule(),
+        new AggregateProjectScanRegisterRule()));
     ScanRegistry sr = new ScanRegistry();
     HepPlanner planner = new HepPlanner(b.build(), Contexts.of(sr));
     planner.setRoot(input);
     planner.findBestExp();
     RelBuilder builder = HiveRelFactories.HIVE_BUILDER.create(input.getCluster(), null);
-    List<RelNode> suggestions = new ArrayList<>();
     sr.names().forEach(name -> {
       List<ScanRegistry.NodeInfo> info = sr.getInfo(name);
       TableScan scan = sr.getScan(name);
@@ -57,37 +74,68 @@ public class CommonTableExpressionAggFilterSuggester implements CommonTableExpre
         filterAggs.add(nodeInfo);
         filterToAggregate.put(nodeInfo.filterCondition, filterAggs);
       }
-      ImmutableBitSet allAggGroupSet = ImmutableBitSet.of();
-      List<AggregateCall> allCalls = new ArrayList<>();
       filterToAggregate.forEach((key, value) -> {
         builder.clear();
         builder.push(scan);
         builder.filter(key);
         ImmutableBitSet groupSet = ImmutableBitSet.of();
-        List<AggregateCall> aggCalls = new ArrayList<>();
+        Set<AggregateCall> aggCalls = new HashSet<>();
+        List<RexNode> projects = new ArrayList<>();
         for (ScanRegistry.NodeInfo nodeInfo : value) {
-          groupSet = groupSet.union(nodeInfo.groupSet);
-          aggCalls.addAll(nodeInfo.aggCalls);
+          // TODO Decide what to do about the groupSets
+          ImmutableBitSet.Builder newGroupSet = ImmutableBitSet.builder();
+          for(int groupKey: nodeInfo.groupSet) {
+            RexNode p = nodeInfo.project.get(groupKey);
+            int ix = projects.indexOf(p);
+            if (ix < 0) {
+              ix = projects.size();
+              projects.add(p);
+            }
+            newGroupSet.set(ix);
+          }
+          // TODO Do we want the union or something smarter?
+          groupSet = groupSet.union(newGroupSet.build());
+          for (AggregateCall c : nodeInfo.aggCalls) {
+            List<Integer> remappedArgs = new ArrayList<>();
+            for (int i : c.getArgList()) {
+              RexNode p = nodeInfo.project.get(i);
+              int ix = projects.indexOf(p);
+              if (ix < 0) {
+                ix = projects.size();
+                projects.add(p);
+              }
+              remappedArgs.add(ix);
+            }
+            aggCalls.add(c.withArgList(remappedArgs));
+          }
         }
-
-        builder.aggregate(builder.groupKey(groupSet), aggCalls);
-        suggestions.add(builder.build());
-        allAggGroupSet.union(groupSet);
-        allCalls.addAll(aggCalls);
+        if (!projects.isEmpty()) {
+          builder.project(projects);
+        }
+        builder.aggregate(builder.groupKey(groupSet), new ArrayList<>(aggCalls));
+        addSuggestion(builder.build());
       });
       // Create a big disjunctive filter over the table scan
       builder.clear();
       builder.push(scan);
-      builder.filter(builder.or(filterToAggregate.keySet()));
-      suggestions.add(builder.build());
-
-      // Create a big disjunctive filter with all possible aggregations
-      builder.clear();
-      builder.push(scan);
-      builder.filter(builder.or(filterToAggregate.keySet()));
-      builder.aggregate(builder.groupKey(allAggGroupSet), allCalls);
-      suggestions.add(builder.build());
+      List<RexNode> interestingFilters = new ArrayList<>(filterToAggregate.keySet());
+      interestingFilters.removeIf(RexNode::isAlwaysTrue);
+      builder.filter(builder.or(interestingFilters));
+      addSuggestion(builder.build());
+      // TODO: Check if we want to have the conditional aggregate with big disjunctive filter
     });
     return suggestions;
+  }
+
+  private void addSuggestion(RelNode rel) {
+    // TODO Probably we don't need this check anymore
+    if (rel instanceof TableScan) {
+      // No point suggesting just a table scan
+      return;
+    }
+    // TODO: Will not be necessary after improving certain simplifications with SEARCH
+    HepPlanner expandPlanner = new HepPlanner(EXPAND_PROGRAM);
+    expandPlanner.setRoot(rel);
+    suggestions.add(expandPlanner.findBestExp());
   }
 }

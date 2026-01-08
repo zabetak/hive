@@ -175,6 +175,7 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.HiveMaterializedViewASTSubQue
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveSqlTypeUtil;
 import org.apache.hadoop.hive.ql.optimizer.calcite.HiveTezModelRelMetadataProvider;
 import org.apache.hadoop.hive.ql.optimizer.calcite.RuleEventLogger;
+import org.apache.hadoop.hive.ql.optimizer.calcite.rules.AggregateFilterToConditionalAggregateRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.CteRuleConfig;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveAggregateSortLimitRule;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveJoinSwapConstraintsRule;
@@ -1728,7 +1729,9 @@ public class CalcitePlanner extends SemanticAnalyzer {
       perfLogger.perfLogEnd(this.getClass().getName(), PerfLogger.POSTJOIN_ORDERING);
       // Perform the CTE rewriting near the end of CBO transformations to avoid interference of the new HiveTableSpool 
       // operator with other rules (especially those related to constant folding and branch pruning).
-      if (!forViewCreation) {
+      if (!forViewCreation && !getQB().isCTAS()) {
+        // Avoid CTE rewriting for CTAS mainly to prevent extracting suggestions from temporary
+        // tables (previously identified CTES).
         calcitePlan = applyCteRewriting(planner, calcitePlan, mdProvider.getMetadataProvider(), executorProvider);
         if (LOG.isDebugEnabled()) {
           LOG.debug("Plan after CTE rewriting:\n{}", RelOptUtil.toString(calcitePlan));
@@ -2069,6 +2072,8 @@ public class CalcitePlanner extends SemanticAnalyzer {
       // is triggered since otherwise this may prevent some rewritings from happening
       HepProgramBuilder program = new HepProgramBuilder();
       generatePartialProgram(program, false, HepMatchOrder.DEPTH_FIRST,
+              HiveAggregateProjectMergeRule.INSTANCE,
+              new AggregateFilterToConditionalAggregateRule(),
               HiveInBetweenExpandRule.FILTER_INSTANCE,
               HiveInBetweenExpandRule.JOIN_INSTANCE,
               HiveInBetweenExpandRule.PROJECT_INSTANCE);
@@ -2154,6 +2159,7 @@ public class CalcitePlanner extends SemanticAnalyzer {
           .addRuleInstance(new RemoveInfrequentCteRule(cteConfig))
           .build();
       final RelNode spoolPlan = executeProgram(ctePlan, spoolProgram, mdProvider, executorProvider, cteMVs, true);
+      // TODO Improve the check to avoid accidental plan changes due to other rules
       if (ctePlan.getRelDigest().equals(spoolPlan.getRelDigest())) {
         return basePlan;
       } else {

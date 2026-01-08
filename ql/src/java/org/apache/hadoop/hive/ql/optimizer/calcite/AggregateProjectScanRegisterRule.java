@@ -21,11 +21,11 @@ import org.apache.calcite.plan.RelOptRule;
 import org.apache.calcite.plan.RelOptRuleCall;
 import org.apache.calcite.plan.RelRule;
 import org.apache.calcite.rel.core.Aggregate;
-import org.apache.calcite.rel.core.Filter;
+import org.apache.calcite.rel.core.Project;
 import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveTableScan;
 import org.apache.hadoop.hive.ql.optimizer.calcite.rules.HiveRuleConfig;
 
-public class AggregateFilterScanRegisterRule extends RelRule<RelRule.Config> {
+public class AggregateProjectScanRegisterRule extends RelRule<RelRule.Config> {
   private static final HiveRuleConfig INSTANCE = new HiveRuleConfig() {
     @Override
     public RelOptRule toRule() {
@@ -33,23 +33,17 @@ public class AggregateFilterScanRegisterRule extends RelRule<RelRule.Config> {
     }
   };
 
-  public AggregateFilterScanRegisterRule() {
+  public AggregateProjectScanRegisterRule() {
     super(INSTANCE.withOperandSupplier(a -> a.operand(Aggregate.class)
-        .oneInput(f -> f.operand(Filter.class).oneInput(s -> s.operand(HiveTableScan.class).noInputs()))));
+        .oneInput(f -> f.operand(Project.class).oneInput(s -> s.operand(HiveTableScan.class).noInputs()))));
   }
 
   @Override
   public void onMatch(RelOptRuleCall call) {
     Aggregate a = call.rel(0);
-    Filter f = call.rel(1);
+    Project p = call.rel(1);
     HiveTableScan ts = call.rel(2);
     ScanRegistry r = call.getPlanner().getContext().unwrap(ScanRegistry.class);
-    r.add(
-        ts.copy(ts.getRowType()),
-        new ScanRegistry.NodeInfo(
-            call.builder().push(f).fields(),
-            f.getCondition(),
-            a.getGroupSet(),
-            a.getAggCallList()));
+    r.add(ts.copy(ts.getRowType()), new ScanRegistry.NodeInfo(p.getProjects(), call.builder().literal(true), a.getGroupSet(), a.getAggCallList()));
   }
 }
