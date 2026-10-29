@@ -13,7 +13,7 @@ Table Type:         	MANAGED_TABLE
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"inv_date_sk\":\"true\",\"inv_item_sk\":\"true\",\"inv_quantity_on_hand\":\"true\",\"inv_warehouse_sk\":\"true\"}}
 	bucketing_version   	2                   
-	numFiles            	50                  
+	numFiles            	223                 
 	numRows             	1627857000          
 	rawDataSize         	0                   
 	totalSize           	#Masked#

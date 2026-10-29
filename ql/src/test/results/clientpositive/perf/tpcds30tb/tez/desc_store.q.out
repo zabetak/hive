@@ -39,7 +39,7 @@ Table Parameters:
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"s_city\":\"true\",\"s_closed_date_sk\":\"true\",\"s_company_id\":\"true\",\"s_company_name\":\"true\",\"s_country\":\"true\",\"s_county\":\"true\",\"s_division_id\":\"true\",\"s_division_name\":\"true\",\"s_floor_space\":\"true\",\"s_geography_class\":\"true\",\"s_gmt_offset\":\"true\",\"s_hours\":\"true\",\"s_manager\":\"true\",\"s_market_desc\":\"true\",\"s_market_id\":\"true\",\"s_market_manager\":\"true\",\"s_number_employees\":\"true\",\"s_rec_end_date\":\"true\",\"s_rec_start_date\":\"true\",\"s_state\":\"true\",\"s_store_id\":\"true\",\"s_store_name\":\"true\",\"s_store_sk\":\"true\",\"s_street_name\":\"true\",\"s_street_number\":\"true\",\"s_street_type\":\"true\",\"s_suite_number\":\"true\",\"s_tax_percentage\":\"true\",\"s_zip\":\"true\"}}
 	bucketing_version   	2                   
 #### A masked pattern was here ####
-	numFiles            	1                   
+	numFiles            	2                   
 	numRows             	1704                
 	rawDataSize         	0                   
 	totalSize           	#Masked#
@@ -143,8 +143,8 @@ col_name            	s_store_name
 data_type           	varchar(50)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	11                  
+num_nulls           	11                  
+distinct_count      	10                  
 avg_col_len         	3.9113849765258215  
 max_col_len         	5                   
 num_trues           	                    
@@ -182,8 +182,8 @@ col_name            	s_hours
 data_type           	char(20)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	4                   
+num_nulls           	17                  
+distinct_count      	3                   
 avg_col_len         	7.077464788732394   
 max_col_len         	8                   
 num_trues           	                    
@@ -195,8 +195,8 @@ col_name            	s_manager
 data_type           	varchar(40)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	1245                
+num_nulls           	17                  
+distinct_count      	1243                
 avg_col_len         	12.658450704225352  
 max_col_len         	21                  
 num_trues           	                    
@@ -221,8 +221,8 @@ col_name            	s_geography_class
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	13                  
+distinct_count      	1                   
 avg_col_len         	6.946596244131455   
 max_col_len         	7                   
 num_trues           	                    
@@ -234,7 +234,7 @@ col_name            	s_market_desc
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	15                  
 distinct_count      	1311                
 avg_col_len         	57.71948356807512   
 max_col_len         	100                 
@@ -247,7 +247,7 @@ col_name            	s_market_manager
 data_type           	varchar(40)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	13                  
 distinct_count      	1236                
 avg_col_len         	12.781103286384976  
 max_col_len         	20                  
@@ -273,8 +273,8 @@ col_name            	s_division_name
 data_type           	varchar(50)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	12                  
+distinct_count      	1                   
 avg_col_len         	6.950704225352113   
 max_col_len         	7                   
 num_trues           	                    
@@ -299,8 +299,8 @@ col_name            	s_company_name
 data_type           	varchar(50)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	12                  
+distinct_count      	1                   
 avg_col_len         	6.950704225352113   
 max_col_len         	7                   
 num_trues           	                    
@@ -312,7 +312,7 @@ col_name            	s_street_number
 data_type           	varchar(10)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	15                  
 distinct_count      	736                 
 avg_col_len         	2.8779342723004695  
 max_col_len         	4                   
@@ -325,7 +325,7 @@ col_name            	s_street_name
 data_type           	varchar(60)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	13                  
 distinct_count      	851                 
 avg_col_len         	8.585093896713616   
 max_col_len         	19                  
@@ -338,8 +338,8 @@ col_name            	s_street_type
 data_type           	char(15)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	21                  
+num_nulls           	12                  
+distinct_count      	20                  
 avg_col_len         	4.193075117370892   
 max_col_len         	9                   
 num_trues           	                    
@@ -351,8 +351,8 @@ col_name            	s_suite_number
 data_type           	char(10)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	76                  
+num_nulls           	8                   
+distinct_count      	75                  
 avg_col_len         	7.839788732394366   
 max_col_len         	9                   
 num_trues           	                    
@@ -364,8 +364,8 @@ col_name            	s_city
 data_type           	varchar(60)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	267                 
+num_nulls           	12                  
+distinct_count      	266                 
 avg_col_len         	8.53462441314554    
 max_col_len         	15                  
 num_trues           	                    
@@ -377,8 +377,8 @@ col_name            	s_county
 data_type           	varchar(30)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	128                 
+num_nulls           	12                  
+distinct_count      	127                 
 avg_col_len         	13.923708920187794  
 max_col_len         	22                  
 num_trues           	                    
@@ -390,8 +390,8 @@ col_name            	s_state
 data_type           	char(2)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	44                  
+num_nulls           	12                  
+distinct_count      	43                  
 avg_col_len         	1.9859154929577465  
 max_col_len         	2                   
 num_trues           	                    
@@ -403,7 +403,7 @@ col_name            	s_zip
 data_type           	char(10)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	12                  
 distinct_count      	983                 
 avg_col_len         	4.964788732394366   
 max_col_len         	5                   
@@ -416,8 +416,8 @@ col_name            	s_country
 data_type           	varchar(20)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	9                   
+distinct_count      	1                   
 avg_col_len         	12.931338028169014  
 max_col_len         	13                  
 num_trues           	                    

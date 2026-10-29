@@ -144,8 +144,8 @@ col_name            	wp_autogen_flag
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	3                   
+num_nulls           	70                  
+distinct_count      	2                   
 avg_col_len         	0.9847892220773576  
 max_col_len         	1                   
 num_trues           	                    
@@ -170,8 +170,8 @@ col_name            	wp_url
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	51                  
+distinct_count      	1                   
 avg_col_len         	17.80052151238592   
 max_col_len         	18                  
 num_trues           	                    
@@ -183,8 +183,8 @@ col_name            	wp_type
 data_type           	char(50)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	8                   
+num_nulls           	57                  
+distinct_count      	7                   
 avg_col_len         	6.307040417209909   
 max_col_len         	9                   
 num_trues           	                    

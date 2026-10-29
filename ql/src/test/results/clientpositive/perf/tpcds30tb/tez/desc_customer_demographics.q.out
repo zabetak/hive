@@ -16,9 +16,9 @@ Retention:          	0
 #### A masked pattern was here ####
 Table Type:         	MANAGED_TABLE       	 
 Table Parameters:	 	 
-	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 	bucketing_version   	2                   
-	numFiles            	2                   
+	numFiles            	1                   
 	numRows             	1920800             
 	rawDataSize         	0                   
 	totalSize           	#Masked#
@@ -53,7 +53,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_gender           
 data_type           	char(1)             
 min                 	                    
@@ -66,7 +66,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_marital_status   
 data_type           	char(1)             
 min                 	                    
@@ -79,7 +79,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_education_status 
 data_type           	char(20)            
 min                 	                    
@@ -92,7 +92,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_purchase_estimate
 data_type           	int                 
 min                 	500                 
@@ -105,7 +105,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_credit_rating    
 data_type           	char(10)            
 min                 	                    
@@ -118,7 +118,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_dep_count        
 data_type           	int                 
 min                 	0                   
@@ -131,7 +131,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_dep_employed_count
 data_type           	int                 
 min                 	0                   
@@ -144,7 +144,7 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}
 col_name            	cd_dep_college_count
 data_type           	int                 
 min                 	0                   
@@ -157,4 +157,4 @@ num_trues
 num_falses          	                    
 bit_vector          	HL                  
 comment             	from deserializer   
-COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
+COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"cd_credit_rating\":\"true\",\"cd_demo_sk\":\"true\",\"cd_dep_college_count\":\"true\",\"cd_dep_count\":\"true\",\"cd_dep_employed_count\":\"true\",\"cd_education_status\":\"true\",\"cd_gender\":\"true\",\"cd_marital_status\":\"true\",\"cd_purchase_estimate\":\"true\"}}

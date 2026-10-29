@@ -22,7 +22,8 @@ Table Type:         	MANAGED_TABLE
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"ca_address_id\":\"true\",\"ca_address_sk\":\"true\",\"ca_city\":\"true\",\"ca_country\":\"true\",\"ca_county\":\"true\",\"ca_gmt_offset\":\"true\",\"ca_location_type\":\"true\",\"ca_state\":\"true\",\"ca_street_name\":\"true\",\"ca_street_number\":\"true\",\"ca_street_type\":\"true\",\"ca_suite_number\":\"true\",\"ca_zip\":\"true\"}}
 	bucketing_version   	2                   
-	numFiles            	31                  
+#### A masked pattern was here ####
+	numFiles            	60                  
 	numRows             	40000000            
 	rawDataSize         	0                   
 	totalSize           	#Masked#
@@ -35,8 +36,8 @@ SerDe Library:      	org.apache.hadoop.hive.ql.io.orc.OrcSerde
 InputFormat:        	org.apache.hadoop.hive.ql.io.orc.OrcInputFormat	 
 OutputFormat:       	org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat	 
 Compressed:         	No                  	 
-Num Buckets:        	31                  	 
-Bucket Columns:     	[ca_address_sk]     	 
+Num Buckets:        	-1                  	 
+Bucket Columns:     	[]                  	 
 Sort Columns:       	[]                  	 
 	 	 
 # Constraints	 	 
@@ -45,6 +46,12 @@ Sort Columns:       	[]
 Table:              	default.customer_address	 
 Constraint Name:    	tpcds_bin_partitioned_orc_30000_pk_ca	 
 Column Name:        	ca_address_sk       	 
+	 	 
+# Not Null Constraints	 	 
+Table:              	default.customer_address	 
+Constraint Name:    	tpcds_bin_partitioned_orc_30000_caid_nn	 
+Column Name:        	ca_address_id       	 
+	 	 
 col_name            	ca_address_sk       
 data_type           	bigint              
 min                 	1                   
@@ -62,20 +69,20 @@ col_name            	ca_address_id
 data_type           	char(16)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	39667899            
-avg_col_len         	16.0                
-max_col_len         	16                  
+num_nulls           	                    
+distinct_count      	                    
+avg_col_len         	                    
+max_col_len         	                    
 num_trues           	                    
 num_falses          	                    
-bit_vector          	HL                  
+bit_vector          	                    
 comment             	from deserializer   
 COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"ca_address_id\":\"true\",\"ca_address_sk\":\"true\",\"ca_city\":\"true\",\"ca_country\":\"true\",\"ca_county\":\"true\",\"ca_gmt_offset\":\"true\",\"ca_location_type\":\"true\",\"ca_state\":\"true\",\"ca_street_name\":\"true\",\"ca_street_number\":\"true\",\"ca_street_type\":\"true\",\"ca_suite_number\":\"true\",\"ca_zip\":\"true\"}}
 col_name            	ca_street_number    
 data_type           	char(10)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	1199692             
 distinct_count      	1014                
 avg_col_len         	2.806232675         
 max_col_len         	4                   
@@ -88,7 +95,7 @@ col_name            	ca_street_name
 data_type           	varchar(60)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	1200439             
 distinct_count      	8358                
 avg_col_len         	8.44949205          
 max_col_len         	21                  
@@ -101,8 +108,8 @@ col_name            	ca_street_type
 data_type           	char(15)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	21                  
+num_nulls           	1199823             
+distinct_count      	20                  
 avg_col_len         	4.073537425         
 max_col_len         	9                   
 num_trues           	                    
@@ -114,8 +121,8 @@ col_name            	ca_suite_number
 data_type           	char(10)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	76                  
+num_nulls           	1200471             
+distinct_count      	75                  
 avg_col_len         	7.653062625         
 max_col_len         	9                   
 num_trues           	                    
@@ -127,7 +134,7 @@ col_name            	ca_city
 data_type           	varchar(60)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	1199778             
 distinct_count      	985                 
 avg_col_len         	8.684372925         
 max_col_len         	20                  
@@ -140,8 +147,8 @@ col_name            	ca_county
 data_type           	varchar(30)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	1930                
+num_nulls           	1198185             
+distinct_count      	1928                
 avg_col_len         	13.543959525        
 max_col_len         	28                  
 num_trues           	                    
@@ -153,8 +160,8 @@ col_name            	ca_state
 data_type           	char(2)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	53                  
+num_nulls           	1199758             
+distinct_count      	52                  
 avg_col_len         	1.9400121           
 max_col_len         	2                   
 num_trues           	                    
@@ -166,7 +173,7 @@ col_name            	ca_zip
 data_type           	char(10)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	1200304             
 distinct_count      	9538                
 avg_col_len         	4.849962            
 max_col_len         	5                   
@@ -179,8 +186,8 @@ col_name            	ca_country
 data_type           	varchar(20)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	1199279             
+distinct_count      	1                   
 avg_col_len         	12.610234325        
 max_col_len         	13                  
 num_trues           	                    
@@ -205,8 +212,8 @@ col_name            	ca_location_type
 data_type           	char(20)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	4                   
+num_nulls           	1198199             
+distinct_count      	3                   
 avg_col_len         	8.729921525         
 max_col_len         	13                  
 num_trues           	                    

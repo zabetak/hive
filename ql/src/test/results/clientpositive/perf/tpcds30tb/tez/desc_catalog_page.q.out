@@ -113,8 +113,8 @@ col_name            	cp_department
 data_type           	varchar(50)         
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	422                 
+distinct_count      	1                   
 avg_col_len         	9.908260869565217   
 max_col_len         	10                  
 num_trues           	                    
@@ -152,7 +152,7 @@ col_name            	cp_description
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
+num_nulls           	447                 
 distinct_count      	44192               
 avg_col_len         	73.86019565217391   
 max_col_len         	99                  
@@ -165,8 +165,8 @@ col_name            	cp_type
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	4                   
+num_nulls           	434                 
+distinct_count      	3                   
 avg_col_len         	7.596826086956522   
 max_col_len         	9                   
 num_trues           	                    

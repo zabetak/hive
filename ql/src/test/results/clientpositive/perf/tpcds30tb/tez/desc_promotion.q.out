@@ -165,8 +165,8 @@ col_name            	p_promo_name
 data_type           	char(50)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	11                  
+num_nulls           	29                  
+distinct_count      	10                  
 avg_col_len         	3.9469565217391303  
 max_col_len         	5                   
 num_trues           	                    
@@ -178,8 +178,8 @@ col_name            	p_channel_dmail
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	3                   
+num_nulls           	24                  
+distinct_count      	2                   
 avg_col_len         	0.9895652173913043  
 max_col_len         	1                   
 num_trues           	                    
@@ -191,8 +191,8 @@ col_name            	p_channel_email
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	27                  
+distinct_count      	1                   
 avg_col_len         	0.9882608695652174  
 max_col_len         	1                   
 num_trues           	                    
@@ -204,8 +204,8 @@ col_name            	p_channel_catalog
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	24                  
+distinct_count      	1                   
 avg_col_len         	0.9895652173913043  
 max_col_len         	1                   
 num_trues           	                    
@@ -217,8 +217,8 @@ col_name            	p_channel_tv
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	27                  
+distinct_count      	1                   
 avg_col_len         	0.9882608695652174  
 max_col_len         	1                   
 num_trues           	                    
@@ -230,8 +230,8 @@ col_name            	p_channel_radio
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	28                  
+distinct_count      	1                   
 avg_col_len         	0.9878260869565217  
 max_col_len         	1                   
 num_trues           	                    
@@ -243,8 +243,8 @@ col_name            	p_channel_press
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	26                  
+distinct_count      	1                   
 avg_col_len         	0.9886956521739131  
 max_col_len         	1                   
 num_trues           	                    
@@ -256,8 +256,8 @@ col_name            	p_channel_event
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	24                  
+distinct_count      	1                   
 avg_col_len         	0.9895652173913043  
 max_col_len         	1                   
 num_trues           	                    
@@ -269,8 +269,8 @@ col_name            	p_channel_demo
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	27                  
+distinct_count      	1                   
 avg_col_len         	0.9882608695652174  
 max_col_len         	1                   
 num_trues           	                    
@@ -282,8 +282,8 @@ col_name            	p_channel_details
 data_type           	varchar(100)        
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2242                
+num_nulls           	24                  
+distinct_count      	2237                
 avg_col_len         	39.26521739130435   
 max_col_len         	60                  
 num_trues           	                    
@@ -295,8 +295,8 @@ col_name            	p_purpose
 data_type           	char(15)            
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	25                  
+distinct_count      	1                   
 avg_col_len         	6.923913043478261   
 max_col_len         	7                   
 num_trues           	                    
@@ -308,8 +308,8 @@ col_name            	p_discount_active
 data_type           	char(1)             
 min                 	                    
 max                 	                    
-num_nulls           	0                   
-distinct_count      	2                   
+num_nulls           	31                  
+distinct_count      	1                   
 avg_col_len         	0.9865217391304347  
 max_col_len         	1                   
 num_trues           	                    
